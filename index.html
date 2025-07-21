@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Zona Edukasi Anak</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/7133/7133252.png"> <!-- Favicon ramah anak -->
+  <!-- CDN Tailwind CSS dengan fallback -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: linear-gradient(to bottom, #FFECB3, #FFCDD2);
+      font-family: 'Comic Sans MS', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .menu {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .menu h1 {
+      font-size: 36px;
+      color: #ff4081;
+      margin-bottom: 20px;
+    }
+    .menu button {
+      display: block;
+      width: 100%;
+      font-size: 24px;
+      margin: 10px 0;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+      color: white;
+    }
+    .btn-iq { background: #f44336; }
+    .btn-find { background: #2196f3; }
+    .btn-edu { background: #4caf50; }
+
+    .menu button:hover {
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <h1>Zona Edukasi Anak</h1>
+    <button class="btn-iq" onclick="window.location.href='Test IQ.html'">Tes IQ Online</button>
+    <button class="btn-find" onclick="window.location.href='Finding Items.html'">Game Mencari Barang</button>
+    <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
+  </div>
+</body>
+</html>

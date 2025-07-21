@@ -1,0 +1,223 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Mencari Barang!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    #game-container {
+      position: relative;
+      width: 1200px;
+      height: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      border: 2px solid #000;
+      overflow: hidden;
+    }
+    .item {
+      position: absolute;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
+    #game-info {
+      margin: 20px;
+      font-size: 24px;
+    }
+    #start-button, #restart-button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #start-button:hover, #restart-button:hover {
+      background-color: #45a049;
+    }
+    #restart-button {
+      display: none;
+    }
+    #target-item {
+      font-size: 36px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Mencari Barang!</h1>
+  <button id="start-button">Mulai Main!</button>
+  <div id="game-info">
+    Skor: <span id="score">0</span> / 1000<br>
+    Waktu: <span id="time">600</span>
+  </div>
+  <div id="target-item">Cari barangnya!</div>
+  <div id="game-container"></div>
+  <button id="restart-button">Main Lagi!</button>
+  <p>By Mochamad Fuad Asyhary</p>
+
+  <script>
+    const gameContainer = document.getElementById('game-container');
+    const scoreDisplay = document.getElementById('score');
+    const timeDisplay = document.getElementById('time');
+    const startButton = document.getElementById('start-button');
+    const restartButton = document.getElementById('restart-button');
+    const targetItemDisplay = document.getElementById('target-item');
+
+    let score = 0;
+    let time = 600;
+    let gameActive = false;
+    let timer;
+    let items = [];
+    let targetItem;
+
+    // Array of 50 emojis, repeated with unique identifiers
+    const baseIcons = [
+      '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍒', '🍑',
+      '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥕', '🌽', '🌶️',
+      '🥔', '🥖', '🥐', '🍔', '🍟', '🍕', '🥪', '🥗', '🍣', '🍜',
+      '🍦', '🥧', '🍰', '🍫', '🍬', '🍭', '🍩', '🍪', '🥛', '☕',
+      '🍵', '🍺', '🍷', '🥂', '🥤', '🍴', '🥄', '🔪', '🧂', '🍽️'
+    ];
+    const colors = ['#ffcccc', '#ccffcc', '#ccccff', '#ffffcc'];
+    const icons = [];
+    for (let i = 0; i < 4; i++) {
+      baseIcons.forEach((icon, index) => {
+        icons.push({ emoji: icon, id: `${icon}-${i+1}`, color: colors[i] });
+      });
+    }
+
+    function startGame() {
+      if (gameActive) return;
+      gameActive = true;
+      score = 0;
+      time = 600;
+      scoreDisplay.textContent = score;
+      timeDisplay.textContent = time;
+      startButton.style.display = 'none';
+      restartButton.style.display = 'none';
+      gameContainer.innerHTML = '';
+      items = [];
+      generateItems();
+      selectNewTarget();
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    function generateItems() {
+      for (let i = 0; i < 200; i++) {
+        const item = document.createElement('div');
+        item.classList.add('item');
+        item.textContent = icons[i].emoji;
+        item.style.backgroundColor = icons[i].color;
+        // Ensure items don't overlap significantly
+        let x, y, isOverlapping;
+        do {
+          x = Math.random() * (1200 - 50);
+          y = Math.random() * (800 - 50);
+          isOverlapping = items.some(existing => {
+            const ex = parseFloat(existing.element.style.left);
+            const ey = parseFloat(existing.element.style.top);
+            return Math.abs(x - ex) < 50 && Math.abs(y - ey) < 50;
+          });
+        } while (isOverlapping);
+        item.style.left = x + 'px';
+        item.style.top = y + 'px';
+        item.addEventListener('click', () => checkItem(item, icons[i].id));
+        gameContainer.appendChild(item);
+        items.push({ element: item, id: icons[i].id, emoji: icons[i].emoji });
+      }
+    }
+
+    function selectNewTarget() {
+      const remainingItems = items.filter(item => item.element.parentNode);
+      if (remainingItems.length === 0) {
+        endGame(true);
+        return;
+      }
+      targetItem = remainingItems[Math.floor(Math.random() * remainingItems.length)];
+      targetItemDisplay.textContent = `Cari: ${targetItem.emoji} (Varian ${targetItem.id.split('-')[1]})`;
+    }
+
+    function checkItem(element, id) {
+      if (!gameActive) return;
+      if (id === targetItem.id) {
+        score += 5;
+        scoreDisplay.textContent = score;
+        element.remove();
+        selectNewTarget();
+      }
+    }
+
+    function updateTimer() {
+      time--;
+      timeDisplay.textContent = time;
+      if (time <= 0) {
+        endGame(false);
+      }
+    }
+
+    function endGame(won) {
+      gameActive = false;
+      clearInterval(timer);
+      targetItemDisplay.textContent = won ? 'Selamat! Kamu Menang!' : 'Waktu Habis!';
+      restartButton.style.display = 'block';
+    }
+
+    startButton.addEventListener('click', startGame);
+    restartButton.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
