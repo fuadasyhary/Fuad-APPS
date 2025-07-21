@@ -40,6 +40,16 @@
       transition: background 0.3s;
       color: white;
     }
+    .watermark {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        color: rgba(0, 0, 0, 0.3);
+        font-size: 10px;
+        font-family: Arial, sans-serif;
+        pointer-events: none;
+        z-index: 1000;
+    }
     .btn-iq { background: #f44336; }
     .btn-find { background: #2196f3; }
     .btn-edu { background: #4caf50; }
@@ -56,5 +66,6 @@
     <button class="btn-find" onclick="window.location.href='Finding Items.html'">Game Mencari Barang</button>
     <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
   </div>
+  <div class="watermark">By Mochamad Fuad Asyhary</div>
 </body>
 </html>
