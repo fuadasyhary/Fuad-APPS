@@ -108,10 +108,6 @@
     </div>
 
     <script>
-        // Suara ramah anak untuk klik dan navigasi (base64-encoded WAV)
-        const clickSound = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-        const navSound = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-
         const stories = [
             {
                 title: "Malin Kundang",
@@ -309,7 +305,7 @@
                 content: "Di Sumatra Utara, Samosir adalah anak Toba dan Sari, wanita ikan mas. Ketika Toba melanggar janji untuk tidak menyebut asal-usul Sari, ia dan Samosir menghilang, dan air membentuk Danau Toba. Pulau kecil di tengah danau dinamakan Pulau Samosir, melambangkan cinta keluarga. Kisah ini mengajarkan pentingnya menjaga kepercayaan."
             },
             {
-                title: "Asal-UsLTE Kota Manado",
+                title: "Asal-Usul Kota Manado",
                 summary: "Persatuan suku di Sulawesi Utara.",
                 content: "Di Sulawesi Utara, suku-suku bersatu untuk melawan musuh di tepi laut. Dipimpin oleh Dotu Lolong Lasut, mereka berhasil menang dan menamakan tempat itu Manado, yang berarti 'di tepi laut'. Kota ini menjadi simbol persatuan dan keberanian. Cerita ini mengajarkan pentingnya kerja sama."
             },
@@ -394,12 +390,10 @@
             prevBtn.disabled = index === 0;
             nextBtn.disabled = index === stories.length - 1;
             popup.classList.add('show');
-            clickSound.play();
         }
 
         function closePopup() {
             popup.classList.remove('show');
-            clickSound.play();
         }
 
         stories.forEach((story, index) => {
@@ -416,14 +410,12 @@
         prevBtn.addEventListener('click', () => {
             if (currentStoryIndex > 0) {
                 showPopup(currentStoryIndex - 1);
-                navSound.play();
             }
         });
 
         nextBtn.addEventListener('click', () => {
             if (currentStoryIndex < stories.length - 1) {
                 showPopup(currentStoryIndex + 1);
-                navSound.play();
             }
         });
 
