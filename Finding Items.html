@@ -1,49 +1,10 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Mencari Barang!</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/782/782796.png"> <!-- Favicon ramah anak -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/782/782796.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -52,8 +13,8 @@
     }
     #game-container {
       position: relative;
-      width: 1200px;
-      height: 800px;
+      width: 800px;
+      height: 600px;
       margin: 20px auto;
       background-color: #fff;
       border: 2px solid #000;
@@ -61,11 +22,11 @@
     }
     .item {
       position: absolute;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       user-select: none;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -75,7 +36,7 @@
     }
     #game-info {
       margin: 20px;
-      font-size: 24px;
+      font-size: 20px;
     }
     .watermark {
         position: fixed;
@@ -88,8 +49,8 @@
         z-index: 1000;
     }
     #start-button, #restart-button {
-      padding: 10px 20px;
-      font-size: 18px;
+      padding: 8px 16px;
+      font-size: 16px;
       cursor: pointer;
       background-color: #4CAF50;
       color: white;
@@ -103,7 +64,7 @@
       display: none;
     }
     #target-item {
-      font-size: 36px;
+      font-size: 30px;
       margin: 10px;
     }
   </style>
@@ -113,14 +74,45 @@
   <button id="start-button">Mulai Main!</button>
   <div id="game-info">
     Skor: <span id="score">0</span> / 1000<br>
-    Waktu: <span id="time">600</span>
+    Waktu: <span id="time">240</span>
   </div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
   <div id="target-item">Cari barangnya!</div>
   <div id="game-container"></div>
   <button id="restart-button">Main Lagi!</button>
 
-  <script>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+
     const gameContainer = document.getElementById('game-container');
     const scoreDisplay = document.getElementById('score');
     const timeDisplay = document.getElementById('time');
@@ -129,13 +121,12 @@
     const targetItemDisplay = document.getElementById('target-item');
 
     let score = 0;
-    let time = 600;
+    let time = 240;
     let gameActive = false;
     let timer;
     let items = [];
     let targetItem;
 
-    // Array of 50 emojis, repeated with unique identifiers
     const baseIcons = [
       '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍒', '🍑',
       '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥕', '🌽', '🌶️',
@@ -145,9 +136,9 @@
     ];
     const colors = ['#ffcccc', '#ccffcc', '#ccccff', '#ffffcc'];
     const icons = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 1; i++) {
       baseIcons.forEach((icon, index) => {
-        icons.push({ emoji: icon, id: `${icon}-${i+1}`, color: colors[i] });
+        icons.push({ emoji: icon, id: `${icon}-${i+1}`, color: colors[i % colors.length] });
       });
     }
 
@@ -155,7 +146,7 @@
       if (gameActive) return;
       gameActive = true;
       score = 0;
-      time = 600;
+      time = 240;
       scoreDisplay.textContent = score;
       timeDisplay.textContent = time;
       startButton.style.display = 'none';
@@ -168,20 +159,19 @@
     }
 
     function generateItems() {
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < 50; i++) {
         const item = document.createElement('div');
         item.classList.add('item');
         item.textContent = icons[i].emoji;
         item.style.backgroundColor = icons[i].color;
-        // Ensure items don't overlap significantly
         let x, y, isOverlapping;
         do {
-          x = Math.random() * (1200 - 50);
-          y = Math.random() * (800 - 50);
+          x = Math.random() * (800 - 40);
+          y = Math.random() * (600 - 40);
           isOverlapping = items.some(existing => {
             const ex = parseFloat(existing.element.style.left);
             const ey = parseFloat(existing.element.style.top);
-            return Math.abs(x - ex) < 50 && Math.abs(y - ey) < 50;
+            return Math.abs(x - ex) < 40 && Math.abs(y - ey) < 40;
           });
         } while (isOverlapping);
         item.style.left = x + 'px';
@@ -199,7 +189,7 @@
         return;
       }
       targetItem = remainingItems[Math.floor(Math.random() * remainingItems.length)];
-      targetItemDisplay.textContent = `Cari: ${targetItem.emoji} (Varian ${targetItem.id.split('-')[1]})`;
+      targetItemDisplay.textContent = `Cari: ${targetItem.emoji}`;
     }
 
     function checkItem(element, id) {
