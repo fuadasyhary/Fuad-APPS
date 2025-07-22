@@ -1,0 +1,259 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerita Rakyat Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #ffecd2, #fcb69f);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+        .story-card {
+            transition: transform 0.3s;
+        }
+        .story-card:hover {
+            transform: scale(1.05);
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .popup.show {
+            display: flex;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-6">
+    <h1 class="text-4xl font-bold text-blue-600 mb-8">Cerita Rakyat Indonesia untuk Anak</h1>
+    <div id="story-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+        <!-- Cerita akan diisi oleh JavaScript -->
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="popup-title" class="text-2xl font-semibold text-purple-600 mb-4"></h2>
+            <p id="popup-content" class="text-gray-800"></p>
+            <div class="flex justify-between mt-6">
+                <button id="prev-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Cerita Sebelumnya</button>
+                <button id="next-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Cerita Selanjutnya</button>
+                <button id="back-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stories = [
+            {
+                title: "Malin Kundang",
+                summary: "Kisah seorang anak yang durhaka kepada ibunya dan berubah menjadi batu.",
+                content: "Di sebuah desa nelayan di pesisir Sumatera Barat, hiduplah Malin Kundang bersama ibunya, Mande Rubayah, dalam kemiskinan. Malin yang cerdas dan pekerja keras memutuskan merantau untuk memperbaiki nasib. Setelah bertahun-tahun, ia menjadi saudagar kaya dengan kapal besar dan istri cantik. Kembali ke desanya, Malin malu mengakui ibunya yang miskin dan compang-camping. Ia bahkan mengusir Mande Rubayah yang datang menyambutnya. Hati Mande hancur, dan dalam doanya, ia memohon agar Tuhan menghukum anaknya yang durhaka. Tiba-tiba badai besar melanda, kapal Malin hancur, dan ia dikutuk menjadi batu di pantai Air Manis. Hingga kini, batu itu menjadi pengingat akan pentingnya bakti kepada orang tua."
+            },
+            {
+                title: "Sangkuriang",
+                summary: "Kisah cinta tragis antara Sangkuriang dan ibunya, Dayang Sumbi.",
+                content: "Di tanah Sunda, hiduplah Dayang Sumbi, seorang wanita cantik yang memiliki anak bernama Sangkuriang. Karena sebuah insiden, Sangkuriang diusir dan kembali bertahun-tahun kemudian sebagai pemuda tampan. Tanpa sepengetahuan keduanya, mereka saling jatuh cinta. Dayang Sumbi menyadari identitas Sangkuriang dan berusaha mencegah pernikahan dengan memberikan syarat mustahil: membuat danau dan perahu besar dalam semalam. Dengan bantuan jin, Sangkuriang hampir berhasil. Namun, Dayang Sumbi meminta ayam berkokok lebih awal dengan menaburkan beras, membuat Sangkuriang marah. Dalam kemarahannya, ia menendang perahu yang menjadi Gunung Tangkuban Perahu, dan kisah ini menjadi legenda Jawa Barat."
+            },
+            {
+                title: "Timun Mas",
+                summary: "Petualangan Timun Mas melarikan diri dari raksasa.",
+                content: "Di sebuah desa, sepasang petani tua, Mbok Srini dan suaminya, sangat ingin punya anak. Mereka berdoa hingga seorang raksasa memberikan timun ajaib yang melahirkan bayi perempuan, dinamai Timun Mas. Namun, raksasa meminta Timun Mas dikembalikan saat berusia 17 tahun. Ketika hari itu tiba, Mbok Srini memberikan Timun Mas empat benda ajaib: biji timun, jarum, garam, dan terasi. Saat dikejar raksasa, Timun Mas melemparkan benda-benda itu. Biji timun menjadi hutan, jarum menjadi duri, garam menjadi laut, dan terasi menjadi lumpur panas. Raksasa akhirnya terjebak dan tenggelam, sementara Timun Mas kembali hidup bahagia bersama Mbok Srini."
+            },
+            {
+                title: "Bawang Merah Bawang Putih",
+                summary: "Kisah kebaikan hati Bawang Putih melawan sifat jahat Bawang Merah.",
+                content: "Bawang Putih adalah gadis baik hati yang tinggal bersama ibu tiri dan Bawang Merah, saudara tirinya yang iri dan jahat. Setiap hari, Bawang Putih dipaksa melakukan semua pekerjaan rumah. Suatu hari, kain kesayangan ibu tiri terambil oleh sungai. Bawang Putih mencarinya dan bertemu nenek tua yang memberinya labu berisi emas sebagai imbalan kebaikannya. Ibu tiri dan Bawang Merah yang iri memaksa Bawang Merah melakukan hal sama, tetapi karena sifatnya yang buruk, ia hanya mendapat labu berisi ular. Kisah ini mengajarkan bahwa kebaikan akan selalu mendapat balasan yang baik."
+            },
+            {
+                title: "Keong Mas",
+                summary: "Putri yang dikutuk menjadi keong dan diselamatkan oleh kebaikan hati.",
+                content: "Di Kerajaan Daha, Putri Candra Kirana dikutuk menjadi keong mas oleh penyihir atas perintah kakaknya, Dewi Galuh, yang iri. Keong Mas ditemukan oleh seorang nenek miskin di pantai. Setiap hari, nenek itu mendapati rumahnya bersih dan makanan tersedia, yang ternyata dilakukan oleh Keong Mas. Suatu hari, nenek memergoki Candra Kirana dalam wujud manusia. Dengan kebaikan hati nenek, kutukan terpecahkan. Candra Kirana kembali ke istana, menikah dengan Pangeran Inu Kertapati, dan Dewi Galuh mendapat hukuman atas kejahatannya."
+            },
+            {
+                title: "Roro Jonggrang",
+                summary: "Kisah Roro Jonggrang yang menipu Bandung Bondowoso.",
+                content: "Di Jawa Tengah, Bandung Bondowoso, seorang pangeran sakti, ingin menikahi Roro Jonggrang, putri Kerajaan Prambanan. Roro menolak karena Bandung telah membunuh ayahnya. Ia memberikan syarat mustahil: membangun seribu candi dalam semalam. Dengan bantuan jin, Bandung hampir menyelesaikan 999 candi. Panik, Roro Jonggrang memerintahkan dayang-dayang menumbuk padi dan membakar jerami agar ayam berkokok, menandakan pagi. Merasa ditipu, Bandung marah dan mengutuk Roro menjadi patung untuk melengkapi candi ke-1000, yang kini dikenal sebagai Candi Prambanan."
+            },
+            {
+                title: "Ande Ande Lumut",
+                summary: "Pangeran yang mencari cinta sejati dengan menyamar.",
+                content: "Pangeran Ande Ande Lumut menyamar sebagai rakyat biasa untuk mencari istri yang tulus. Di desa, ia bertemu Klenting Kuning, gadis miskin yang baik hati namun disiksa oleh keluarga tirinya, Klenting Merah dan lainnya. Dalam sebuah sayembara, Ande Ande Lumut menguji hati para gadis. Klenting Kuning, dengan keberanian dan kejujurannya, berhasil memenangkan hati sang pangeran. Mereka menikah, dan Klenting Kuning hidup bahagia, sementara keluarga tirinya menyesali perbuatan mereka."
+            },
+            {
+                title: "Si Kancil dan Buaya",
+                summary: "Kancil cerdik menipu buaya untuk menyeberangi sungai.",
+                content: "Di hutan, Si Kancil ingin menyeberangi sungai yang dipenuhi buaya. Dengan kecerdikannya, ia mengatakan kepada buaya bahwa raja hutan memerintahkannya menghitung jumlah buaya. Kancil meminta mereka berbaris di sungai. Satu per satu, Kancil melompati punggung buaya sambil menghitung, hingga berhasil menyeberang. Buaya baru sadar mereka ditipu, tetapi Kancil sudah kabur dengan tawa riang."
+            },
+            {
+                title: "Legenda Danau Toba",
+                summary: "Asal-usul Danau Toba dan ikan mas ajaib.",
+                content: "Di Sumatra Utara, seorang petani muda bernama Toba menangkap ikan mas ajaib yang berubah menjadi wanita cantik bernama Sari. Mereka menikah dengan syarat Toba tidak boleh menyebut asal-usul Sari. Mereka hidup bahagia dan memiliki anak bernama Samosir. Suatu hari, Toba marah dan tanpa sengaja menyebut Sari sebagai ikan. Sari dan Samosir menghilang, dan air memancar dari tempat mereka berdiri, membentuk Danau Toba. Pulau kecil di tengah danau dinamakan Pulau Samosir."
+            },
+            {
+                title: "Lutung Kasarung",
+                summary: "Pangeran yang dikutuk menjadi lutung dan menemukan cinta.",
+                content: "Pangeran Guruminda dari Kerajaan Pasir Batang dikutuk menjadi lutung karena kesalahannya. Ia bertemu Purbasari, putri raja yang diasingkan oleh kakaknya, Purbararang. Lutung Kasarung membantu Purbasari bertahan hidup di hutan. Dengan kebaikan hati Purbasari, kutukan terpecahkan, dan Guruminda kembali menjadi manusia. Mereka menikah, mengalahkan Purbararang, dan memimpin kerajaan dengan bijaksana."
+            },
+            {
+                title: "Jaka Tarub dan Nawang Wulan",
+                summary: "Cinta Jaka Tarub dengan bidadari dari kayangan.",
+                content: "Jaka Tarub, pemuda desa, melihat tujuh bidadari mandi di telaga. Ia mencuri selendang Nawang Wulan, membuatnya tak bisa kembali ke kayangan. Mereka menikah dan memiliki anak. Suatu hari, Nawang Wulan menemukan selendangnya dan kembali ke kayangan, meninggalkan Jaka Tarub. Namun, karena cinta sejatinya, Nawang Wulan mengizinkan Jaka Tarub mengunjunginya di kayangan sesekali."
+            },
+            {
+                title: "Asal-Usul Kota Banyuwangi",
+                summary: "Kisah cinta dan pengkhianatan di Banyuwangi.",
+                content: "Sri Tanjung, seorang wanita cantik, bertunangan dengan seorang pemuda. Raja setempat jatuh cinta padanya dan memfitnah tunangannya. Dalam pertempuran, tunangannya terbunuh. Untuk membuktikan kesucian cintanya, Sri Tanjung melompat ke sungai, yang mengeluarkan aroma harum. Sungai itu dinamakan Banyuwangi, yang berarti 'air harum', sebagai simbol cinta sejati."
+            },
+            {
+                title: "Cindelaras",
+                summary: "Cindelaras dan ayam jantannya mengungkap kebenaran.",
+                content: "Cindelaras, anak raja yang diasingkan karena fitnah, dibesarkan di desa terpencil. Ia memiliki ayam jantan ajaib yang bisa berbicara dan menang di setiap adu ayam. Kabar tentang ayam itu sampai ke istana. Raja, yang tak tahu Cindelaras adalah anaknya, mengundangnya. Ayam Cindelaras mengungkapkan identitas tuannya, dan akhirnya Cindelaras bersatu kembali dengan ayahnya."
+            },
+            {
+                title: "Si Pitung",
+                summary: "Pahlawan rakyat Betawi yang melawan penjajah.",
+                content: "Si Pitung adalah pendekar Betawi yang terkenal di Jakarta pada masa penjajahan Belanda. Dengan keberanian dan keahlian silatnya, ia mencuri dari orang kaya Belanda dan membagikan hasilnya kepada rakyat miskin. Meski dikejar-kejar, Pitung selalu lolos berkat kecerdikannya dan dukungan rakyat, menjadikannya simbol perlawanan."
+            },
+            {
+                title: "Legenda Batu Menangis",
+                summary: "Gadis yang durhaka menjadi batu yang menangis.",
+                content: "Di Kalimantan Barat, seorang gadis bernama Darmi dikenal malas dan durhaka kepada ibunya. Ia sering menyakiti hati ibunya dengan perkataan kasar. Suatu hari, ia menolak mengakui ibunya di depan orang banyak. Tiba-tiba petir menyambar, dan Darmi berubah menjadi batu. Sebelum benar-benar menjadi batu, ia menangis meminta maaf, dan air matanya menjadi sumber air di desa itu."
+            },
+            {
+                title: "Telaga Warna",
+                summary: "Asal-usul telaga yang berubah warna.",
+                content: "Di Jawa Barat, seorang raja dan ratu mendapat kalung ajaib untuk putri mereka. Namun, putri itu tumbuh menjadi gadis sombong yang menolak kalung itu. Ketika kalung itu pecah, air memancar dari tanah, membentuk Telaga Warna yang indah dengan warna-warni airnya. Telaga itu menjadi pengingat akan pentingnya rendah hati."
+            },
+            {
+                title: "Prabu Siliwangi",
+                summary: "Kisah raja besar Pajajaran yang legendaris.",
+                content: "Prabu Siliwangi adalah raja besar Kerajaan Pajajaran di Jawa Barat. Ia dikenal sebagai pemimpin bijaksana yang melindungi rakyatnya. Konon, ia memiliki kekuatan gaib dan bisa berubah menjadi harimau putih untuk mengusir musuh. Kisah kepemimpinannya menjadi legenda yang menginspirasi keberanian dan keadilan."
+            },
+            {
+                title: "Raja Ampat",
+                summary: "Asal-usul kepulauan Raja Ampat.",
+                content: "Di Papua Barat, seorang raja menemukan tujuh telur ajaib di tepi pantai. Empat telur menetas menjadi pulau-pulau indah yang dinamakan Waigeo, Salawati, Batanta, dan Misool. Pulau-pulau ini, yang kini dikenal sebagai Raja Ampat, menjadi simbol keajaiban alam dan kekayaan laut Indonesia."
+            },
+            {
+                title: "Kisah Si Lebai Malang",
+                summary: "Kisah lucu tentang kebingungan Si Lebai.",
+                content: "Si Lebai, seorang ulama desa, diundang ke dua pesta di desa berbeda pada hari yang sama. Karena bingung memilih, ia bolak-balik antara kedua pesta, berharap mendapat hidangan terbaik. Namun, karena keragu-raguannya, ia tiba terlambat di kedua pesta dan tidak mendapat apa-apa. Kisah ini mengajarkan pentingnya membuat keputusan dengan tegas."
+            },
+            {
+                title: "Legenda Gunung Bromo",
+                summary: "Asal-usul Gunung Bromo dari pengorbanan cinta.",
+                content: "Roro Anteng dan Joko Seger, pasangan dari Jawa Timur, berjanji kepada dewa untuk mengorbankan anak mereka demi kemakmuran desa. Namun, ketika tiba waktunya, mereka tidak rela. Dewa marah, dan gunung meletus, menelan anak mereka. Gunung itu dinamakan Bromo, mengenang pengorbanan dan cinta mereka."
+            }
+        ];
+
+        const storyList = document.getElementById('story-list');
+        const popup = document.getElementById('popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupContent = document.getElementById('popup-content');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const backBtn = document.getElementById('back-btn');
+        const closeBtn = document.querySelector('.close-btn');
+        let currentStoryIndex = 0;
+
+        function showPopup(index) {
+            currentStoryIndex = index;
+            popupTitle.textContent = stories[index].title;
+            popupContent.textContent = stories[index].content;
+            popup.classList.add('show');
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === stories.length - 1;
+        }
+
+        function closePopup() {
+            popup.classList.remove('show');
+        }
+
+        stories.forEach((story, index) => {
+            const storyCard = document.createElement('div');
+            storyCard.className = 'story-card bg-white rounded-lg shadow-lg p-6 cursor-pointer';
+            storyCard.innerHTML = `
+                <h2 class="text-2xl font-semibold text-purple-600">${story.title}</h2>
+                <p class="text-gray-600 mt-2">${story.summary}</p>
+            `;
+            storyCard.addEventListener('click', () => showPopup(index));
+            storyList.appendChild(storyCard);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStoryIndex > 0) showPopup(currentStoryIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStoryIndex < stories.length - 1) showPopup(currentStoryIndex + 1);
+        });
+
+        backBtn.addEventListener('click', closePopup);
+        closeBtn.addEventListener('click', closePopup);
+    </script>
+</body>
+</html>
