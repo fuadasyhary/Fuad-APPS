@@ -77,6 +77,16 @@
       margin: 20px;
       font-size: 24px;
     }
+    .watermark {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        color: rgba(0, 0, 0, 0.3);
+        font-size: 10px;
+        font-family: Arial, sans-serif;
+        pointer-events: none;
+        z-index: 1000;
+    }
     #start-button, #restart-button {
       padding: 10px 20px;
       font-size: 18px;
@@ -105,10 +115,10 @@
     Skor: <span id="score">0</span> / 1000<br>
     Waktu: <span id="time">600</span>
   </div>
+  <div class="watermark">By Mochamad Fuad Asyhary</div>
   <div id="target-item">Cari barangnya!</div>
   <div id="game-container"></div>
   <button id="restart-button">Main Lagi!</button>
-  <p>By Mochamad Fuad Asyhary</p>
 
   <script>
     const gameContainer = document.getElementById('game-container');
