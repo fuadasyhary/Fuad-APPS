@@ -14,8 +14,8 @@
     }
     #game-container {
       position: relative;
-      width: 800px;
-      height: 600px;
+      width: 600px;
+      height: 400px;
       margin: 20px auto;
       background-color: #fff;
       border: 2px solid #000;
@@ -23,11 +23,11 @@
     }
     .item {
       position: absolute;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
       user-select: none;
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,12 +183,12 @@
         item.style.backgroundColor = icons[i].color;
         let x, y, isOverlapping;
         do {
-          x = Math.random() * (800 - 40);
-          y = Math.random() * (600 - 40);
+          x = Math.random() * (600 - 30);
+          y = Math.random() * (400 - 30);
           isOverlapping = items.some(existing => {
             const ex = parseFloat(existing.element.style.left);
             const ey = parseFloat(existing.element.style.top);
-            return Math.abs(x - ex) < 40 && Math.abs(y - ey) < 40;
+            return Math.abs(x - ex) < 30 && Math.abs(y - ey) < 30;
           });
         } while (isOverlapping);
         item.style.left = x + 'px';
