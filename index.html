@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <title>Zona Edukasi Anak</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/7133/7133252.png">
+  <embed 
+        src="crazyfrog.mp3"
+        loop="true"
+        autostart="true"
+        hidden="true"
+        volume="70"></embed>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -217,6 +223,8 @@
   </style>
 </head>
 <body>
+  <!-- AUDIO -->
+  <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
   <div class="animated-bg">
     <span></span>
     <span></span>
@@ -240,5 +248,16 @@
     <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
   </div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
+  <!-- SCRIPT UNTUK AUTOPLAY SETELAH KLIK -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.addEventListener('click', function () {
+        var audio = document.getElementById('bg-audio');
+        audio.play().catch(err => {
+          console.log('Autoplay diblokir:', err);
+        });
+      }, { once: true });
+    });
+  </script>
 </body>
 </html>
