@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -76,7 +37,7 @@
           csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
           return csv;
         } catch (e) {
-          console.error(e);
+          console.error('Error loading XLSX file:', e);
           return "";
         }
       }
@@ -88,7 +49,8 @@
 
     class ErrorBoundary extends React.Component {
       state = { hasError: false };
-      static getDerivedStateFromError() {
+      static getDerivedStateFromError(error) {
+        console.error('ErrorBoundary caught an error:', error);
         return { hasError: true };
       }
       render() {
@@ -219,6 +181,66 @@
       {
         name: "Martha Christina Tiahahu",
         story: "Martha Christina Tiahahu, lahir di Maluku Tengah pada 4 Januari 1800, adalah pahlawan wanita yang membantu Kapitan Pattimura melawan Belanda pada 1817. Ditangkap dan menolak makan di kapal pengasingan, ia wafat pada 2 Januari 1818. Ia dianugerahi gelar Pahlawan Nasional pada 1969."
+      },
+      {
+        name: "Supriyadi",
+        story: "Supriyadi, lahir di Trenggalek, Jawa Timur, pada 13 April 1923, adalah pemimpin pemberontakan PETA di Blitar pada Februari 1945 melawan Jepang. Setelah pemberontakan gagal, ia menghilang dan diduga gugur. Ia dianugerahi gelar Pahlawan Nasional pada 1975."
+      },
+      {
+        name: "Syafruddin Prawiranegara",
+        story: "Syafruddin Prawiranegara, lahir di Serang, Banten, pada 28 Februari 1911, adalah tokoh ekonomi dan politik. Ia memimpin Pemerintahan Darurat Republik Indonesia (PDRI) di Sumatera pada 1948–1949. Ia wafat pada 15 Februari 1989 dan dianugerahi gelar Pahlawan Nasional pada 2011."
+      },
+      {
+        name: "Fatmawati",
+        story: "Fatmawati, lahir di Bengkulu pada 5 Februari 1923, adalah istri Soekarno dan penjahit bendera Merah Putih pertama untuk Proklamasi 1945. Ia aktif mendukung perjuangan kemerdekaan. Ia wafat pada 14 Mei 1980 dan dianugerahi gelar Pahlawan Nasional pada 2000."
+      },
+      {
+        name: "Oerip Soemohardjo",
+        story: "Oerip Soemohardjo, lahir di Purworejo, Jawa Tengah, pada 22 Februari 1893, adalah Kepala Staf Angkatan Darat pertama TNI. Ia mengorganisir TNI pada masa awal kemerdekaan. Ia wafat pada 17 November 1948 dan dianugerahi gelar Pahlawan Nasional pada 1964."
+      },
+      {
+        name: "Sultan Agung",
+        story: "Sultan Agung, lahir di Mataram pada 1593, adalah raja Mataram yang memimpin perlawanan melawan Belanda di Batavia (1628–1629). Ia memperluas wilayah Mataram dan memperkuat budaya Jawa. Ia wafat pada 1645 dan dianugerahi gelar Pahlawan Nasional pada 1975."
+      },
+      {
+        name: "Raden Mas Said",
+        story: "Raden Mas Said, atau Pangeran Sambernyawa, lahir di Surakarta pada 1725, memimpin perlawanan melawan Belanda dan keraton Surakarta. Ia mendirikan Kadipaten Mangkunegaran. Ia wafat pada 1795 dan dianugerahi gelar Pahlawan Nasional pada 1988."
+      },
+      {
+        name: "Tjipto Mangoenkoesoemo",
+        story: "Tjipto Mangoenkoesoemo, lahir di Jepara pada 1886, adalah tokoh Tiga Serangkai bersama Douwes Dekker dan Ki Hajar Dewantara. Ia kritis terhadap Belanda dan diasingkan. Ia wafat pada 8 Maret 1943 dan dianugerahi gelar Pahlawan Nasional pada 1964."
+      },
+      {
+        name: "Hasan Basry",
+        story: "Hasan Basry, lahir di Kandangan, Kalimantan Selatan, pada 17 Juni 1923, memimpin perjuangan gerilya melawan Belanda di Kalimantan pada 1945–1949. Ia wafat pada 15 Juli 1984 dan dianugerahi gelar Pahlawan Nasional pada 2001."
+      },
+      {
+        name: "Raja Haji Fisabilillah",
+        story: "Raja Haji Fisabilillah, lahir di Riau pada 1725, memimpin perlawanan melawan Belanda di Selat Malaka. Ia gugur pada 1784 dalam pertempuran di Teluk Ketapang. Ia dianugerahi gelar Pahlawan Nasional pada 1997."
+      },
+      {
+        name: "Andi Djemma",
+        story: "Andi Djemma, lahir di Luwu, Sulawesi Selatan, pada 1901, adalah Raja Luwu yang memimpin perlawanan melawan Belanda dan bergabung dalam perjuangan kemerdekaan. Ia wafat pada 1965 dan dianugerahi gelar Pahlawan Nasional pada 2002."
+      },
+      {
+        name: "Sultan Mahmud Badaruddin II",
+        story: "Sultan Mahmud Badaruddin II, lahir di Palembang pada 1767, memimpin perlawanan melawan Belanda di Palembang pada 1811–1812. Ia diasingkan ke Ternate dan wafat pada 1852. Ia dianugerahi gelar Pahlawan Nasional pada 1984."
+      },
+      {
+        name: "Tengku Cik di Tiro",
+        story: "Tengku Cik di Tiro, lahir di Aceh pada 1836, adalah ulama dan pejuang Perang Aceh melawan Belanda. Ia memimpin gerilya hingga gugur pada 1891. Ia dianugerahi gelar Pahlawan Nasional pada 1973."
+      },
+      {
+        name: "Sam Ratulangi",
+        story: "Sam Ratulangi, lahir di Tondano, Sulawesi Utara, pada 5 November 1890, adalah tokoh pendidikan dan nasionalis. Ia menjadi Gubernur Sulawesi pertama dan diasingkan Belanda. Ia wafat pada 30 Juni 1949 dan dianugerahi gelar Pahlawan Nasional pada 1961."
+      },
+      {
+        name: "Wahidin Soedirohoesodo",
+        story: "Wahidin Soedirohoesodo, lahir di Yogyakarta pada 7 Januari 1852, adalah pelopor kebangkitan nasional melalui pendidikan. Ia menginspirasi berdirinya Budi Utomo. Ia wafat pada 26 Mei 1917 dan dianugerahi gelar Pahlawan Nasional pada 1973."
+      },
+      {
+        name: "Sultan Thaha Syaifuddin",
+        story: "Sultan Thaha Syaifuddin, lahir di Jambi pada 1816, memimpin perlawanan melawan Belanda di Jambi pada 1858–1904. Ia gugur pada 1904 dan dianugerahi gelar Pahlawan Nasional pada 1977."
       }
     ];
 
@@ -270,6 +292,8 @@
       const [selectedHero, setSelectedHero] = useState(null);
       const [currentIndex, setCurrentIndex] = useState(0);
 
+      console.log('App rendering, heroes length:', heroes.length); // Debug log
+
       const handleCardClick = (hero, index) => {
         setSelectedHero(hero);
         setCurrentIndex(index);
@@ -300,7 +324,7 @@
             {heroes.length === 0 ? (
               <p className="text-center text-gray-600">Tidak ada data pahlawan.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 justify-items-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {heroes.map((hero, index) => (
                   <HeroCard key={hero.name} hero={hero} onClick={() => handleCardClick(hero, index)} />
                 ))}
