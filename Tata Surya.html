@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.2, maximum-scale=3.0, user-scalable=yes">
   <title>Tata Surya</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/256/8967/8967275.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
@@ -163,7 +163,6 @@
         satellites: ["Charon"],
         summary: "Pluto adalah planet kerdil di Sabuk Kuiper, jauh di tepi tata surya. Diameternya hanya sekitar 2.370 km, lebih kecil dari Bulan Bumi. Pluto memiliki permukaan es yang terdiri dari nitrogen, metana, dan karbon monoksida. Suhunya sangat dingin, sekitar -229°C. Pluto memiliki orbit eksentrik yang membawanya lebih dekat ke Matahari daripada Neptunus pada waktu tertentu. Charon, satelit terbesarnya, begitu besar sehingga Pluto dan Charon dianggap sebagai sistem biner."
       },
-      // Satellite-specific summaries
       {
         name: "Bulan",
         desc: "Satelit dari Bumi.",
@@ -228,8 +227,9 @@
 
     let currentBody = null;
     let zoomScale = 1; // Initial zoom scale
-    let zoomMin = 0.5; // Minimum zoom (50%)
+    let zoomMin = 0.2; // Minimum zoom (20%)
     let zoomMax = 3; // Maximum zoom (300%)
+    let lastTouchDistance = 0;
 
     function setup() {
       let canvas = createCanvas(windowWidth, windowHeight);
@@ -239,53 +239,67 @@
       noStroke();
     }
 
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
     function mouseWheel(event) {
-      // Adjust zoom scale based on mouse wheel
-      let zoomDelta = event.delta * -0.001; // Negative to match typical scroll direction
+      let zoomDelta = event.delta * -0.001;
       zoomScale += zoomDelta;
-      zoomScale = constrain(zoomScale, zoomMin, zoomMax); // Limit zoom range
-      return false; // Prevent default browser scrolling
+      zoomScale = constrain(zoomScale, zoomMin, zoomMax);
+      return false;
+    }
+
+    function touchStarted() {
+      if (touches.length === 2) {
+        lastTouchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+      }
+      return false;
+    }
+
+    function touchMoved() {
+      if (touches.length === 2) {
+        let currentTouchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+        let zoomDelta = (currentTouchDistance - lastTouchDistance) * 0.005;
+        zoomScale += zoomDelta;
+        zoomScale = constrain(zoomScale, zoomMin, zoomMax);
+        lastTouchDistance = currentTouchDistance;
+      }
+      return false;
     }
 
     function draw() {
       background(0, 0, 50);
-      // Apply zoom by translating to center and scaling
       translate(width / 2, height / 2);
       scale(zoomScale);
       translate(-width / 2, -height / 2);
-      // Draw Sun and planets
       celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
-        // Draw orbit path (except for Sun)
         if (body.orbit > 0) {
           noFill();
           stroke(255, 255, 255, 50);
           ellipse(width / 2, height / 2, body.orbit * 2, body.orbit * 2);
           noStroke();
         }
-        // Draw body
         fill(body.color);
         let x = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
         let y = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
         ellipse(x, y, body.size, body.size);
-        // Draw planet name below
-        fill(255); // White text
-        stroke(0); // Black outline for readability
-        strokeWeight(0.5 / zoomScale); // Adjust stroke weight for zoom
-        textSize(12 / zoomScale); // Scale text size inversely
+        fill(255);
+        stroke(0);
+        strokeWeight(max(0.3, 0.5 / zoomScale));
+        textSize(max(8, 12 / zoomScale));
         textFont('Comic Neue');
         text(body.name, x, y + body.size / 2 + 15 / zoomScale);
         noStroke();
-        // Draw satellites
         body.satellites.forEach((sat, i) => {
           fill("white");
           let sx = x + body.size * 1.5 * cos(frameCount / 20 + i * 2);
           let sy = y + body.size * 1.5 * sin(frameCount / 20 + i * 2);
           ellipse(sx, sy, body.size / 2, body.size / 2);
-          // Draw satellite name below
           fill(255);
           stroke(0);
-          strokeWeight(0.5 / zoomScale);
-          textSize(10 / zoomScale);
+          strokeWeight(max(0.3, 0.5 / zoomScale));
+          textSize(max(6, 10 / zoomScale));
           textFont('Comic Neue');
           text(sat, sx, sy + body.size / 4 + 12 / zoomScale);
           noStroke();
@@ -294,7 +308,6 @@
     }
 
     function mousePressed() {
-      // Adjust mouse coordinates for zoom
       let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
       let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
       celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
@@ -342,7 +355,6 @@
       document.getElementById("planet-card").classList.remove("hidden");
     });
 
-    // Custom font for kid-friendly look
     const style = document.createElement("style");
     style.textContent = `
       @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
@@ -350,9 +362,7 @@
     `;
     document.head.appendChild(style);
   </script>
-  <!-- AUDIO -->
   <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
-  <!-- SCRIPT UNTUK AUTOPLAY SETELAH KLIK -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       document.body.addEventListener('click', function () {
