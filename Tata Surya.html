@@ -18,6 +18,13 @@
       pointer-events: none;
       z-index: 1000;
     }
+    #planet-card, #popup {
+      z-index: 2000; /* Pastikan card dan popup di atas kanvas */
+    }
+    #summary-btn, #back-btn, #popup-back-btn {
+      touch-action: auto; /* Aktifkan sentuhan untuk tombol */
+      z-index: 2100; /* Pastikan tombol di atas elemen lain */
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-blue-900 to-purple-900 min-h-screen flex items-center justify-center overflow-hidden">
@@ -39,36 +46,36 @@
     </div>
   </div>
   <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
         }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
+      }
+      return gk_fileData[filename] || "";
+    }
   </script>
   <script>
     const celestialBodies = [
@@ -251,12 +258,10 @@
 
     function touchStarted() {
       if (touches.length === 1) {
-        // Handle single touch for clicking planets/satellites
         let adjustedTouchX = (touches[0].x - width / 2) / zoomScale + width / 2;
         let adjustedTouchY = (touches[0].y - height / 2) / zoomScale + height / 2;
         checkBodyClick(adjustedTouchX, adjustedTouchY);
       } else if (touches.length === 2) {
-        // Handle pinch-to-zoom
         lastTouchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
       }
       return false;
@@ -348,18 +353,28 @@
       });
     }
 
-    document.getElementById("summary-btn").addEventListener("click", () => {
+    // Fungsi untuk menangani tap/klik pada tombol
+    function handleButtonAction(buttonId, action) {
+      document.getElementById(buttonId).addEventListener('click', action);
+      document.getElementById(buttonId).addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Cegah perilaku default seperti scroll
+        action();
+      });
+    }
+
+    // Terapkan event listener untuk tombol
+    handleButtonAction("summary-btn", () => {
       document.getElementById("planet-card").classList.add("hidden");
       document.getElementById("popup").classList.remove("hidden");
     });
 
-    document.getElementById("back-btn").addEventListener("click", () => {
+    handleButtonAction("back-btn", () => {
       document.getElementById("planet-card").classList.add("hidden");
       document.getElementById("popup").classList.add("hidden");
       document.getElementById("solar-system").classList.remove("hidden");
     });
 
-    document.getElementById("popup-back-btn").addEventListener("click", () => {
+    handleButtonAction("popup-back-btn", () => {
       document.getElementById("popup").classList.add("hidden");
       document.getElementById("planet-card").classList.remove("hidden");
     });
