@@ -1,4 +1,12 @@
-<script type="text/javascript">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Cerita Nabi, Rasul, dan Sahabat</title>
+  <link rel="icon" type="image/png" href="https://png.pngtree.com/png-clipart/20210610/ourmid/pngtree-islamic-figure-png-image_3430436.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript">
         var gk_isXlsx = false;
         var gk_xlsxFileLookup = {};
         var gk_fileData = {};
@@ -37,13 +45,7 @@
         }
         return gk_fileData[filename] || "";
         }
-        </script><!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Cerita 25 Nabi dan Rasul</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  </script>
   <style>
     body {
       font-family: 'Comic Sans MS', sans-serif;
@@ -67,6 +69,16 @@
       z-index: 10;
       cursor: pointer;
     }
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 10px;
+      font-family: Arial, sans-serif;
+      pointer-events: none;
+      z-index: 1000;
+    }
     button:active {
       transform: scale(1.1);
       transition: transform 0.1s ease;
@@ -80,12 +92,14 @@
   <div class="container mx-auto">
     <!-- Initial Screen -->
     <div id="initial-screen" class="text-center">
-      <h1 class="text-5xl font-bold text-blue-800 mb-12">Cerita Nabi dan Rasul</h1>
+      <h1 class="text-5xl font-bold text-blue-800 mb-12">Cerita Nabi, Rasul, dan Sahabat</h1>
       <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-8">
         <button id="category-25" class="px-8 py-4 bg-blue-500 text-white text-2xl rounded-full hover:bg-blue-600 shadow-lg">25 Nabi dan Rasul</button>
         <button id="category-other" class="px-8 py-4 bg-green-500 text-white text-2xl rounded-full hover:bg-green-600 shadow-lg">Nabi Lainnya</button>
+        <button id="category-sahabat" class="px-8 py-4 bg-purple-500 text-white text-2xl rounded-full hover:bg-purple-600 shadow-lg">Sahabat Rasulullah</button>
       </div>
     </div>
+    <div class="watermark">By Mochamad Fuad Asyhary</div>
 
     <!-- Story List Screen -->
     <div id="story-list-screen" class="hidden">
@@ -348,6 +362,216 @@
         category: "Nabi Lainnya", 
         summary: "Raja adil yang melindungi kebaikan.",
         content: "Nabi Dzulqarnain adalah raja adil yang menjelajah dunia. Ia membangun tembok besar untuk melindungi sebuah kaum dari Yakjuj dan Makjuj. Ia selalu berdoa agar bisa berbuat baik. Pelajaran: Gunakan kekuatanmu untuk melindungi kebaikan!"
+      },
+      {
+        id: 35,
+        title: "Kisah Abu Bakar Ash-Shiddiq RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat terdekat Nabi Muhammad SAW, khalifah pertama.",
+        content: "Abu Bakar Ash-Shiddiq RA adalah sahabat terdekat Nabi Muhammad SAW dan khalifah pertama umat Islam. Ia dikenal sangat jujur dan setia. Ia menemani Nabi saat hijrah ke Madinah dan bersembunyi di Gua Tsur. Abu Bakar juga dikenal dermawan, menyumbangkan hartanya untuk Islam. Pelajaran: Jadilah setia dan dermawan seperti Abu Bakar!"
+      },
+      {
+        id: 36,
+        title: "Kisah Umar bin Khattab RA",
+        category: "Sahabat Rasulullah",
+        summary: "Khalifah kedua, dikenal tegas dan adil.",
+        content: "Umar bin Khattab RA adalah sahabat Nabi yang menjadi khalifah kedua. Awalnya ia menentang Islam, namun setelah masuk Islam, ia menjadi pembela agama yang kuat. Ia dikenal tegas, adil, dan peduli pada rakyat. Umar juga memperluas wilayah Islam dengan penuh kebijaksanaan. Pelajaran: Berubahlah menjadi lebih baik dan pimpin dengan adil!"
+      },
+      {
+        id: 37,
+        title: "Kisah Utsman bin Affan RA",
+        category: "Sahabat Rasulullah",
+        summary: "Khalifah ketiga, penyusun Al-Qur'an.",
+        content: "Utsman bin Affan RA adalah khalifah ketiga yang sangat lembut hati. Ia dikenal sebagai penyusun mushaf Al-Qur'an yang standar. Utsman sangat dermawan, pernah membeli sumur untuk umat Islam. Meski menghadapi fitnah, ia tetap sabar. Pelajaran: Berbuat baiklah dengan harta dan tetap sabar dalam cobaan!"
+      },
+      {
+        id: 38,
+        title: "Kisah Ali bin Abi Thalib RA",
+        category: "Sahabat Rasulullah",
+        summary: "Khalifah keempat, pemberani dan berilmu.",
+        content: "Ali bin Abi Thalib RA adalah sepupu dan menantu Nabi Muhammad SAW. Ia menjadi khalifah keempat dan dikenal pemberani serta berilmu tinggi. Ali ikut banyak pertempuran untuk membela Islam dan memimpin dengan keadilan. Pelajaran: Gunakan keberanian dan ilmu untuk kebaikan!"
+      },
+      {
+        id: 39,
+        title: "Kisah Thalhah bin Ubaidillah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Salah satu dari sepuluh sahabat yang dijamin masuk surga.",
+        content: "Thalhah bin Ubaidillah RA adalah sahabat Nabi yang termasuk sepuluh orang dijamin masuk surga. Ia dikenal pemberani, terutama dalam Perang Uhud, di mana ia melindungi Nabi dengan tubuhnya hingga terluka parah. Ia juga dermawan, menyedekahkan hartanya untuk Islam. Pelajaran: Beranilah membela kebenaran dan dermawanlah untuk kebaikan!"
+      },
+      {
+        id: 40,
+        title: "Kisah Zubair bin Awwam RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang termasuk sepuluh yang dijamin masuk surga.",
+        content: "Zubair bin Awwam RA adalah sahabat Nabi yang juga termasuk sepuluh orang dijamin masuk surga. Ia dikenal sebagai 'Hawari Rasulullah' karena keberaniannya dalam perang. Zubair selalu setia kepada Nabi dan Islam. Pelajaran: Jadilah pemberani dan setia pada kebenaran!"
+      },
+      {
+        id: 41,
+        title: "Kisah Abdurrahman bin Auf RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat kaya raya dan dermawan, dijamin masuk surga.",
+        content: "Abdurrahman bin Auf RA adalah sahabat yang kaya raya namun sangat dermawan. Ia termasuk sepuluh sahabat yang dijamin masuk surga. Ia menyumbangkan hartanya untuk kebutuhan umat, seperti membeli perlengkapan perang. Pelajaran: Gunakan harta untuk membantu sesama!"
+      },
+      {
+        id: 42,
+        title: "Kisah Sa'ad bin Abi Waqqash RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat dengan doa mustajab, dijamin masuk surga.",
+        content: "Sa’ad bin Abi Waqqash RA adalah sahabat yang terkenal dengan doanya yang mustajab. Ia termasuk sepuluh sahabat yang dijamin masuk surga. Sa’ad adalah pemanah ulung dan memimpin pasukan Islam dalam Perang Qadisiyah. Pelajaran: Berdoalah dengan tulus dan berjuanglah untuk Islam!"
+      },
+      {
+        id: 43,
+        title: "Kisah Sa'id bin Zaid RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang dijamin masuk surga.",
+        content: "Sa’id bin Zaid RA adalah sahabat yang termasuk sepuluh orang dijamin masuk surga. Ia dikenal sebagai pemberani dan setia kepada Islam. Sa’id ikut banyak pertempuran dan selalu taat pada ajaran Nabi. Pelajaran: Tetaplah setia dan berani dalam keimanan!"
+      },
+      {
+        id: 44,
+        title: "Kisah Abu Ubaidah bin Jarrah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang dipercaya sebagai amin umat.",
+        content: "Abu Ubaidah bin Jarrah RA adalah sahabat yang disebut Nabi sebagai 'amin umat ini'. Ia termasuk sepuluh sahabat yang dijamin masuk surga. Ia memimpin pasukan Islam dengan bijaksana dan rendah hati. Pelajaran: Jadilah orang yang dapat dipercaya dan rendah hati!"
+      },
+      {
+        id: 45,
+        title: "Kisah Abdullah bin Mas'ud RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang ahli dalam membaca Al-Qur'an.",
+        content: "Abdullah bin Mas’ud RA adalah sahabat yang ahli dalam membaca dan memahami Al-Qur’an. Ia sering membacakan Al-Qur’an di depan Nabi dan mengajarkannya kepada umat. Ia juga dikenal zuhud dan sederhana. Pelajaran: Pelajarilah Al-Qur’an dengan sungguh-sungguh!"
+      },
+      {
+        id: 46,
+        title: "Kisah Abu Dzar Al-Ghifari RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang zuhud dan berani.",
+        content: "Abu Dzar Al-Ghifari RA adalah sahabat yang sangat zuhud, hidup sederhana, dan berani menyampaikan kebenaran. Ia sering mengingatkan orang untuk tidak tamak pada harta dunia. Pelajaran: Hiduplah sederhana dan berani membela kebenaran!"
+      },
+      {
+        id: 47,
+        title: "Kisah Bilal bin Rabah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Muadzin pertama dalam Islam.",
+        content: "Bilal bin Rabah RA adalah sahabat yang menjadi muadzin pertama dalam Islam. Meski pernah disiksa karena keimanannya, ia tetap teguh. Suaranya yang merdu memanggil umat untuk salat. Pelajaran: Tetap teguh pada iman meski menghadapi cobaan!"
+      },
+      {
+        id: 48,
+        title: "Kisah Zaid bin Haritsah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang diangkat anak oleh Nabi.",
+        content: "Zaid bin Haritsah RA adalah sahabat yang sangat dicintai Nabi hingga diangkat sebagai anak. Ia setia kepada Nabi dan gugur sebagai syahid dalam Perang Mu’tah. Pelajaran: Cintailah dan setialah kepada Rasulullah!"
+      },
+      {
+        id: 49,
+        title: "Kisah Ja'far bin Abi Thalib RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang syahid dalam Perang Mu'tah.",
+        content: "Ja’far bin Abi Thalib RA adalah sepupu Nabi yang gugur syahid dalam Perang Mu’tah. Ia dikenal sebagai ‘Ja’far yang Terbang’ karena keberaniannya. Allah mengganti tangannya dengan sayap di surga. Pelajaran: Berjuanglah dengan penuh keberanian untuk Islam!"
+      },
+      {
+        id: 50,
+        title: "Kisah Abdullah bin Abbas RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang dikenal sebagai penafsir Al-Qur'an.",
+        content: "Abdullah bin Abbas RA adalah sepupu Nabi yang dikenal sebagai ‘penafsir Al-Qur’an’. Ia sangat berilmu dan sering menjelaskan makna ayat-ayat Al-Qur’an kepada umat. Pelajaran: Kejarlah ilmu dan gunakan untuk kebaikan umat!"
+      },
+      {
+        id: 51,
+        title: "Kisah Abdullah bin Umar RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang terkenal dengan ketaatannya.",
+        content: "Abdullah bin Umar RA adalah putra Umar bin Khattab yang terkenal sangat taat. Ia selalu mengikuti sunnah Nabi dalam setiap perbuatannya. Ia juga dikenal sebagai perawi hadis. Pelajaran: Ikutilah sunnah Nabi dengan penuh ketaatan!"
+      },
+      {
+        id: 52,
+        title: "Kisah Abdullah bin Amr bin Ash RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang meriwayatkan banyak hadis.",
+        content: "Abdullah bin Amr bin Ash RA adalah sahabat yang meriwayatkan banyak hadis Nabi. Ia dikenal rajin mencatat ajaran Nabi dan hidup dengan penuh keimanan. Pelajaran: Pelajarilah dan sebarkan ajaran Nabi dengan tekun!"
+      },
+      {
+        id: 53,
+        title: "Kisah Abu Hurairah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang paling banyak meriwayatkan hadis.",
+        content: "Abu Hurairah RA adalah sahabat yang paling banyak meriwayatkan hadis Nabi. Ia selalu berada di dekat Nabi untuk mempelajari ajarannya. Ia hidup sederhana dan penuh keimanan. Pelajaran: Pelajarilah ajaran Nabi dan sebarkan kebaikan!"
+      },
+      {
+        id: 54,
+        title: "Kisah Abu Thalhah Al-Anshari RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang menyedekahkan kebunnya untuk Islam.",
+        content: "Abu Thalhah Al-Anshari RA adalah sahabat yang memiliki kebun luas dan menyedekahkannya untuk perjuangan Islam. Ia dikenal sebagai pemanah ulung dan setia kepada Nabi. Pelajaran: Sedekahkanlah hartamu untuk kebaikan umat!"
+      },
+      {
+        id: 55,
+        title: "Kisah Abu Ayyub Al-Anshari RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang menjadi tamu Nabi saat hijrah.",
+        content: "Abu Ayyub Al-Anshari RA adalah sahabat yang menjamu Nabi saat hijrah ke Madinah. Ia sangat menghormati Nabi dan setia dalam perjuangan Islam. Ia juga ikut dalam banyak pertempuran. Pelajaran: Hormatilah tamu dan setialah pada Islam!"
+      },
+      {
+        id: 56,
+        title: "Kisah Hanzhalah bin Abi Amir RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang dijuluki orang yang dimandikan malaikat.",
+        content: "Hanzhalah bin Abi Amir RA adalah sahabat yang gugur syahid dalam Perang Uhud. Ia dijuluki ‘orang yang dimandikan malaikat’ karena malaikat memandikan jenazahnya. Ia berjuang dengan penuh keimanan. Pelajaran: Berjuanglah untuk Islam dengan tulus!"
+      },
+      {
+        id: 57,
+        title: "Kisah Usamah bin Zaid RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang menjadi panglima perang pada usia muda.",
+        content: "Usamah bin Zaid RA adalah putra Zaid bin Haritsah yang diangkat sebagai panglima perang oleh Nabi meski masih muda. Ia memimpin dengan keberanian dan keimanan. Pelajaran: Berani dan percayalah pada tanggung jawab yang diberikan!"
+      },
+      {
+        id: 58,
+        title: "Kisah Sa'ad bin Mu'adz RA",
+        category: "Sahabat Rasulullah",
+        summary: "Tokoh Anshar, pemimpin kabilah Aus.",
+        content: "Sa’ad bin Mu’adz RA adalah tokoh Anshar dan pemimpin kabilah Aus. Ia memeluk Islam dan menjadi pendukung setia Nabi. Ia juga memimpin dengan adil dalam Perang Khandaq. Pelajaran: Pimpinlah dengan keadilan dan dukunglah kebenaran!"
+      },
+      {
+        id: 59,
+        title: "Kisah Salman Al-Farisi RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat dari Persia yang mencari kebenaran.",
+        content: "Salman Al-Farisi RA adalah sahabat dari Persia yang mencari kebenaran hingga memeluk Islam. Ia memberikan ide menggali parit dalam Perang Khandaq dan sangat setia kepada Nabi. Pelajaran: Carilah kebenaran dan setialah pada Islam!"
+      },
+      {
+        id: 60,
+        title: "Kisah Hudzaifah bin Yaman RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang menyimpan rahasia nama-nama munafik.",
+        content: "Hudzaifah bin Yaman RA adalah sahabat yang dipercaya Nabi untuk menyimpan rahasia nama-nama orang munafik. Ia setia dan berani dalam pertempuran. Pelajaran: Jagalah kepercayaan dan beranilah untuk kebenaran!"
+      },
+      {
+        id: 61,
+        title: "Kisah Amr bin Ash RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat cerdas dengan strategi perang.",
+        content: "Amr bin Ash RA adalah sahabat yang cerdas dan ahli strategi perang. Ia memimpin penaklukan Mesir dan membantu menyebarkan Islam dengan kebijaksanaan. Pelajaran: Gunakan kecerdasanmu untuk kebaikan Islam!"
+      },
+      {
+        id: 62,
+        title: "Kisah Mu'adz bin Jabal RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang diutus mengajar agama di Yaman.",
+        content: "Mu’adz bin Jabal RA adalah sahabat yang diutus Nabi untuk mengajar agama di Yaman. Ia dikenal berilmu tinggi dan mengajarkan Al-Qur’an serta sunnah dengan penuh keimanan. Pelajaran: Sebarkan ilmu agama dengan ikhlas!"
+      },
+      {
+        id: 63,
+        title: "Kisah Abu Salamah RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang wafat karena luka perang.",
+        content: "Abu Salamah RA adalah sahabat yang hijrah ke Madinah bersama keluarganya. Ia ikut dalam Perang Uhud dan wafat karena luka perang. Ia dikenal setia kepada Nabi. Pelajaran: Berjuanglah untuk Islam meski harus berkorban!"
+      },
+      {
+        id: 64,
+        title: "Kisah Hassan bin Tsabit RA",
+        category: "Sahabat Rasulullah",
+        summary: "Sahabat yang dikenal sebagai penyair.",
+        content: "Hassan bin Tsabit RA adalah sahabat yang dikenal sebagai penyair Islam. Puisinya memuji Nabi dan membela Islam, membuat musuh gentar. Ia menggunakan bakatnya untuk kebaikan. Pelajaran: Gunakan bakatmu untuk membela Islam!"
       }
     ];
 
@@ -365,6 +589,7 @@
     const backToCategoriesBtn = document.getElementById('back-to-categories');
     const category25Btn = document.getElementById('category-25');
     const categoryOtherBtn = document.getElementById('category-other');
+    const categorySahabatBtn = document.getElementById('category-sahabat');
 
     let currentStories = stories;
     let currentStoryId = null;
@@ -436,6 +661,7 @@
     // Category button events
     category25Btn.addEventListener('click', () => displayStories('25 Nabi dan Rasul'));
     categoryOtherBtn.addEventListener('click', () => displayStories('Nabi Lainnya'));
+    categorySahabatBtn.addEventListener('click', () => displayStories('Sahabat Rasulullah'));
 
     // Mobile landscape orientation
     if (window.matchMedia("(max-width: 768px)").matches) {
