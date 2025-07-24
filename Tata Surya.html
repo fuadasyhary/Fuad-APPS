@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -46,9 +7,22 @@
   <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/256/8967/8967275.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: rgb(194, 194, 194);
+      font-size: 10px;
+      font-family: Arial, sans-serif;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
 </head>
 <body class="bg-gradient-to-b from-blue-900 to-purple-900 min-h-screen flex items-center justify-center overflow-hidden">
   <div id="solar-system" class="w-full h-screen flex items-center justify-center"></div>
+  <div class="watermark">By Mochamad Fuad Asyhary</div>
   <div id="planet-card" class="hidden fixed inset-0 bg-blue-800 bg-opacity-90 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all">
       <h2 id="planet-title" class="text-4xl font-bold text-center text-purple-600 mb-4"></h2>
@@ -64,8 +38,40 @@
       <button id="popup-back-btn" class="bg-red-400 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 w-full">Kembali</button>
     </div>
   </div>
+  <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+  </script>
   <script>
-    // Celestial bodies data including the Sun
+    // Celestial bodies data including the Sun and Pluto
     const celestialBodies = [
       {
         name: "Matahari",
@@ -148,6 +154,15 @@
         satellites: ["Triton"],
         summary: "Neptunus adalah planet terjauh dari Matahari, dengan warna biru tua karena metana di atmosfernya. Ini adalah raksasa es dengan angin tercepat di tata surya, mencapai 2.400 km/jam! Neptunus memiliki 14 bulan, dengan Triton sebagai yang terbesar, yang mungkin memiliki lautan di bawah permukaan esnya. Satu hari di Neptunus adalah 16 jam, tapi satu tahunnya adalah 165 tahun Bumi. Planet ini ditemukan karena perhitungan matematis sebelum teleskop melihatnya!"
       },
+      {
+        name: "Pluto",
+        size: 15,
+        color: "lightgray",
+        orbit: 500,
+        desc: "Pluto adalah planet kerdil di tepi tata surya, kecil namun menarik!",
+        satellites: ["Charon"],
+        summary: "Pluto adalah planet kerdil di Sabuk Kuiper, jauh di tepi tata surya. Diameternya hanya sekitar 2.370 km, lebih kecil dari Bulan Bumi. Pluto memiliki permukaan es yang terdiri dari nitrogen, metana, dan karbon monoksida. Suhunya sangat dingin, sekitar -229°C. Pluto memiliki orbit eksentrik yang membawanya lebih dekat ke Matahari daripada Neptunus pada waktu tertentu. Charon, satelit terbesarnya, begitu besar sehingga Pluto dan Charon dianggap sebagai sistem biner."
+      },
       // Satellite-specific summaries
       {
         name: "Bulan",
@@ -203,10 +218,18 @@
         name: "Triton",
         desc: "Satelit dari Neptunus.",
         summary: "Triton adalah bulan terbesar Neptunus dan sangat unik karena mengorbit berlawanan arah dengan rotasi Neptunus. Permukaannya sangat dingin, sekitar -235°C, dan memiliki geyser yang menyemburkan nitrogen. Triton mungkin dulunya adalah objek dari Sabuk Kuiper yang ditangkap Neptunus."
+      },
+      {
+        name: "Charon",
+        desc: "Satelit dari Pluto.",
+        summary: "Charon adalah satelit terbesar Pluto, dengan diameter sekitar setengah ukuran Pluto, menjadikannya sistem biner dengan Pluto. Permukaannya terdiri dari es air dan memiliki ngarai besar serta kawah. Charon sangat unik karena Pluto dan Charon saling terkunci secara gravitasi, selalu menunjukkan sisi yang sama satu sama lain."
       }
     ];
 
     let currentBody = null;
+    let zoomScale = 1; // Initial zoom scale
+    let zoomMin = 0.5; // Minimum zoom (50%)
+    let zoomMax = 3; // Maximum zoom (300%)
 
     function setup() {
       let canvas = createCanvas(windowWidth, windowHeight);
@@ -216,8 +239,20 @@
       noStroke();
     }
 
+    function mouseWheel(event) {
+      // Adjust zoom scale based on mouse wheel
+      let zoomDelta = event.delta * -0.001; // Negative to match typical scroll direction
+      zoomScale += zoomDelta;
+      zoomScale = constrain(zoomScale, zoomMin, zoomMax); // Limit zoom range
+      return false; // Prevent default browser scrolling
+    }
+
     function draw() {
       background(0, 0, 50);
+      // Apply zoom by translating to center and scaling
+      translate(width / 2, height / 2);
+      scale(zoomScale);
+      translate(-width / 2, -height / 2);
       // Draw Sun and planets
       celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
         // Draw orbit path (except for Sun)
@@ -232,21 +267,40 @@
         let x = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
         let y = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
         ellipse(x, y, body.size, body.size);
+        // Draw planet name below
+        fill(255); // White text
+        stroke(0); // Black outline for readability
+        strokeWeight(0.5 / zoomScale); // Adjust stroke weight for zoom
+        textSize(12 / zoomScale); // Scale text size inversely
+        textFont('Comic Neue');
+        text(body.name, x, y + body.size / 2 + 15 / zoomScale);
+        noStroke();
         // Draw satellites
         body.satellites.forEach((sat, i) => {
           fill("white");
           let sx = x + body.size * 1.5 * cos(frameCount / 20 + i * 2);
           let sy = y + body.size * 1.5 * sin(frameCount / 20 + i * 2);
           ellipse(sx, sy, body.size / 2, body.size / 2);
+          // Draw satellite name below
+          fill(255);
+          stroke(0);
+          strokeWeight(0.5 / zoomScale);
+          textSize(10 / zoomScale);
+          textFont('Comic Neue');
+          text(sat, sx, sy + body.size / 4 + 12 / zoomScale);
+          noStroke();
         });
       });
     }
 
     function mousePressed() {
+      // Adjust mouse coordinates for zoom
+      let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
+      let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
       celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
         let x = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
         let y = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
-        if (dist(mouseX, mouseY, x, y) < body.size / 2) {
+        if (dist(adjustedMouseX, adjustedMouseY, x, y) < body.size / 2) {
           currentBody = body;
           document.getElementById("solar-system").classList.add("hidden");
           document.getElementById("planet-card").classList.remove("hidden");
@@ -258,7 +312,7 @@
         body.satellites.forEach((sat, i) => {
           let sx = x + body.size * 1.5 * cos(frameCount / 20 + i * 2);
           let sy = y + body.size * 1.5 * sin(frameCount / 20 + i * 2);
-          if (dist(mouseX, mouseY, sx, sy) < body.size / 4) {
+          if (dist(adjustedMouseX, adjustedMouseY, sx, sy) < body.size / 4) {
             const satellite = celestialBodies.find(p => p.name === sat);
             currentBody = satellite;
             document.getElementById("solar-system").classList.add("hidden");
