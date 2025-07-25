@@ -381,21 +381,6 @@
 
       // Coba putar audio langsung saat halaman dimuat
       tryPlayAudio();
-
-      // Tambahkan event listener untuk interaksi pengguna
-      ['click', 'touchstart'].forEach(eventType => {
-        document.body.addEventListener(eventType, function () {
-          if (audio.paused) {
-            tryPlayAudio();
-          }
-        }, { once: true });
-      });
-
-      // Tangani jika audio gagal dimuat
-      audio.addEventListener('error', (err) => {
-        console.error('Error memuat audio:', err);
-        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
-      });
     });
   </script>
 </body>
