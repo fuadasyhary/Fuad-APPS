@@ -173,10 +173,14 @@
       border-radius: 20px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       text-align: center;
-      position: relative;
-      z-index: 1;
+      position: absolute;
+      z-index: 50;
       max-width: 90%;
       box-sizing: border-box;
+      display: none; /* Sembunyikan menu sampai CAPTCHA selesai */
+    }
+    .menu.show {
+      display: block;
     }
     .menu h1 {
       font-size: 36px;
@@ -185,7 +189,7 @@
     }
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Ubah menjadi dua kolom */
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
     }
     .menu button {
@@ -204,7 +208,7 @@
       bottom: 10px;
       right: 10px;
       color: rgba(0, 0, 0, 0.3);
-      font-size: 10px;
+      font-size: 12px;
       font-family: Arial, sans-serif;
       pointer-events: none;
       z-index: 1000;
@@ -221,6 +225,71 @@
     .menu button:hover {
       filter: brightness(1.1);
     }
+    /* CAPTCHA Styles */
+    .captcha-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .captcha-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 80%;
+      position: relative;
+    }
+    .captcha-container h2 {
+      color: #ff4081;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    .captcha-container p {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .captcha-area {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .captcha-icon {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('https://w7.pngwing.com/pngs/601/824/png-transparent-star-system-film-star.png') no-repeat center;
+      background-size: contain;
+      cursor: pointer;
+    }
+    .captcha-status {
+      margin-top: 15px;
+      color: #333;
+      font-size: 16px;
+    }
+    .captcha-reset {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+    .captcha-reset:hover {
+      background: #e91e63;
+    }
     /* Responsif untuk mobile */
     @media (max-width: 768px) {
       .menu {
@@ -230,17 +299,28 @@
         font-size: 28px;
       }
       .menu-grid {
-        grid-template-columns: repeat(2, 1fr); /* Tetap dua kolom di mobile */
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
       }
       .menu button {
         font-size: 14px;
         padding: 10px;
       }
+      .captcha-container h2 {
+        font-size: 20px;
+      }
+      .captcha-area {
+        width: 250px;
+        height: 150px;
+      }
+      .captcha-icon {
+        width: 25px;
+        height: 25px;
+      }
     }
     @media (max-width: 480px) {
       .menu-grid {
-        grid-template-columns: repeat(2, 1fr); /* Tetap dua kolom di mobile kecil */
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
       }
       .menu button {
@@ -249,6 +329,17 @@
       }
       .menu h1 {
         font-size: 24px;
+      }
+      .captcha-container h2 {
+        font-size: 18px;
+      }
+      .captcha-area {
+        width: 200px;
+        height: 120px;
+      }
+      .captcha-icon {
+        width: 20px;
+        height: 20px;
       }
     }
   </style>
@@ -265,7 +356,18 @@
     <span></span>
     <span></span>
   </div>
-  <div class="menu">
+  <!-- CAPTCHA Overlay -->
+  <div class="captcha-overlay" id="captchaOverlay">
+    <div class="captcha-container">
+      <h2>Verifikasi CAPTCHA</h2>
+      <p>Human Atau Robot</p>
+      <div class="captcha-area" id="captchaArea"></div>
+      <div class="captcha-status" id="captchaStatus">Klik 3 bintang</div>
+      <button class="captcha-reset" id="captchaReset">Coba Lagi</button>
+    </div>
+  </div>
+  <!-- Menu -->
+  <div class="menu" id="mainMenu">
     <h1>Zona Edukasi Anak</h1>
     <div class="menu-grid">
       <button class="btn-iq" onclick="window.location.href='Test IQ.html'">Tes IQ Online</button>
@@ -282,15 +384,68 @@
   <div class="watermark">By Mochamad Fuad Asyhary</div>
   <!-- AUDIO -->
   <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
-  <!-- SCRIPT UNTUK AUTOPLAY SETELAH KLIK -->
+  <!-- SCRIPT UNTUK CAPTCHA DAN AUTOPLAY AUDIO -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // Audio Autoplay
       document.body.addEventListener('click', function () {
         var audio = document.getElementById('bg-audio');
         audio.play().catch(err => {
           console.log('Autoplay diblokir:', err);
         });
       }, { once: true });
+
+      // CAPTCHA Logic
+      const captchaOverlay = document.getElementById('captchaOverlay');
+      const captchaArea = document.getElementById('captchaArea');
+      const captchaStatus = document.getElementById('captchaStatus');
+      const captchaReset = document.getElementById('captchaReset');
+      const mainMenu = document.getElementById('mainMenu');
+      let clickCount = 0;
+      const requiredClicks = 3;
+
+      function generateCaptcha() {
+        captchaArea.innerHTML = '';
+        clickCount = 0;
+        captchaStatus.textContent = `Klik ${requiredClicks} bintang untuk verifikasi manusia`;
+        captchaReset.style.display = 'none';
+
+        // Generate 5 random stars
+        for (let i = 0; i < 5; i++) {
+          const icon = document.createElement('div');
+          icon.className = 'captcha-icon';
+          icon.style.left = `${Math.random() * (captchaArea.offsetWidth - 30)}px`;
+          icon.style.top = `${Math.random() * (captchaArea.offsetHeight - 30)}px`;
+          icon.addEventListener('click', handleIconClick);
+          captchaArea.appendChild(icon);
+        }
+
+        // Add click handler for wrong clicks
+        captchaArea.addEventListener('click', handleWrongClick);
+      }
+
+      function handleIconClick(e) {
+        e.stopPropagation();
+        clickCount++;
+        e.target.style.display = 'none';
+        captchaStatus.textContent = `Klik ${requiredClicks - clickCount} bintang lagi untuk verifikasi manusia`;
+
+        if (clickCount >= requiredClicks) {
+          captchaOverlay.style.display = 'none';
+          mainMenu.style.display = 'block';
+          captchaArea.removeEventListener('click', handleWrongClick);
+        }
+      }
+
+      function handleWrongClick() {
+        captchaStatus.textContent = 'Klik gagal! Coba lagi.';
+        captchaReset.style.display = 'block';
+      }
+
+      captchaReset.addEventListener('click', generateCaptcha);
+
+      // Initialize CAPTCHA
+      generateCaptcha();
     });
   </script>
 </body>
