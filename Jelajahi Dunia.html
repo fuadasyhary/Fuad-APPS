@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -68,16 +29,6 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-    }
-    .watermark {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      color: rgba(0, 0, 0, 0.3);
-      font-size: 12px;
-      font-family: Arial, sans-serif;
-      pointer-events: none;
-      z-index: 1000;
     }
     .card {
       background-color: white;
@@ -119,19 +70,30 @@
       cursor: pointer;
       margin: 10px;
     }
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      pointer-events: none;
+      z-index: 1000;
+    }
     .back-btn:hover {
       background-color: #1565c0;
     }
-    @media (max-width: 640px) {
+    /* Mobile view: two cards per row */
+    @media (max-width: 768px) {
       .card {
-        padding: 0.5rem;
-        font-size: 0.9rem;
+        width: calc(50% - 20px); /* Two cards per row with 10px margin on each side */
+        padding: 10px;
       }
-      .card h2 {
-        font-size: 1.1rem;
+      .card h2, .card h3 {
+        font-size: 1.2em; /* Slightly smaller headings for mobile */
       }
       .card p {
-        font-size: 0.8rem;
+        font-size: 0.85em; /* Slightly smaller text for mobile */
       }
     }
   </style>
@@ -139,7 +101,7 @@
 <body>
   <h1 id="main-title">Jelajahi Dunia!</h1>
   <button class="back-btn" style="display: none;" onclick="goBack()">Kembali</button>
-  <div class="container" id="content" grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6></div>
+  <div class="container" id="content"></div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
 
   <script>
@@ -2270,6 +2232,44 @@
     }
 
     renderContent();
+
+      // Audio autoplay logic
+      const audio = document.getElementById('bg-audio');
+
+      // Fungsi untuk mencoba memutar audio
+      function tryPlayAudio() {
+        audio.play().then(() => {
+          console.log('Audio berhasil diputar');
+        }).catch(err => {
+          console.error('Gagal memutar audio:', err);
+        });
+      }
+
+      // Coba putar audio langsung saat halaman dimuat
+      tryPlayAudio();
+
+      // Tambahkan event listener untuk interaksi pengguna
+      ['click', 'touchstart'].forEach(eventType => {
+        document.body.addEventListener(eventType, function () {
+          if (audio.paused) {
+            tryPlayAudio();
+          }
+        }, { once: true });
+      });
+
+      // Tangani jika audio gagal dimuat
+      audio.addEventListener('error', (err) => {
+        console.error('Error memuat audio:', err);
+        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
+      });
+
+      // Tambahkan font Comic Neue
+      const style = document.createElement("style");
+      style.textContent = `
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
+        .font-comic { font-family: 'Comic Neue', cursive; }
+      `;
+      document.head.appendChild(style);
   </script>
 </body>
 </html>
