@@ -24,7 +24,7 @@
   <div id="solar-system" class="w-full h-screen flex items-center justify-center"></div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
   <div id="planet-card" class="hidden fixed inset-0 bg-blue-800 bg-opacity-90 flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all">
+    <sădiv class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl transform transition-all">
       <h2 id="planet-title" class="text-4xl font-bold text-center text-purple-600 mb-4"></h2>
       <p id="planet-desc" class="text-lg text-gray-700 mb-6 font-comic"></p>
       <button id="summary-btn" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-3 px-6 rounded-full transition duration-300">Lihat Ringkasan!</button>
@@ -180,7 +180,7 @@
       {
         name: "Deimos",
         desc: "Satelit dari Mars.",
-        summary: "Deimos adalah bulan Mars yang lebih kecil dari Phobos, juga berbentuk tidak beraturan. Permukaannya lebih halus karena tertutup debu. Deimos mengorbit Mars lebih jauh dan lambat dibandingkan Phobos. Namanya berarti 'ketakutan' dalam mitologi Yunani."
+        summary: "Deimos adalah bulan Mars yang lebih kecil dari Phobos, juga berbentuk tidak beraturan. Permukaannya lebih halus karena tertutup debu. Deimos mengorbit Mars lebih jauh dan lambat dibandingkan Phobos. Namanya berarti 'ket comprobada dalam mitologi Yunani."
       },
       {
         name: "Ganymede",
@@ -353,31 +353,38 @@
       });
     }
 
-    document.getElementById("summary-btn").addEventListener("click", () => {
-      document.getElementById("planet-card").classList.add("hidden");
-      document.getElementById("popup").classList.remove("hidden");
-    });
-
-    document.getElementById("back-btn").addEventListener("click", () => {
-      document.getElementById("planet-card").classList.add("hidden");
-      document.getElementById("popup").classList.add("hidden");
-      document.getElementById("solar-system").classList.remove("hidden");
-    });
-
-    document.getElementById("popup-back-btn").addEventListener("click", () => {
-      document.getElementById("popup").classList.add("hidden");
-      document.getElementById("planet-card").classList.remove("hidden");
-    });
-
-    const style = document.createElement("style");
-    style.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
-      .font-comic { font-family: 'Comic Neue', cursive; }
-    `;
-    document.head.appendChild(style);
-
-    // Audio autoplay logic
     document.addEventListener('DOMContentLoaded', function () {
+      const summaryBtn = document.getElementById("summary-btn");
+      const backBtn = document.getElementById("back-btn");
+      const popupBackBtn = document.getElementById("popup-back-btn");
+
+      // Fungsi untuk menangani tombol Lihat Ringkasan
+      function handleSummaryClick() {
+        document.getElementById("planet-card").classList.add("hidden");
+        document.getElementById("popup").classList.remove("hidden");
+      }
+
+      // Fungsi untuk menangani tombol Kembali ke Tata Surya
+      function handleBackClick() {
+        document.getElementById("planet-card").classList.add("hidden");
+        document.getElementById("popup").classList.add("hidden");
+        document.getElementById("solar-system").classList.remove("hidden");
+      }
+
+      // Fungsi untuk menangani tombol Kembali dari popup
+      function handlePopupBackClick() {
+        document.getElementById("popup").classList.add("hidden");
+        document.getElementById("planet-card").classList.remove("hidden");
+      }
+
+      // Tambahkan event listener untuk click dan touchstart
+      ['click', 'touchstart'].forEach(eventType => {
+        summaryBtn.addEventListener(eventType, handleSummaryClick);
+        backBtn.addEventListener(eventType, handleBackClick);
+        popupBackBtn.addEventListener(eventType, handlePopupBackClick);
+      });
+
+      // Audio autoplay logic
       const audio = document.getElementById('bg-audio');
 
       // Fungsi untuk mencoba memutar audio
@@ -406,6 +413,14 @@
         console.error('Error memuat audio:', err);
         alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
       });
+
+      // Tambahkan font Comic Neue
+      const style = document.createElement("style");
+      style.textContent = `
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
+        .font-comic { font-family: 'Comic Neue', cursive; }
+      `;
+      document.head.appendChild(style);
     });
   </script>
 </body>
