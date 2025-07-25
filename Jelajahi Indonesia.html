@@ -70,6 +70,18 @@
       transform: scale(1.05);
       transition: transform 0.3s ease;
     }
+    @media (max-width: 640px) {
+      .card {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .card h2 {
+        font-size: 1.1rem;
+      }
+      .card p {
+        font-size: 0.8rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -977,7 +989,7 @@
               <h2 className="text-2xl font-semibold text-center text-green-600 mt-6">
                 Pilih Provinsi
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {dataIndonesia.provinsi.map((prov) => (
                   <Card
                     key={prov.nama}
@@ -1003,7 +1015,7 @@
               <h2 className="text-2xl font-semibold text-center text-green-600 mt-6">
                 Kota di {selectedProvinsi.nama}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {selectedProvinsi.kota.length > 0 ? (
                   selectedProvinsi.kota.map((kota) => (
                     <Card
