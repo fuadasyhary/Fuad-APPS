@@ -1,0 +1,2251 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jelajahi Dunia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0f7fa;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #1e88e5;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #d81b60;
+      font-size: 2em;
+      margin: 20px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin: 10px;
+      padding: 15px;
+      width: 300px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      background-color: #fff176;
+    }
+    .card h2, .card h3, .card h4 {
+      margin: 10px 0;
+      color: #d81b60;
+    }
+    .card p {
+      color: #424242;
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+    .card .summary {
+      font-style: italic;
+      color: #0288d1;
+      margin-top: 5px;
+    }
+    .attraction-details p {
+      margin: 5px 0;
+    }
+    .back-btn {
+      background-color: #1e88e5;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .back-btn:hover {
+      background-color: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="main-title">Jelajahi Dunia!</h1>
+  <button class="back-btn" style="display: none;" onclick="goBack()">Kembali</button>
+  <div class="container" id="content"></div>
+
+  <script>
+    const data = {
+      continents: [
+        {
+          name: "Asia",
+          summary: "Benua terbesar dengan lebih dari 50 negara, penuh budaya dan gunung tertinggi!",
+          countries: [
+            {
+              name: "Afghanistan",
+              summary: "Ibu kota: Kabul. Negara pegunungan dengan sejarah kuno.",
+              attractions: [
+                {
+                  name: "Masjid Biru Mazar-i-Sharif",
+                  details: "Masjid indah di Mazar-i-Sharif, terkenal dengan ubin birunya yang memukau. Tempat suci yang penuh sejarah Islam."
+                }
+              ]
+            },
+            {
+              name: "Arab Saudi",
+              summary: "Ibu kota: Riyadh. Negara dengan kota suci Mekah dan Madinah.",
+              attractions: [
+                {
+                  name: "Masjidil Haram",
+                  details: "Masjid terbesar di dunia di Mekah, pusat ibadah umat Islam dengan Ka'bah di tengahnya. Tempat ziarah yang sangat penting."
+                }
+              ]
+            },
+            {
+              name: "Armenia",
+              summary: "Ibu kota: Yerevan. Negara dengan gereja kuno dan pegunungan.",
+              attractions: [
+                {
+                  name: "Katedral Etchmiadzin",
+                  details: "Katedral tertua di dunia di Yerevan, dibangun pada tahun 301. Pusat agama Armenia yang penuh sejarah."
+                }
+              ]
+            },
+            {
+              name: "Azerbaijan",
+              summary: "Ibu kota: Baku. Negara di persimpangan Eropa dan Asia.",
+              attractions: [
+                {
+                  name: "Kota Tua Baku",
+                  details: "Kawasan bersejarah di Baku dengan Istana Shirvanshah dan Menara Maiden. Situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Bahrain",
+              summary: "Ibu kota: Manama. Negara pulau kecil dengan budaya maritim.",
+              attractions: [
+                {
+                  name: "Benteng Bahrain",
+                  details: "Situs arkeologi di Manama, menunjukkan sejarah 4.000 tahun. Dekat dengan pohon kehidupan yang misterius."
+                }
+              ]
+            },
+            {
+              name: "Bangladesh",
+              summary: "Ibu kota: Dhaka. Negara dengan sungai dan delta besar.",
+              attractions: [
+                {
+                  name: "Sundarbans",
+                  details: "Hutan mangrove terbesar di dunia, rumah bagi harimau Bengal. Kamu bisa naik perahu untuk melihat satwa liar."
+                }
+              ]
+            },
+            {
+              name: "Bhutan",
+              summary: "Ibu kota: Thimphu. Negara Himalaya dengan budaya damai.",
+              attractions: [
+                {
+                  name: "Paro Taktsang",
+                  details: "Biara suci di Lembah Paro, terletak di tebing pada ketinggian 3.120 meter. Disebut Sarang Harimau."
+                }
+              ]
+            },
+            {
+              name: "Brunei",
+              summary: "Ibu kota: Bandar Seri Begawan. Negara kecil kaya dengan masjid megah.",
+              attractions: [
+                {
+                  name: "Masjid Omar Ali Saifuddien",
+                  details: "Masjid megah di Bandar Seri Begawan dengan kubah emas. Terletak di tepi laguna yang indah."
+                }
+              ]
+            },
+            {
+              name: "India",
+              summary: "Ibu kota: New Delhi. Negara penuh warna dengan festival dan sejarah.",
+              attractions: [
+                {
+                  name: "Taj Mahal",
+                  details: "Makam megah di Agra, dibangun oleh Kaisar Shah Jahan untuk istrinya Mumtaz. Terbuat dari marmer putih, terlihat indah saat matahari terbit."
+                },
+                {
+                  name: "Kota Jaipur",
+                  details: "Kota merah muda di Rajasthan, terkenal dengan benteng Amber dan istana Hawa Mahal. Pasar yang penuh warna."
+                }
+              ]
+            },
+            {
+              name: "Indonesia",
+              summary: "Ibu kota: Jakarta. Negara kepulauan dengan ribuan pulau indah.",
+              attractions: [
+                {
+                  name: "Candi Borobudur",
+                  details: "Candi Buddha terbesar di dunia, terletak di Magelang, Jawa Tengah. Dibangun abad ke-9 dengan ribuan relief."
+                },
+                {
+                  name: "Pantai Kuta",
+                  details: "Pantai populer di Bali, terkenal dengan ombaknya yang cocok untuk berselancar. Dekat dengan kafe dan pasar."
+                }
+              ]
+            },
+            {
+              name: "Irak",
+              summary: "Ibu kota: Baghdad. Negara dengan sejarah Mesopotamia kuno.",
+              attractions: [
+                {
+                  name: "Ziggurat Ur",
+                  details: "Struktur kuno di selatan Irak, dibangun 4.000 tahun lalu. Menunjukkan kehebatan peradaban Sumeria."
+                }
+              ]
+            },
+            {
+              name: "Iran",
+              summary: "Ibu kota: Teheran. Negara dengan istana dan kebun Persia.",
+              attractions: [
+                {
+                  name: "Persepolis",
+                  details: "Kota kuno di Fars, ibu kota Kekaisaran Persia. Penuh dengan pilar dan relief bersejarah."
+                }
+              ]
+            },
+            {
+              name: "Israel",
+              summary: "Ibu kota: Yerusalem. Negara dengan situs suci tiga agama.",
+              attractions: [
+                {
+                  name: "Kota Tua Yerusalem",
+                  details: "Kawasan bersejarah dengan Tembok Ratapan, Masjid Al-Aqsa, dan Gereja Makam Suci. Pusat spiritual dunia."
+                }
+              ]
+            },
+            {
+              name: "Jepang",
+              summary: "Ibu kota: Tokyo. Negara dengan teknologi dan bunga sakura.",
+              attractions: [
+                {
+                  name: "Gunung Fuji",
+                  details: "Gunung tertinggi di Jepang (3.776 m), terletak di Shizuoka dan Yamanashi. Indah untuk pendakian di musim panas."
+                },
+                {
+                  name: "Tokyo Disneyland",
+                  details: "Taman hiburan di Chiba, dekat Tokyo, dengan wahana seru dan parade karakter Disney."
+                }
+              ]
+            },
+            {
+              name: "Kazakhstan",
+              summary: "Ibu kota: Astana. Negara stepa dengan arsitektur modern.",
+              attractions: [
+                {
+                  name: "Baiterek Tower",
+                  details: "Menara ikonik di Astana, simbol kemajuan Kazakhstan. Kamu bisa naik ke puncak untuk melihat kota."
+                }
+              ]
+            },
+            {
+              name: "Kirgistan",
+              summary: "Ibu kota: Bishkek. Negara pegunungan dengan budaya nomaden.",
+              attractions: [
+                {
+                  name: "Danau Issyk-Kul",
+                  details: "Danau alpine terbesar kedua di dunia, dikelilingi pegunungan. Cocok untuk berenang dan berkemah."
+                }
+              ]
+            },
+            {
+              name: "Korea Selatan",
+              summary: "Ibu kota: Seoul. Negara dengan K-pop dan teknologi canggih.",
+              attractions: [
+                {
+                  name: "Istana Gyeongbokgung",
+                  details: "Istana bersejarah di Seoul, dibangun pada abad ke-14. Kamu bisa melihat upacara pergantian penjaga."
+                }
+              ]
+            },
+            {
+              name: "Korea Utara",
+              summary: "Ibu kota: Pyongyang. Negara dengan monumen besar dan sejarah unik.",
+              attractions: [
+                {
+                  name: "Menara Juche",
+                  details: "Monumen di Pyongyang, simbol ideologi Juche. Kamu bisa naik untuk melihat pemandangan kota."
+                }
+              ]
+            },
+            {
+              name: "Kuwait",
+              summary: "Ibu kota: Kota Kuwait. Negara kaya dengan menara modern.",
+              attractions: [
+                {
+                  name: "Kuwait Towers",
+                  details: "Tiga menara ikonik di Kota Kuwait, dengan pemandangan Teluk Persia. Ada restoran di puncak!"
+                }
+              ]
+            },
+            {
+              name: "Laos",
+              summary: "Ibu kota: Vientiane. Negara dengan kuil Buddha dan sungai.",
+              attractions: [
+                {
+                  name: "Pha That Luang",
+                  details: "Stupa emas di Vientiane, simbol nasional Laos. Tempat suci yang penuh kedamaian."
+                }
+              ]
+            },
+            {
+              name: "Libanon",
+              summary: "Ibu kota: Beirut. Negara dengan pantai dan situs kuno.",
+              attractions: [
+                {
+                  name: "Baalbek",
+                  details: "Kota kuno di Lembah Bekaa dengan kuil Romawi megah. Situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Maladewa",
+              summary: "Ibu kota: Male. Negara kepulauan dengan pantai tropis.",
+              attractions: [
+                {
+                  name: "Atol Maladewa",
+                  details: "Kumpulan pulau dengan laguna biru dan terumbu karang. Cocok untuk snorkeling dan berenang."
+                }
+              ]
+            },
+            {
+              name: "Malaysia",
+              summary: "Ibu kota: Kuala Lumpur. Negara dengan menara kembar dan hutan.",
+              attractions: [
+                {
+                  name: "Menara Kembar Petronas",
+                  details: "Menara kembar tertinggi di dunia di Kuala Lumpur. Ada jembatan langit untuk melihat kota."
+                }
+              ]
+            },
+            {
+              name: "Mongolia",
+              summary: "Ibu kota: Ulan Bator. Negara stepa dengan budaya nomaden.",
+              attractions: [
+                {
+                  name: "Taman Nasional Gorkhi-Terelj",
+                  details: "Taman dekat Ulan Bator dengan batu besar dan yurt tradisional. Cocok untuk berkemah."
+                }
+              ]
+            },
+            {
+              name: "Myanmar",
+              summary: "Ibu kota: Nay Pyi Taw. Negara dengan pagoda emas.",
+              attractions: [
+                {
+                  name: "Pagoda Shwedagon",
+                  details: "Pagoda emas di Yangon, situs suci Buddha dengan stupa setinggi 99 meter."
+                }
+              ]
+            },
+            {
+              name: "Nepal",
+              summary: "Ibu kota: Kathmandu. Negara Himalaya dengan kuil kuno.",
+              attractions: [
+                {
+                  name: "Puncak Everest",
+                  details: "Gunung tertinggi di dunia (8.848 m) di Himalaya. Cocok untuk melihat pemandangan megah."
+                }
+              ]
+            },
+            {
+              name: "Oman",
+              summary: "Ibu kota: Muskat. Negara dengan benteng dan gurun.",
+              attractions: [
+                {
+                  name: "Masjid Sultan Qaboos",
+                  details: "Masjid megah di Muskat dengan karpet raksasa dan lampu kristal besar."
+                }
+              ]
+            },
+            {
+              name: "Pakistan",
+              summary: "Ibu kota: Islamabad. Negara dengan pegunungan dan sejarah.",
+              attractions: [
+                {
+                  name: "Lahore Fort",
+                  details: "Benteng bersejarah di Lahore dengan arsitektur Mughal yang megah."
+                }
+              ]
+            },
+            {
+              name: "Qatar",
+              summary: "Ibu kota: Doha. Negara dengan kota modern dan budaya Arab.",
+              attractions: [
+                {
+                  name: "Museum of Islamic Art",
+                  details: "Museum di Doha dengan koleksi seni Islam dari seluruh dunia. Desainnya sangat unik!"
+                }
+              ]
+            },
+            {
+              name: "Singapura",
+              summary: "Ibu kota: Singapura. Kota-negara dengan taman dan teknologi.",
+              attractions: [
+                {
+                  name: "Gardens by the Bay",
+                  details: "Taman futuristik di Singapura dengan pohon super besar dan pertunjukan cahaya."
+                }
+              ]
+            },
+            {
+              name: "Sri Lanka",
+              summary: "Ibu kota: Kolombo. Negara dengan pantai dan kuil Buddha.",
+              attractions: [
+                {
+                  name: "Sigiriya",
+                  details: "Benteng batu di Dambulla, dibangun pada abad ke-5 dengan pemandangan luar biasa."
+                }
+              ]
+            },
+            {
+              name: "Suriah",
+              summary: "Ibu kota: Damaskus. Negara dengan kota kuno tertua di dunia.",
+              attractions: [
+                {
+                  name: "Kota Tua Damaskus",
+                  details: "Kawasan bersejarah dengan Masjid Umayyad dan pasar kuno. Penuh sejarah ribuan tahun."
+                }
+              ]
+            },
+            {
+              name: "Taiwan",
+              summary: "Ibu kota: Taipei. Negara dengan pasar malam dan teknologi.",
+              attractions: [
+                {
+                  name: "Taipei 101",
+                  details: "Gedung setinggi 508 meter di Taipei, pernah menjadi yang tertinggi di dunia. Ada observatorium di puncak."
+                }
+              ]
+            },
+            {
+              name: "Tajikistan",
+              summary: "Ibu kota: Dushanbe. Negara pegunungan dengan pasar tradisional.",
+              attractions: [
+                {
+                  name: "Danau Iskanderkul",
+                  details: "Danau indah di Pegunungan Fann, cocok untuk hiking dan menikmati alam."
+                }
+              ]
+            },
+            {
+              name: "Thailand",
+              summary: "Ibu kota: Bangkok. Negara dengan kuil emas dan makanan pedas.",
+              attractions: [
+                {
+                  name: "Grand Palace",
+                  details: "Kompleks istana megah di Bangkok, rumah bagi Raja Thailand dulu. Ada kuil Buddha Zamrud."
+                },
+                {
+                  name: "Pulau Phuket",
+                  details: "Pulau di selatan Thailand dengan pantai berpasir putih dan air jernih."
+                }
+              ]
+            },
+            {
+              name: "Timor-Leste",
+              summary: "Ibu kota: Dili. Negara muda dengan pantai dan sejarah.",
+              attractions: [
+                {
+                  name: "Pantai Cristo Rei",
+                  details: "Pantai di Dili dengan patung Yesus besar, mirip Christ the Redeemer di Brasil."
+                }
+              ]
+            },
+            {
+              name: "Turki",
+              summary: "Ibu kota: Ankara. Negara dengan dua benua dan masjid indah.",
+              attractions: [
+                {
+                  name: "Hagia Sophia",
+                  details: "Bangunan bersejarah di Istanbul, dulunya gereja dan masjid. Kini museum dengan kubah megah."
+                }
+              ]
+            },
+            {
+              name: "Turkmenistan",
+              summary: "Ibu kota: Ashgabat. Negara dengan monumen marmer putih.",
+              attractions: [
+                {
+                  name: "Gerbang Neraka",
+                  details: "Kawah gas di Darvaza yang terus menyala sejak 1971. Pemandangan unik di gurun."
+                }
+              ]
+            },
+            {
+              name: "Uni Emirat Arab",
+              summary: "Ibu kota: Abu Dhabi. Negara dengan gedung pencakar langit.",
+              attractions: [
+                {
+                  name: "Burj Khalifa",
+                  details: "Gedung tertinggi di dunia di Dubai, setinggi 829 meter. Ada dek observasi di puncak."
+                }
+              ]
+            },
+            {
+              name: "Uzbekistan",
+              summary: "Ibu kota: Tashkent. Negara dengan kota-kota Jalur Sutra.",
+              attractions: [
+                {
+                  name: "Registan Samarkand",
+                  details: "Alun-alun di Samarkand dengan tiga madrasah megah dari abad ke-15."
+                }
+              ]
+            },
+            {
+              name: "Vietnam",
+              summary: "Ibu kota: Hanoi. Negara dengan teluk dan makanan pho.",
+              attractions: [
+                {
+                  name: "Teluk Ha Long",
+                  details: "Teluk di utara Vietnam dengan ribuan pulau karst dan air zamrud. Cocok untuk kapal pesiar."
+                }
+              ]
+            },
+            {
+              name: "Yaman",
+              summary: "Ibu kota: Sanaa. Negara dengan arsitektur kuno unik.",
+              attractions: [
+                {
+                  name: "Kota Tua Sanaa",
+                  details: "Kota bersejarah dengan rumah-rumah bata lumpur dan masjid kuno. Situs Warisan Dunia."
+                }
+              ]
+            },
+            {
+              name: "Yordania",
+              summary: "Ibu kota: Amman. Negara dengan kota batu Petra.",
+              attractions: [
+                {
+                  name: "Petra",
+                  details: "Kota kuno di Ma'an, diukir di tebing batu merah. Dikenal sebagai kota mawar, situs UNESCO."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Eropa",
+          summary: "Benua dengan 44 negara, penuh kastil dan sejarah kuno.",
+          countries: [
+            {
+              name: "Akrotiri dan Dhekelia",
+              summary: "Ibu kota: Episkopi. Wilayah Inggris di Pulau Siprus.",
+              attractions: [
+                {
+                  name: "Pantai Akrotiri",
+                  details: "Pantai indah di Akrotiri, cocok untuk berenang dan menikmati laut Mediterania."
+                }
+              ]
+            },
+            {
+              name: "Albania",
+              summary: "Ibu kota: Tirana. Negara dengan pantai dan pegunungan.",
+              attractions: [
+                {
+                  name: "Kota Berat",
+                  details: "Kota bersejarah dengan rumah-rumah putih Ottoman, dikenal sebagai kota seribu jendela."
+                }
+              ]
+            },
+            {
+              name: "Andorra",
+              summary: "Ibu kota: Andorra la Vella. Negara kecil di Pegunungan Pyrenees.",
+              attractions: [
+                {
+                  name: "Casa de la Vall",
+                  details: "Gedung parlemen bersejarah di Andorra la Vella, menunjukkan sejarah abad ke-16."
+                }
+              ]
+            },
+            {
+              name: "Austria",
+              summary: "Ibu kota: Wina. Negara dengan musik klasik dan istana.",
+              attractions: [
+                {
+                  name: "Istana Schönbrunn",
+                  details: "Istana megah di Wina, rumah musim panas Kaisar Habsburg. Taman dan kebun binatangnya seru!"
+                }
+              ]
+            },
+            {
+              name: "Belanda",
+              summary: "Ibu kota: Amsterdam. Negara dengan kanal dan bunga tulip.",
+              attractions: [
+                {
+                  name: "Kanal Amsterdam",
+                  details: "Jaringan kanal di Amsterdam, cocok untuk tur perahu dan melihat rumah-rumah kuno."
+                }
+              ]
+            },
+            {
+              name: "Belarus",
+              summary: "Ibu kota: Minsk. Negara dengan hutan luas dan kastil.",
+              attractions: [
+                {
+                  name: "Kastil Mir",
+                  details: "Kastil abad ke-16 di Mir, dengan arsitektur Gothic dan Renaissance. Situs UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Belgia",
+              summary: "Ibu kota: Brussel. Negara dengan cokelat dan wafel lezat.",
+              attractions: [
+                {
+                  name: "Atomium",
+                  details: "Struktur unik di Brussel, dibangun untuk Expo 1958. Berbentuk molekul besi raksasa."
+                }
+              ]
+            },
+            {
+              name: "Bosnia dan Herzegovina",
+              summary: "Ibu kota: Sarajevo. Negara dengan jembatan kuno dan budaya.",
+              attractions: [
+                {
+                  name: "Jembatan Tua Mostar",
+                  details: "Jembatan abad ke-16 di Mostar, terkenal dengan lompatan air tradisional."
+                }
+              ]
+            },
+            {
+              name: "Bulgaria",
+              summary: "Ibu kota: Sofia. Negara dengan gereja dan pantai Laut Hitam.",
+              attractions: [
+                {
+                  name: "Katedral Alexander Nevsky",
+                  details: "Katedral megah di Sofia dengan kubah emas, simbol kebudayaan Bulgaria."
+                }
+              ]
+            },
+            {
+              name: "Ceko",
+              summary: "Ibu kota: Praha. Negara dengan kastil dan jembatan indah.",
+              attractions: [
+                {
+                  name: "Kastil Praha",
+                  details: "Kastil terbesar di dunia di Praha, dengan katedral dan pemandangan kota."
+                }
+              ]
+            },
+            {
+              name: "Denmark",
+              summary: "Ibu kota: Kopenhagen. Negara dengan kastil dan Lego!",
+              attractions: [
+                {
+                  name: "Taman Tivoli",
+                  details: "Taman hiburan tertua di Kopenhagen, penuh wahana dan lampu warna-warni."
+                }
+              ]
+            },
+            {
+              name: "Estonia",
+              summary: "Ibu kota: Tallinn. Negara dengan kota abad pertengahan.",
+              attractions: [
+                {
+                  name: "Kota Tua Tallinn",
+                  details: "Kawasan bersejarah di Tallinn dengan jalanan batu dan tembok kota kuno."
+                }
+              ]
+            },
+            {
+              name: "Finlandia",
+              summary: "Ibu kota: Helsinki. Negara dengan danau dan aurora borealis.",
+              attractions: [
+                {
+                  name: "Katedral Helsinki",
+                  details: "Katedral putih megah di Helsinki, terletak di alun-alun Senate Square."
+                }
+              ]
+            },
+            {
+              name: "Gibraltar",
+              summary: "Ibu kota: Gibraltar. Wilayah Inggris dengan batu karang besar.",
+              attractions: [
+                {
+                  name: "Batu Gibraltar",
+                  details: "Batu karang besar dengan gua dan monyet Barbary yang unik."
+                }
+              ]
+            },
+            {
+              name: "Irlandia",
+              summary: "Ibu kota: Dublin. Negara dengan kastil dan ladang hijau.",
+              attractions: [
+                {
+                  name: "Tebing Moher",
+                  details: "Tebing setinggi 214 meter di County Clare, dengan pemandangan laut Atlantik."
+                }
+              ]
+            },
+            {
+              name: "Islandia",
+              summary: "Ibu kota: Reykjavik. Negara dengan geyser dan air terjun.",
+              attractions: [
+                {
+                  name: "Air Terjun Gullfoss",
+                  details: "Air terjun besar di Islandia selatan, bagian dari rute Golden Circle."
+                }
+              ]
+            },
+            {
+              name: "Isle of Man",
+              summary: "Ibu kota: Douglas. Pulau dengan sejarah Viking dan kastil.",
+              attractions: [
+                {
+                  name: "Kastil Peel",
+                  details: "Kastil kuno di Peel, dibangun oleh Viking pada abad ke-11."
+                }
+              ]
+            },
+            {
+              name: "Italia",
+              summary: "Ibu kota: Roma. Negara dengan pizza dan bangunan kuno.",
+              attractions: [
+                {
+                  name: "Colosseum",
+                  details: "Arena kuno di Roma, dibangun abad ke-1. Tempat pertarungan gladiator."
+                },
+                {
+                  name: "Kota Venesia",
+                  details: "Kota di atas air dengan kanal dan gondola. Jembatan Rialto sangat terkenal."
+                }
+              ]
+            },
+            {
+              name: "Jersey",
+              summary: "Ibu kota: Saint Helier. Pulau dengan pantai dan kastil.",
+              attractions: [
+                {
+                  name: "Kastil Elizabeth",
+                  details: "Kastil di Saint Helier, dibangun di pulau kecil yang bisa dicapai saat air surut."
+                }
+              ]
+            },
+            {
+              name: "Kosovo",
+              summary: "Ibu kota: Pristina. Negara muda dengan budaya beragam.",
+              attractions: [
+                {
+                  name: "Biara Gračanica",
+                  details: "Biara Ortodoks Serbia di dekat Pristina, dibangun pada abad ke-14."
+                }
+              ]
+            },
+            {
+              name: "Latvia",
+              summary: "Ibu kota: Riga. Negara dengan arsitektur Art Nouveau.",
+              attractions: [
+                {
+                  name: "Kota Tua Riga",
+                  details: "Kawasan bersejarah di Riga dengan katedral dan rumah-rumah kuno."
+                }
+              ]
+            },
+            {
+              name: "Liechtenstein",
+              summary: "Ibu kota: Vaduz. Negara kecil dengan kastil di pegunungan.",
+              attractions: [
+                {
+                  name: "Kastil Vaduz",
+                  details: "Kastil abad ke-12 di Vaduz, rumah keluarga kerajaan Liechtenstein."
+                }
+              ]
+            },
+            {
+              name: "Lithuania",
+              summary: "Ibu kota: Vilnius. Negara dengan kastil dan hutan luas.",
+              attractions: [
+                {
+                  name: "Kastil Trakai",
+                  details: "Kastil di pulau di Danau Galvė, dekat Vilnius. Penuh sejarah abad pertengahan."
+                }
+              ]
+            },
+            {
+              name: "Luksemburg",
+              summary: "Ibu kota: Luksemburg. Negara kecil dengan benteng kuno.",
+              attractions: [
+                {
+                  name: "Bock Casemates",
+                  details: "Jaringan terowongan bawah tanah di Kota Luksemburg, digunakan sebagai benteng."
+                }
+              ]
+            },
+            {
+              name: "Makedonia Utara",
+              summary: "Ibu kota: Skopje. Negara dengan jembatan batu dan danau.",
+              attractions: [
+                {
+                  name: "Danau Ohrid",
+                  details: "Danau kuno di Ohrid, salah satu yang tertua di Eropa. Cocok untuk berenang."
+                }
+              ]
+            },
+            {
+              name: "Malta",
+              summary: "Ibu kota: Valletta. Negara pulau dengan kota bersejarah.",
+              attractions: [
+                {
+                  name: "Kota Tua Valletta",
+                  details: "Kota bersejarah dengan benteng dan katedral, situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Moldova",
+              summary: "Ibu kota: Chisinau. Negara dengan anggur dan monumen.",
+              attractions: [
+                {
+                  name: "Orheiul Vechi",
+                  details: "Situs arkeologi dengan biara gua dan desa kuno di tepi sungai Răut."
+                }
+              ]
+            },
+            {
+              name: "Monako",
+              summary: "Ibu kota: Monako. Negara kecil dengan kasino dan pelabuhan.",
+              attractions: [
+                {
+                  name: "Kasino Monte Carlo",
+                  details: "Kasino mewah di Monako, terkenal dengan arsitektur dan kemewahan."
+                }
+              ]
+            },
+            {
+              name: "Montenegro",
+              summary: "Ibu kota: Podgorica. Negara dengan pantai dan pegunungan.",
+              attractions: [
+                {
+                  name: "Teluk Kotor",
+                  details: "Fjord indah dengan kota-kota kuno seperti Kotor, situs Warisan Dunia."
+                }
+              ]
+            },
+            {
+              name: "Norwegia",
+              summary: "Ibu kota: Oslo. Negara dengan fjord dan aurora borealis.",
+              attractions: [
+                {
+                  name: "Fjord Geiranger",
+                  details: "Fjord di Norwegia barat dengan air terjun dan pemandangan dramatis."
+                }
+              ]
+            },
+            {
+              name: "Polandia",
+              summary: "Ibu kota: Warsawa. Negara dengan kastil dan sejarah kaya.",
+              attractions: [
+                {
+                  name: "Kastil Wawel",
+                  details: "Kastil bersejarah di Krakow, rumah raja-raja Polandia dan katedral."
+                }
+              ]
+            },
+            {
+              name: "Portugal",
+              summary: "Ibu kota: Lisboa. Negara dengan pantai dan menara kuno.",
+              attractions: [
+                {
+                  name: "Menara Belém",
+                  details: "Menara abad ke-16 di Lisboa, simbol era penjelajahan Portugis."
+                }
+              ]
+            },
+            {
+              name: "Rumania",
+              summary: "Ibu kota: Bukares. Negara dengan kastil dan hutan Karpatia.",
+              attractions: [
+                {
+                  name: "Kastil Bran",
+                  details: "Kastil di Transilvania, sering disebut kastil Dracula. Penuh misteri!"
+                }
+              ]
+            },
+            {
+              name: "Rusia",
+              summary: "Ibu kota: Moskow. Negara terbesar di dunia dengan istana megah.",
+              attractions: [
+                {
+                  name: "Lapangan Merah",
+                  details: "Alun-alun di Moskow dengan Katedral Saint Basil dan Kremlin."
+                }
+              ]
+            },
+            {
+              name: "San Marino",
+              summary: "Ibu kota: San Marino. Negara kecil dengan menara abad pertengahan.",
+              attractions: [
+                {
+                  name: "Tiga Menara San Marino",
+                  details: "Tiga benteng di Gunung Titano, dengan pemandangan Italia yang indah."
+                }
+              ]
+            },
+            {
+              name: "Serbia",
+              summary: "Ibu kota: Beograd. Negara dengan benteng dan sungai.",
+              attractions: [
+                {
+                  name: "Benteng Beograd",
+                  details: "Benteng kuno di Beograd, di tepi Sungai Danube dan Sava."
+                }
+              ]
+            },
+            {
+              name: "Siprus",
+              summary: "Ibu kota: Nikosia. Pulau dengan pantai dan situs kuno.",
+              attractions: [
+                {
+                  name: "Petra tou Romiou",
+                  details: "Pantai indah di Paphos, konon tempat kelahiran dewi Aphrodite."
+                }
+              ]
+            },
+            {
+              name: "Slovenia",
+              summary: "Ibu kota: Ljubljana. Negara dengan danau dan kastil.",
+              attractions: [
+                {
+                  name: "Danau Bled",
+                  details: "Danau indah dengan kastil di tebing dan gereja di pulau kecil."
+                }
+              ]
+            },
+            {
+              name: "Slovakia",
+              summary: "Ibu kota: Bratislava. Negara dengan kastil dan sungai Danube.",
+              attractions: [
+                {
+                  name: "Kastil Bratislava",
+                  details: "Kastil megah di Bratislava, menghadap Sungai Danube."
+                }
+              ]
+            },
+            {
+              name: "Spanyol",
+              summary: "Ibu kota: Madrid. Negara dengan tarian flamenco dan festival.",
+              attractions: [
+                {
+                  name: "Sagrada Familia",
+                  details: "Katedral unik di Barcelona, dirancang oleh Antoni Gaudí. Interiornya seperti hutan penuh warna."
+                }
+              ]
+            },
+            {
+              name: "Swedia",
+              summary: "Ibu kota: Stockholm. Negara dengan pulau dan aurora.",
+              attractions: [
+                {
+                  name: "Kota Tua Stockholm",
+                  details: "Kawasan bersejarah Gamla Stan dengan jalanan batu dan istana kerajaan."
+                }
+              ]
+            },
+            {
+              name: "Swiss",
+              summary: "Ibu kota: Bern. Negara dengan Alpen dan cokelat.",
+              attractions: [
+                {
+                  name: "Matterhorn",
+                  details: "Gunung ikonik di Zermatt, cocok untuk ski dan mendaki."
+                }
+              ]
+            },
+            {
+              name: "Ukraina",
+              summary: "Ibu kota: Kyiv. Negara dengan katedral dan sejarah Slavia.",
+              attractions: [
+                {
+                  name: "Katedral Saint Sophia",
+                  details: "Katedral bersejarah di Kyiv dengan mozaik dan fresko abad ke-11."
+                }
+              ]
+            },
+            {
+              name: "Vatikan",
+              summary: "Ibu kota: Kota Vatikan. Negara terkecil dengan gereja besar.",
+              attractions: [
+                {
+                  name: "Basilika Santo Petrus",
+                  details: "Gereja megah di Vatikan, pusat Katolik dunia dengan kubah besar."
+                }
+              ]
+            },
+            {
+              name: "Yunani",
+              summary: "Ibu kota: Athena. Negara dengan kuil kuno dan pulau.",
+              attractions: [
+                {
+                  name: "Acropolis Athena",
+                  details: "Kuil kuno di Athena, termasuk Parthenon, simbol peradaban Yunani."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Afrika",
+          summary: "Benua dengan 54 negara, rumah bagi savana dan piramida kuno.",
+          countries: [
+            {
+              name: "Afrika Selatan",
+              summary: "Ibu kota: Pretoria, Cape Town, Bloemfontein. Negara dengan safari.",
+              attractions: [
+                {
+                  name: "Taman Nasional Kruger",
+                  details: "Taman safari di timur laut, rumah 'Big Five': singa, gajah, badak, macan tutul, kerbau."
+                },
+                {
+                  name: "Table Mountain",
+                  details: "Gunung datar di Cape Town dengan pemandangan kota. Naik kereta gantung ke puncak!"
+                }
+              ]
+            },
+            {
+              name: "Aljazair",
+              summary: "Ibu kota: Aljazair. Negara dengan gurun Sahara dan pantai.",
+              attractions: [
+                {
+                  name: "Taman Nasional Tassili n'Ajjer",
+                  details: "Taman di Sahara dengan lukisan gua prasejarah dan formasi batu unik."
+                }
+              ]
+            },
+            {
+              name: "Angola",
+              summary: "Ibu kota: Luanda. Negara dengan pantai dan hutan tropis.",
+              attractions: [
+                {
+                  name: "Air Terjun Kalandula",
+                  details: "Air terjun besar di Malanje, salah satu yang terbesar di Afrika."
+                }
+              ]
+            },
+            {
+              name: "Benin",
+              summary: "Ibu kota: Porto-Novo, Cotonou. Negara dengan budaya voodoo.",
+              attractions: [
+                {
+                  name: "Kota Ouidah",
+                  details: "Kota bersejarah dengan kuil voodoo dan pintu tanpa kembali, monumen sejarah budak."
+                }
+              ]
+            },
+            {
+              name: "Botswana",
+              summary: "Ibu kota: Gaborone. Negara dengan delta dan safari.",
+              attractions: [
+                {
+                  name: "Delta Okavango",
+                  details: "Delta air terbesar di dunia, penuh dengan satwa liar seperti gajah dan kuda nil."
+                }
+              ]
+            },
+            {
+              name: "Burkina Faso",
+              summary: "Ibu kota: Ouagadougou. Negara dengan budaya dan pasar tradisional.",
+              attractions: [
+                {
+                  name: "Sindou Peaks",
+                  details: "Formasi batu unik di Banfora, cocok untuk hiking dan fotografi."
+                }
+              ]
+            },
+            {
+              name: "Burundi",
+              summary: "Ibu kota: Gitega, Bujumbura. Negara dengan danau besar.",
+              attractions: [
+                {
+                  name: "Danau Tanganyika",
+                  details: "Danau terpanjang di dunia, cocok untuk berenang dan melihat ikan warna-warni."
+                }
+              ]
+            },
+            {
+              name: "Djibouti",
+              summary: "Ibu kota: Djibouti. Negara kecil dengan danau garam.",
+              attractions: [
+                {
+                  name: "Danau Assal",
+                  details: "Danau garam terendah di Afrika, dengan air biru dan kristal garam putih."
+                }
+              ]
+            },
+            {
+              name: "Eswatini",
+              summary: "Ibu kota: Mbabane, Lobamba. Negara kecil dengan budaya kerajaan.",
+              attractions: [
+                {
+                  name: "Cagar Alam Mlilwane",
+                  details: "Cagar alam dengan zebra dan antelop, cocok untuk safari berjalan kaki."
+                }
+              ]
+            },
+            {
+              name: "Etiopia",
+              summary: "Ibu kota: Addis Ababa. Negara dengan gereja batu kuno.",
+              attractions: [
+                {
+                  name: "Lalibela",
+                  details: "Kota dengan gereja-gereja batu abad ke-12, diukir langsung dari batu."
+                }
+              ]
+            },
+            {
+              name: "Gabon",
+              summary: "Ibu kota: Libreville. Negara dengan hutan hujan dan pantai.",
+              attractions: [
+                {
+                  name: "Taman Nasional Loango",
+                  details: "Taman dengan gajah, gorila, dan pantai tempat kura-kura bertelur."
+                }
+              ]
+            },
+            {
+              name: "Gambia",
+              summary: "Ibu kota: Banjul. Negara kecil di sepanjang Sungai Gambia.",
+              attractions: [
+                {
+                  name: "Taman Nasional Kiang West",
+                  details: "Taman dengan burung eksotis dan monyet, cocok untuk pecinta alam."
+                }
+              ]
+            },
+            {
+              name: "Ghana",
+              summary: "Ibu kota: Accra. Negara dengan kastil dan pasar ramai.",
+              attractions: [
+                {
+                  name: "Kastil Cape Coast",
+                  details: "Kastil bersejarah dengan sejarah perdagangan budak, sekarang museum."
+                }
+              ]
+            },
+            {
+              name: "Guinea",
+              summary: "Ibu kota: Conakry. Negara dengan air terjun dan hutan.",
+              attractions: [
+                {
+                  name: "Air Terjun Soumba",
+                  details: "Air terjun indah di dekat Conakry, cocok untuk piknik dan berenang."
+                }
+              ]
+            },
+            {
+              name: "Guinea Ekuatorial",
+              summary: "Ibu kota: Malabo. Negara pulau dengan budaya Spanyol.",
+              attractions: [
+                {
+                  name: "Katedral Malabo",
+                  details: "Katedral bergaya kolonial Spanyol di Malabo, pusat kota yang indah."
+                }
+              ]
+            },
+            {
+              name: "Guinea-Bissau",
+              summary: "Ibu kota: Bissau. Negara dengan kepulauan dan mangrove.",
+              attractions: [
+                {
+                  name: "Kepulauan Bijagós",
+                  details: "Kepulauan dengan pantai dan satwa liar, rumah bagi budaya Bissago."
+                }
+              ]
+            },
+            {
+              name: "Kenya",
+              summary: "Ibu kota: Nairobi. Negara dengan safari dan migrasi hewan.",
+              attractions: [
+                {
+                  name: "Maasai Mara",
+                  details: "Cagar alam dengan migrasi rusa liar tahunan. Kamu bisa melihat singa dan zebra."
+                }
+              ]
+            },
+            {
+              name: "Lesoto",
+              summary: "Ibu kota: Maseru. Negara pegunungan di dalam Afrika Selatan.",
+              attractions: [
+                {
+                  name: "Air Terjun Maletsunyane",
+                  details: "Air terjun setinggi 192 meter, salah satu yang tertinggi di Afrika."
+                }
+              ]
+            },
+            {
+              name: "Liberia",
+              summary: "Ibu kota: Monrovia. Negara dengan pantai dan sejarah Amerika.",
+              attractions: [
+                {
+                  name: "Pantai Robertsport",
+                  details: "Pantai di barat Liberia, cocok untuk berselancar dan bersantai."
+                }
+              ]
+            },
+            {
+              name: "Libya",
+              summary: "Ibu kota: Tripoli. Negara dengan reruntuhan Romawi dan gurun.",
+              attractions: [
+                {
+                  name: "Leptis Magna",
+                  details: "Reruntuhan kota Romawi di dekat Tripoli, dengan amfiteater dan kuil."
+                }
+              ]
+            },
+            {
+              name: "Madagaskar",
+              summary: "Ibu kota: Antananarivo. Pulau dengan lemur dan baobab.",
+              attractions: [
+                {
+                  name: "Avenue of the Baobabs",
+                  details: "Jalan dengan pohon baobab raksasa di Morondava, pemandangan ikonik."
+                }
+              ]
+            },
+            {
+              name: "Malawi",
+              summary: "Ibu kota: Lilongwe. Negara dengan danau besar dan satwa liar.",
+              attractions: [
+                {
+                  name: "Danau Malawi",
+                  details: "Danau besar dengan ikan cichlid warna-warni, cocok untuk snorkeling."
+                }
+              ]
+            },
+            {
+              name: "Mali",
+              summary: "Ibu kota: Bamako. Negara dengan masjid lumpur dan sejarah.",
+              attractions: [
+                {
+                  name: "Masjid Djenné",
+                  details: "Masjid lumpur terbesar di dunia di Djenné, situs Warisan Dunia."
+                }
+              ]
+            },
+            {
+              name: "Maroko",
+              summary: "Ibu kota: Rabat. Negara dengan pasar ramai dan gurun.",
+              attractions: [
+                {
+                  name: "Kota Marrakech",
+                  details: "Kota dengan pasar Jemaa el-Fnaa, penuh penari dan toko unik."
+                },
+                {
+                  name: "Sahara Desert",
+                  details: "Gurun terbesar di dunia. Kamu bisa naik unta atau berkemah."
+                }
+              ]
+            },
+            {
+              name: "Mauritania",
+              summary: "Ibu kota: Nouakchott. Negara dengan gurun dan kapal karam.",
+              attractions: [
+                {
+                  name: "Teluk Nouadhibou",
+                  details: "Teluk dengan kuburan kapal karam terbesar di dunia."
+                }
+              ]
+            },
+            {
+              name: "Mauritius",
+              summary: "Ibu kota: Port Louis. Pulau dengan pantai dan laguna.",
+              attractions: [
+                {
+                  name: "Taman Black River Gorges",
+                  details: "Taman nasional dengan air terjun dan satwa liar seperti monyet."
+                }
+              ]
+            },
+            {
+              name: "Mesir",
+              summary: "Ibu kota: Kairo. Negara dengan piramida dan sejarah Firaun.",
+              attractions: [
+                {
+                  name: "Piramida Giza",
+                  details: "Piramida kuno di Kairo, dibangun 4.500 tahun lalu dengan patung Sphinx."
+                },
+                {
+                  name: "Sungai Nil",
+                  details: "Sungai terpanjang di dunia, cocok untuk kapal pesiar dan melihat kuil."
+                }
+              ]
+            },
+            {
+              name: "Mozambik",
+              summary: "Ibu kota: Maputo. Negara dengan pantai dan pulau.",
+              attractions: [
+                {
+                  name: "Kepulauan Bazaruto",
+                  details: "Kepulauan dengan pantai pasir putih dan terumbu karang untuk snorkeling."
+                }
+              ]
+            },
+            {
+              name: "Namibia",
+              summary: "Ibu kota: Windhoek. Negara dengan gurun dan satwa liar.",
+              attractions: [
+                {
+                  name: "Dune 45",
+                  details: "Bukit pasir merah di Gurun Namib, salah satu yang tertinggi di dunia."
+                }
+              ]
+            },
+            {
+              name: "Nigeria",
+              summary: "Ibu kota: Abuja. Negara dengan budaya kaya dan pasar besar.",
+              attractions: [
+                {
+                  name: "Taman Nasional Yankari",
+                  details: "Taman dengan mata air panas dan satwa liar seperti gajah dan singa."
+                }
+              ]
+            },
+            {
+              name: "Rwanda",
+              summary: "Ibu kota: Kigali. Negara dengan bukit dan gorila.",
+              attractions: [
+                {
+                  name: "Taman Nasional Volcanoes",
+                  details: "Taman di utara Rwanda, rumah bagi gorila gunung yang langka."
+                }
+              ]
+            },
+            {
+              name: "Senegal",
+              summary: "Ibu kota: Dakar. Negara dengan pantai dan budaya musik.",
+              attractions: [
+                {
+                  name: "Pulau Gorée",
+                  details: "Pulau bersejarah di Dakar, dengan museum tentang sejarah perdagangan budak."
+                }
+              ]
+            },
+            {
+              name: "Seychelles",
+              summary: "Ibu kota: Victoria. Kepulauan dengan pantai tropis.",
+              attractions: [
+                {
+                  name: "Pantai Anse Lazio",
+                  details: "Pantai indah di Praslin dengan pasir putih dan air jernih."
+                }
+              ]
+            },
+            {
+              name: "Sierra Leone",
+              summary: "Ibu kota: Freetown. Negara dengan pantai dan hutan.",
+              attractions: [
+                {
+                  name: "Pantai Lumley",
+                  details: "Pantai populer di Freetown, cocok untuk bersantai dan melihat sunset."
+                }
+              ]
+            },
+            {
+              name: "Somalia",
+              summary: "Ibu kota: Mogadishu. Negara dengan pantai panjang.",
+              attractions: [
+                {
+                  name: "Pantai Lido",
+                  details: "Pantai di Mogadishu dengan pasir putih, cocok untuk berjalan-jalan."
+                }
+              ]
+            },
+            {
+              name: "Sudan",
+              summary: "Ibu kota: Khartoum. Negara dengan piramida Nubia.",
+              attractions: [
+                {
+                  name: "Piramida Meroë",
+                  details: "Piramida kuno di Meroë, lebih kecil dari Giza tapi penuh sejarah."
+                }
+              ]
+            },
+            {
+              name: "Sudan Selatan",
+              summary: "Ibu kota: Juba. Negara muda dengan savana luas.",
+              attractions: [
+                {
+                  name: "Taman Nasional Boma",
+                  details: "Taman dengan migrasi antelop terbesar di dunia."
+                }
+              ]
+            },
+            {
+              name: "Tanzania",
+              summary: "Ibu kota: Dodoma. Negara dengan gunung Kilimanjaro.",
+              attractions: [
+                {
+                  name: "Gunung Kilimanjaro",
+                  details: "Gunung tertinggi di Afrika, cocok untuk pendakian dan pemandangan."
+                }
+              ]
+            },
+            {
+              name: "Togo",
+              summary: "Ibu kota: Lomé. Negara kecil dengan pantai dan pasar.",
+              attractions: [
+                {
+                  name: "Pasar Fetish Lomé",
+                  details: "Pasar di Lomé dengan barang-barang tradisional voodoo dan kerajinan."
+                }
+              ]
+            },
+            {
+              name: "Tunisia",
+              summary: "Ibu kota: Tunis. Negara dengan reruntuhan Karthago.",
+              attractions: [
+                {
+                  name: "Karthago",
+                  details: "Reruntuhan kota kuno di dekat Tunis, pusat peradaban Phoenicia."
+                }
+              ]
+            },
+            {
+              name: "Uganda",
+              summary: "Ibu kota: Kampala. Negara dengan danau dan gorila.",
+              attractions: [
+                {
+                  name: "Taman Nasional Bwindi",
+                  details: "Hutan hujan dengan populasi gorila gunung, cocok untuk trekking."
+                }
+              ]
+            },
+            {
+              name: "Zambia",
+              summary: "Ibu kota: Lusaka. Negara dengan air terjun dan safari.",
+              attractions: [
+                {
+                  name: "Air Terjun Victoria",
+                  details: "Air terjun besar di perbatasan Zambia dan Zimbabwe, disebut 'Asap yang Bergemuruh'."
+                }
+              ]
+            },
+            {
+              name: "Zimbabwe",
+              summary: "Ibu kota: Harare. Negara dengan reruntuhan kuno dan safari.",
+              attractions: [
+                {
+                  name: "Great Zimbabwe",
+                  details: "Reruntuhan kota batu abad ke-11, pusat peradaban kuno."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Amerika",
+          summary: "Benua dengan dua benua kecil, penuh ngarai dan hutan hujan.",
+          countries: [
+            {
+              name: "Amerika Serikat",
+              summary: "Ibu kota: Washington, D.C. Negara dengan kota besar dan alam luas.",
+              attractions: [
+                {
+                  name: "Patung Liberty",
+                  details: "Patung di New York, hadiah dari Prancis pada 1886. Simbol kebebasan."
+                },
+                {
+                  name: "Grand Canyon",
+                  details: "Ngarai besar di Arizona, panjangnya 446 km. Cocok untuk hiking."
+                }
+              ]
+            },
+            {
+              name: "Anguilla",
+              summary: "Ibu kota: The Valley. Pulau kecil dengan pantai indah.",
+              attractions: [
+                {
+                  name: "Pantai Shoal Bay",
+                  details: "Pantai pasir putih di Anguilla, cocok untuk snorkeling dan bersantai."
+                }
+              ]
+            },
+            {
+              name: "Antigua dan Barbuda",
+              summary: "Ibu kota: Saint John's. Negara pulau dengan teluk indah.",
+              attractions: [
+                {
+                  name: "Nelson's Dockyard",
+                  details: "Pelabuhan bersejarah di Antigua, situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Argentina",
+              summary: "Ibu kota: Buenos Aires. Negara dengan tango dan pegunungan.",
+              attractions: [
+                {
+                  name: "Air Terjun Iguazu",
+                  details: "Air terjun besar di perbatasan Argentina dan Brasil, dengan 275 air terjun."
+                }
+              ]
+            },
+            {
+              name: "Aruba",
+              summary: "Ibu kota: Oranjestad. Pulau dengan pantai dan kaktus.",
+              attractions: [
+                {
+                  name: "Pantai Eagle",
+                  details: "Pantai pasir putih di Aruba, cocok untuk berenang dan bersantai."
+                }
+              ]
+            },
+            {
+              name: "Bahamas",
+              summary: "Ibu kota: Nassau. Negara kepulauan dengan air jernih.",
+              attractions: [
+                {
+                  name: "Pantai Cable",
+                  details: "Pantai terkenal di Nassau dengan pasir putih dan air biru."
+                }
+              ]
+            },
+            {
+              name: "Barbados",
+              summary: "Ibu kota: Bridgetown. Pulau dengan pantai dan sejarah.",
+              attractions: [
+                {
+                  name: "Gua Harrison",
+                  details: "Gua kapur di Barbados dengan stalaktit dan sungai bawah tanah."
+                }
+              ]
+            },
+            {
+              name: "Belize",
+              summary: "Ibu kota: Belmopan. Negara dengan terumbu karang dan hutan.",
+              attractions: [
+                {
+                  name: "Great Blue Hole",
+                  details: "Lubang bawah laut di lepas pantai Belize, cocok untuk menyelam."
+                }
+              ]
+            },
+            {
+              name: "Bermuda",
+              summary: "Ibu kota: Hamilton. Pulau dengan pantai merah muda.",
+              attractions: [
+                {
+                  name: "Pantai Horseshoe Bay",
+                  details: "Pantai dengan pasir merah muda di Bermuda, cocok untuk berenang."
+                }
+              ]
+            },
+            {
+              name: "Bolivia",
+              summary: "Ibu kota: La Paz, Sucre. Negara dengan dataran tinggi Andes.",
+              attractions: [
+                {
+                  name: "Salar de Uyuni",
+                  details: "Gurun garam terbesar di dunia di Bolivia, seperti cermin saat hujan."
+                }
+              ]
+            },
+            {
+              name: "Brasil",
+              summary: "Ibu kota: Brasília. Negara dengan hutan Amazon dan karnaval.",
+              attractions: [
+                {
+                  name: "Patung Christ the Redeemer",
+                  details: "Patung Yesus di Rio de Janeiro, di atas Gunung Corcovado."
+                },
+                {
+                  name: "Hutan Amazon",
+                  details: "Hutan hujan terbesar di dunia, penuh satwa liar seperti jaguar."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Virgin Inggris",
+              summary: "Ibu kota: Road Town. Pulau dengan pantai dan gua.",
+              attractions: [
+                {
+                  name: "The Baths",
+                  details: "Pantai dengan formasi batu besar di Virgin Gorda, cocok untuk eksplorasi."
+                }
+              ]
+            },
+            {
+              name: "Kanada",
+              summary: "Ibu kota: Ottawa. Negara dengan danau dan musim dingin.",
+              attractions: [
+                {
+                  name: "Air Terjun Niagara",
+                  details: "Air terjun besar di perbatasan Kanada-AS, seru untuk tur kapal."
+                }
+              ]
+            },
+            {
+              name: "Kuba",
+              summary: "Ibu kota: Havana. Negara dengan mobil klasik dan salsa.",
+              attractions: [
+                {
+                  name: "Kota Tua Havana",
+                  details: "Kawasan bersejarah dengan bangunan kolonial dan alun-alun kuno."
+                }
+              ]
+            },
+            {
+              name: "Curacao",
+              summary: "Ibu kota: Willemstad. Pulau dengan bangunan warna-warni.",
+              attractions: [
+                {
+                  name: "Kota Willemstad",
+                  details: "Kota dengan bangunan kolonial Belanda berwarna cerah, situs UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Dominika",
+              summary: "Ibu kota: Roseau. Pulau dengan hutan hujan dan air terjun.",
+              attractions: [
+                {
+                  name: "Boiling Lake",
+                  details: "Danau panas di Taman Nasional Morne Trois Pitons, fenomena alam unik."
+                }
+              ]
+            },
+            {
+              name: "Republik Dominika",
+              summary: "Ibu kota: Santo Domingo. Negara dengan pantai Karibia.",
+              attractions: [
+                {
+                  name: "Zona Colonial",
+                  details: "Kawasan bersejarah di Santo Domingo, kota tertua di Amerika."
+                }
+              ]
+            },
+            {
+              name: "Ekuador",
+              summary: "Ibu kota: Quito. Negara dengan Galapagos dan Andes.",
+              attractions: [
+                {
+                  name: "Kepulauan Galapagos",
+                  details: "Kepulauan dengan satwa unik seperti kura-kura raksasa dan singa laut."
+                }
+              ]
+            },
+            {
+              name: "El Salvador",
+              summary: "Ibu kota: San Salvador. Negara dengan gunung berapi.",
+              attractions: [
+                {
+                  name: "Taman Nasional El Boquerón",
+                  details: "Taman di San Salvador dengan kawah gunung berapi dan pemandangan."
+                }
+              ]
+            },
+            {
+              name: "Guatemala",
+              summary: "Ibu kota: Kota Guatemala. Negara dengan reruntuhan Maya.",
+              attractions: [
+                {
+                  name: "Tikal",
+                  details: "Reruntuhan kota Maya di Petén, dengan piramida dan hutan hujan."
+                }
+              ]
+            },
+            {
+              name: "Guyana",
+              summary: "Ibu kota: Georgetown. Negara dengan hutan dan air terjun.",
+              attractions: [
+                {
+                  name: "Air Terjun Kaieteur",
+                  details: "Air terjun besar di Guyana, salah satu yang tertinggi di dunia."
+                }
+              ]
+            },
+            {
+              name: "Haiti",
+              summary: "Ibu kota: Port-au-Prince. Negara dengan sejarah dan pantai.",
+              attractions: [
+                {
+                  name: "Citadelle Laferrière",
+                  details: "Benteng besar di Haiti utara, dibangun untuk pertahanan abad ke-19."
+                }
+              ]
+            },
+            {
+              name: "Honduras",
+              summary: "Ibu kota: Tegucigalpa. Negara dengan reruntuhan dan pulau.",
+              attractions: [
+                {
+                  name: "Copán",
+                  details: "Reruntuhan Maya di Honduras barat, terkenal dengan ukiran batu."
+                }
+              ]
+            },
+            {
+              name: "Jamaika",
+              summary: "Ibu kota: Kingston. Negara dengan reggae dan pantai.",
+              attractions: [
+                {
+                  name: "Air Terjun Dunn's River",
+                  details: "Air terjun di Ocho Rios, cocok untuk mendaki dan berenang."
+                }
+              ]
+            },
+            {
+              name: "Meksiko",
+              summary: "Ibu kota: Kota Meksiko. Negara dengan piramida dan taco.",
+              attractions: [
+                {
+                  name: "Chichen Itza",
+                  details: "Piramida Maya di Yucatan, terkenal dengan El Castillo dan astronomi."
+                }
+              ]
+            },
+            {
+              name: "Nikaragua",
+              summary: "Ibu kota: Managua. Negara dengan danau dan gunung berapi.",
+              attractions: [
+                {
+                  name: "Gunung Berapi Masaya",
+                  details: "Gunung berapi aktif dekat Managua, kamu bisa melihat lava di kawah."
+                }
+              ]
+            },
+            {
+              name: "Panama",
+              summary: "Ibu kota: Kota Panama. Negara dengan kanal dan hutan.",
+              attractions: [
+                {
+                  name: "Kanal Panama",
+                  details: "Kanal buatan yang menghubungkan Atlantik dan Pasifik, dengan pintu air besar."
+                }
+              ]
+            },
+            {
+              name: "Paraguay",
+              summary: "Ibu kota: Asunción. Negara dengan sungai dan sejarah.",
+              attractions: [
+                {
+                  name: "Bendungan Itaipu",
+                  details: "Bendungan besar di perbatasan Paraguay-Brasil, salah satu terbesar di dunia."
+                }
+              ]
+            },
+            {
+              name: "Peru",
+              summary: "Ibu kota: Lima. Negara dengan Machu Picchu dan Andes.",
+              attractions: [
+                {
+                  name: "Machu Picchu",
+                  details: "Kota kuno Inca di Cusco, terletak di pegunungan Andes. Situs UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Puerto Riko",
+              summary: "Ibu kota: San Juan. Wilayah dengan benteng dan pantai.",
+              attractions: [
+                {
+                  name: "Kota Tua San Juan",
+                  details: "Kawasan bersejarah dengan benteng El Morro dan jalanan berwarna."
+                }
+              ]
+            },
+            {
+              name: "Saint Kitts and Nevis",
+              summary: "Ibu kota: Basseterre. Negara pulau dengan benteng.",
+              attractions: [
+                {
+                  name: "Benteng Brimstone Hill",
+                  details: "Benteng bersejarah di Saint Kitts, situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Saint Lucia",
+              summary: "Ibu kota: Castries. Pulau dengan gunung kembar Pitons.",
+              attractions: [
+                {
+                  name: "The Pitons",
+                  details: "Dua gunung kembar vulkanik di Saint Lucia, cocok untuk hiking."
+                }
+              ]
+            },
+            {
+              name: "Saint Vincent dan Grenadines",
+              summary: "Ibu kota: Kingstown. Negara pulau dengan pantai.",
+              attractions: [
+                {
+                  name: "Kepulauan Grenadines",
+                  details: "Kepulauan dengan pantai pasir putih dan air jernih untuk berlayar."
+                }
+              ]
+            },
+            {
+              name: "Suriname",
+              summary: "Ibu kota: Paramaribo. Negara dengan hutan dan budaya.",
+              attractions: [
+                {
+                  name: "Kota Tua Paramaribo",
+                  details: "Kawasan bersejarah dengan bangunan kolonial Belanda, situs UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Trinidad dan Tobago",
+              summary: "Ibu kota: Port of Spain. Negara dengan karnaval dan pantai.",
+              attractions: [
+                {
+                  name: "Pantai Maracas",
+                  details: "Pantai populer di Trinidad dengan makanan lokal seperti bake and shark."
+                }
+              ]
+            },
+            {
+              name: "Uruguay",
+              summary: "Ibu kota: Montevideo. Negara dengan pantai dan tango.",
+              attractions: [
+                {
+                  name: "Kota Tua Montevideo",
+                  details: "Kawasan bersejarah dengan alun-alun dan bangunan kolonial."
+                }
+              ]
+            },
+            {
+              name: "Venezuela",
+              summary: "Ibu kota: Karakas. Negara dengan air terjun dan hutan.",
+              attractions: [
+                {
+                  name: "Air Terjun Angel",
+                  details: "Air terjun tertinggi di dunia di Taman Nasional Canaima, setinggi 979 meter."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Australia/Oseania",
+          summary: "Benua terkecil dengan terumbu karang dan hewan unik.",
+          countries: [
+            {
+              name: "Australia",
+              summary: "Ibu kota: Canberra. Negara dengan kanguru dan pantai indah.",
+              attractions: [
+                {
+                  name: "Great Barrier Reef",
+                  details: "Terumbu karang terbesar di dunia di Queensland, rumah ribuan ikan."
+                },
+                {
+                  name: "Sydney Opera House",
+                  details: "Bangunan ikonik di Sydney dengan desain seperti layar kapal."
+                }
+              ]
+            },
+            {
+              name: "Fiji",
+              summary: "Ibu kota: Suva. Negara kepulauan dengan pantai tropis.",
+              attractions: [
+                {
+                  name: "Kepulauan Mamanuca",
+                  details: "Kepulauan dengan pantai pasir putih, cocok untuk snorkeling."
+                }
+              ]
+            },
+            {
+              name: "Kaledonia Baru",
+              summary: "Ibu kota: Nouméa. Wilayah dengan laguna dan terumbu karang.",
+              attractions: [
+                {
+                  name: "Laguna Nouméa",
+                  details: "Laguna besar dengan terumbu karang, situs Warisan Dunia UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Kiribati",
+              summary: "Ibu kota: Tarawa. Negara kepulauan di Pasifik tengah.",
+              attractions: [
+                {
+                  name: "Atol Tarawa",
+                  details: "Atol dengan pantai dan sejarah Perang Dunia II."
+                }
+              ]
+            },
+            {
+              name: "Mikronesia",
+              summary: "Ibu kota: Palikir. Negara kepulauan dengan budaya laut.",
+              attractions: [
+                {
+                  name: "Nan Madol",
+                  details: "Kota kuno di Pohnpei, dibangun di atas terumbu karang."
+                }
+              ]
+            },
+            {
+              name: "Nauru",
+              summary: "Ibu kota: Yaren. Negara pulau kecil di Pasifik.",
+              attractions: [
+                {
+                  name: "Pantai Anibare",
+                  details: "Pantai indah di Nauru, cocok untuk berenang dan bersantai."
+                }
+              ]
+            },
+            {
+              name: "Niue",
+              summary: "Ibu kota: Alofi. Pulau kecil dengan gua dan karang.",
+              attractions: [
+                {
+                  name: "Gua Limu",
+                  details: "Gua bawah air di Niue, cocok untuk snorkeling dan menyelam."
+                }
+              ]
+            },
+            {
+              name: "Palau",
+              summary: "Ibu kota: Ngerulmud. Negara dengan danau ubur-ubur.",
+              attractions: [
+                {
+                  name: "Jellyfish Lake",
+                  details: "Danau dengan jutaan ubur-ubur yang tidak menyengat, unik di dunia."
+                }
+              ]
+            },
+            {
+              name: "Papua Nugini",
+              summary: "Ibu kota: Port Moresby. Negara dengan hutan dan budaya.",
+              attractions: [
+                {
+                  name: "Taman Nasional Variarata",
+                  details: "Taman dekat Port Moresby dengan burung cendrawasih dan hiking."
+                }
+              ]
+            },
+            {
+              name: "Polinesia Prancis",
+              summary: "Ibu kota: Papeete. Kepulauan dengan laguna biru.",
+              attractions: [
+                {
+                  name: "Bora Bora",
+                  details: "Pulau dengan laguna biru dan gunung Otemanu, cocok untuk berenang."
+                }
+              ]
+            },
+            {
+              name: "Pulau Marshall",
+              summary: "Ibu kota: Majuro. Negara kepulauan dengan atol.",
+              attractions: [
+                {
+                  name: "Atol Bikini",
+                  details: "Atol dengan sejarah uji coba nuklir, kini tempat menyelam kapal karam."
+                }
+              ]
+            },
+            {
+              name: "Pulau Solomon",
+              summary: "Ibu kota: Honiara. Negara dengan pulau dan terumbu karang.",
+              attractions: [
+                {
+                  name: "Teluk Marovo",
+                  details: "Teluk dengan terumbu karang dan desa tradisional di pulau."
+                }
+              ]
+            },
+            {
+              name: "Samoa",
+              summary: "Ibu kota: Apia. Negara dengan budaya Polinesia.",
+              attractions: [
+                {
+                  name: "Air Terjun Togitogiga",
+                  details: "Air terjun di Upolu, cocok untuk berenang dan piknik."
+                }
+              ]
+            },
+            {
+              name: "Samoa Amerika",
+              summary: "Ibu kota: Pago Pago. Wilayah dengan taman nasional.",
+              attractions: [
+                {
+                  name: "Taman Nasional Samoa Amerika",
+                  details: "Taman dengan hutan hujan dan pantai di Tutuila."
+                }
+              ]
+            },
+            {
+              name: "Selandia Baru",
+              summary: "Ibu kota: Wellington. Negara dengan fjord dan gunung.",
+              attractions: [
+                {
+                  name: "Milford Sound",
+                  details: "Fjord di Pulau Selatan dengan tebing dan air terjun, disebut keajaiban alam."
+                }
+              ]
+            },
+            {
+              name: "Tonga",
+              summary: "Ibu kota: Nuku'alofa. Negara kepulauan dengan budaya kerajaan.",
+              attractions: [
+                {
+                  name: "Ha'amonga 'a Maui",
+                  details: "Struktur batu kuno di Tongatapu, seperti Stonehenge, dibangun pada abad ke-13."
+                }
+              ]
+            },
+            {
+              name: "Tuvalu",
+              summary: "Ibu kota: Funafuti. Negara kecil dengan laguna dan pantai.",
+              attractions: [
+                {
+                  name: "Laguna Funafuti",
+                  details: "Laguna besar dengan air jernih, cocok untuk berenang dan melihat ikan tropis."
+                }
+              ]
+            },
+            {
+              name: "Vanuatu",
+              summary: "Ibu kota: Port-Vila. Negara kepulauan dengan gunung berapi aktif.",
+              attractions: [
+                {
+                  name: "Gunung Yasur",
+                  details: "Gunung berapi aktif di Pulau Tanna, kamu bisa melihat lava dari dekat."
+                }
+              ]
+            },
+            {
+              name: "Wallis dan Futuna",
+              summary: "Ibu kota: Mata Utu. Wilayah Prancis dengan budaya Polinesia.",
+              attractions: [
+                {
+                  name: "Danau Lalolalo",
+                  details: "Danau kawah di Wallis, dikelilingi hutan dan tebing, pemandangan indah."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Turks dan Caicos",
+              summary: "Ibu kota: Kota Cockburn. Wilayah dengan pantai pasir putih.",
+              attractions: [
+                {
+                  name: "Grace Bay",
+                  details: "Pantai di Providenciales, terkenal dengan pasir lembut dan air jernih."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Pitcairn",
+              summary: "Ibu kota: Adamstown. Pulau terpencil dengan sejarah Bounty.",
+              attractions: [
+                {
+                  name: "Teluk Bounty",
+                  details: "Teluk tempat kapal Bounty terbakar, dengan sejarah pelaut pemberontak."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Faroe",
+              summary: "Ibu kota: Torshavn. Pulau dengan tebing dramatis dan domba.",
+              attractions: [
+                {
+                  name: "Air Terjun Mulafossur",
+                  details: "Air terjun di Vagar yang jatuh langsung ke laut, pemandangan spektakuler."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Mariana Utara",
+              summary: "Ibu kota: Saipan. Wilayah dengan pantai dan gua.",
+              attractions: [
+                {
+                  name: "Gua Grotto",
+                  details: "Gua bawah air di Saipan, cocok untuk menyelam dan melihat karang."
+                }
+              ]
+            },
+            {
+              name: "Pulau Norfolk",
+              summary: "Ibu kota: Kingston. Pulau dengan sejarah kolonial dan pinus.",
+              attractions: [
+                {
+                  name: "Kota Tua Kingston",
+                  details: "Kawasan bersejarah dengan bangunan kolonial, bagian dari situs UNESCO."
+                }
+              ]
+            },
+            {
+              name: "Guam",
+              summary: "Ibu kota: Hagatna. Wilayah dengan pantai dan budaya Chamorro.",
+              attractions: [
+                {
+                  name: "Teluk Tumon",
+                  details: "Pantai populer di Guam, cocok untuk berenang dan melihat matahari terbenam."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: "Antartika dan Lainnya",
+          summary: "Wilayah khusus dengan pulau terpencil dan kutub selatan.",
+          countries: [
+            {
+              name: "Saint Helena, Ascension, dan Tristan da Cunha",
+              summary: "Ibu kota: Jamestown. Wilayah Inggris di Atlantik Selatan.",
+              attractions: [
+                {
+                  name: "Tangga Yakub",
+                  details: "Tangga dengan 699 anak tangga di Saint Helena, menuju bukit dengan pemandangan."
+                }
+              ]
+            },
+            {
+              name: "Svalbard",
+              summary: "Ibu kota: Longyearbyen. Wilayah Norwegia di Arktik.",
+              attractions: [
+                {
+                  name: "Lembah Adventdalen",
+                  details: "Lembah di Svalbard dengan pemandangan salju dan kesempatan melihat beruang kutub."
+                }
+              ]
+            },
+            {
+              name: "Wilayah Britania di Samudra Hindia",
+              summary: "Ibu kota: Diego Garcia. Wilayah dengan atol dan laguna.",
+              attractions: [
+                {
+                  name: "Atol Diego Garcia",
+                  details: "Atol dengan laguna biru, rumah bagi satwa laut seperti penyu."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    let currentLevel = 'continents';
+    let currentContinent = null;
+    let currentCountry = null;
+    let historyStack = [];
+
+    function renderContent() {
+      const contentDiv = document.getElementById('content');
+      const title = document.getElementById('main-title');
+      const backBtn = document.querySelector('.back-btn');
+      contentDiv.innerHTML = '';
+
+      if (currentLevel === 'continents') {
+        title.textContent = 'Jelajahi Dunia!';
+        backBtn.style.display = 'none';
+        data.continents.forEach(continent => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h2>${continent.name}</h2>
+            <p class="summary">${continent.summary}</p>
+          `;
+          card.onclick = () => showCountries(continent.name);
+          contentDiv.appendChild(card);
+        });
+      } else if (currentLevel === 'countries') {
+        title.textContent = `Jelajahi ${currentContinent}!`;
+        backBtn.style.display = 'block';
+        const continent = data.continents.find(c => c.name === currentContinent);
+        continent.countries.forEach(country => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${country.name}</h3>
+            <p class="summary">${country.summary}</p>
+          `;
+          card.onclick = () => showAttractions(country.name);
+          contentDiv.appendChild(card);
+        });
+      } else if (currentLevel === 'attractions') {
+        title.textContent = `Jelajahi ${currentCountry}!`;
+        backBtn.style.display = 'block';
+        const continent = data.continents.find(c => c.name === currentContinent);
+        const country = continent.countries.find(c => c.name === currentCountry);
+        const card = document.createElement('div');
+        card.className = 'card attraction-details';
+        let attractionsHTML = '<h3>Tempat Wisata</h3>';
+        country.attractions.forEach(attraction => {
+          attractionsHTML += `
+            <h4>${attraction.name}</h4>
+            <p>${attraction.details}</p>
+          `;
+        });
+        card.innerHTML = attractionsHTML;
+        contentDiv.appendChild(card);
+      }
+    }
+
+    function showCountries(continentName) {
+      historyStack.push({ level: currentLevel, continent: currentContinent, country: currentCountry });
+      currentLevel = 'countries';
+      currentContinent = continentName;
+      renderContent();
+    }
+
+    function showAttractions(countryName) {
+      historyStack.push({ level: currentLevel, continent: currentContinent, country: currentCountry });
+      currentLevel = 'attractions';
+      currentCountry = countryName;
+      renderContent();
+    }
+
+    function goBack() {
+      if (historyStack.length > 0) {
+        const prevState = historyStack.pop();
+        currentLevel = prevState.level;
+        currentContinent = prevState.continent;
+        currentCountry = prevState.country;
+        renderContent();
+      }
+    }
+
+    renderContent();
+  </script>
+</body>
+</html>
