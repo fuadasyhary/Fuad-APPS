@@ -97,11 +97,23 @@
     button:hover {
       filter: brightness(1.1);
     }
+    @media (max-width: 640px) {
+      .card {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .card h2 {
+        font-size: 1.1rem;
+      }
+      .card p {
+        font-size: 0.8rem;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
   <h1 class="text-4xl font-bold text-blue-600 mb-8">Tokoh Penemu Dunia</h1>
-  <div id="card-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div id="card-container" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <!-- Kartu akan di-generate oleh JavaScript -->
   </div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
