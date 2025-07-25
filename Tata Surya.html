@@ -18,13 +18,6 @@
       pointer-events: none;
       z-index: 1000;
     }
-    #planet-card, #popup {
-      z-index: 2000; /* Pastikan card dan popup di atas kanvas */
-    }
-    #summary-btn, #back-btn, #popup-back-btn {
-      touch-action: auto; /* Aktifkan sentuhan untuk tombol */
-      z-index: 2100; /* Pastikan tombol di atas elemen lain */
-    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-blue-900 to-purple-900 min-h-screen flex items-center justify-center overflow-hidden">
@@ -45,6 +38,10 @@
       <button id="popup-back-btn" class="bg-red-400 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full transition duration-300 w-full">Kembali</button>
     </div>
   </div>
+  <audio id="bg-audio" src="skyhigh.mp3" loop preload="auto" autoplay hidden>
+    <source src="skyhigh.mp3" type="audio/mpeg">
+    Maaf, browser Anda tidak mendukung elemen audio.
+  </audio>
   <script type="text/javascript">
     var gk_isXlsx = false;
     var gk_xlsxFileLookup = {};
@@ -78,6 +75,7 @@
     }
   </script>
   <script>
+    // Celestial bodies data
     const celestialBodies = [
       {
         name: "Matahari",
@@ -257,11 +255,7 @@
     }
 
     function touchStarted() {
-      if (touches.length === 1) {
-        let adjustedTouchX = (touches[0].x - width / 2) / zoomScale + width / 2;
-        let adjustedTouchY = (touches[0].y - height / 2) / zoomScale + height / 2;
-        checkBodyClick(adjustedTouchX, adjustedTouchY);
-      } else if (touches.length === 2) {
+      if (touches.length === 2) {
         lastTouchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
       }
       return false;
@@ -276,42 +270,6 @@
         lastTouchDistance = currentTouchDistance;
       }
       return false;
-    }
-
-    function mousePressed() {
-      let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
-      let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
-      checkBodyClick(adjustedMouseX, adjustedMouseY);
-    }
-
-    function checkBodyClick(x, y) {
-      celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
-        let bodyX = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
-        let bodyY = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
-        if (dist(x, y, bodyX, bodyY) < body.size / 2) {
-          currentBody = body;
-          document.getElementById("solar-system").classList.add("hidden");
-          document.getElementById("planet-card").classList.remove("hidden");
-          document.getElementById("planet-title").textContent = body.name;
-          document.getElementById("planet-desc").textContent = body.desc;
-          document.getElementById("popup-title").textContent = `Ringkasan ${body.name}`;
-          document.getElementById("popup-caption").textContent = body.summary;
-        }
-        body.satellites.forEach((sat, i) => {
-          let sx = bodyX + body.size * 1.5 * cos(frameCount / 20 + i * 2);
-          let sy = bodyY + body.size * 1.5 * sin(frameCount / 20 + i * 2);
-          if (dist(x, y, sx, sy) < body.size / 4) {
-            const satellite = celestialBodies.find(p => p.name === sat);
-            currentBody = satellite;
-            document.getElementById("solar-system").classList.add("hidden");
-            document.getElementById("planet-card").classList.remove("hidden");
-            document.getElementById("planet-title").textContent = sat;
-            document.getElementById("planet-desc").textContent = satellite.desc;
-            document.getElementById("popup-title").textContent = `Ringkasan ${sat}`;
-            document.getElementById("popup-caption").textContent = satellite.summary;
-          }
-        });
-      });
     }
 
     function draw() {
@@ -353,28 +311,50 @@
       });
     }
 
-    // Fungsi untuk menangani tap/klik pada tombol
-    function handleButtonAction(buttonId, action) {
-      document.getElementById(buttonId).addEventListener('click', action);
-      document.getElementById(buttonId).addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Cegah perilaku default seperti scroll
-        action();
+    function mousePressed() {
+      let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
+      let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
+      celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
+        let x = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
+        let y = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
+        if (dist(adjustedMouseX, adjustedMouseY, x, y) < body.size / 2) {
+          currentBody = body;
+          document.getElementById("solar-system").classList.add("hidden");
+          document.getElementById("planet-card").classList.remove("hidden");
+          document.getElementById("planet-title").textContent = body.name;
+          document.getElementById("planet-desc").textContent = body.desc;
+          document.getElementById("popup-title").textContent = `Ringkasan ${body.name}`;
+          document.getElementById("popup-caption").textContent = body.summary;
+        }
+        body.satellites.forEach((sat, i) => {
+          let sx = x + body.size * 1.5 * cos(frameCount / 20 + i * 2);
+          let sy = y + body.size * 1.5 * sin(frameCount / 20 + i * 2);
+          if (dist(adjustedMouseX, adjustedMouseY, sx, sy) < body.size / 4) {
+            const satellite = celestialBodies.find(p => p.name === sat);
+            currentBody = satellite;
+            document.getElementById("solar-system").classList.add("hidden");
+            document.getElementById("planet-card").classList.remove("hidden");
+            document.getElementById("planet-title").textContent = sat;
+            document.getElementById("planet-desc").textContent = satellite.desc;
+            document.getElementById("popup-title").textContent = `Ringkasan ${sat}`;
+            document.getElementById("popup-caption").textContent = satellite.summary;
+          }
+        });
       });
     }
 
-    // Terapkan event listener untuk tombol
-    handleButtonAction("summary-btn", () => {
+    document.getElementById("summary-btn").addEventListener("click", () => {
       document.getElementById("planet-card").classList.add("hidden");
       document.getElementById("popup").classList.remove("hidden");
     });
 
-    handleButtonAction("back-btn", () => {
+    document.getElementById("back-btn").addEventListener("click", () => {
       document.getElementById("planet-card").classList.add("hidden");
       document.getElementById("popup").classList.add("hidden");
       document.getElementById("solar-system").classList.remove("hidden");
     });
 
-    handleButtonAction("popup-back-btn", () => {
+    document.getElementById("popup-back-btn").addEventListener("click", () => {
       document.getElementById("popup").classList.add("hidden");
       document.getElementById("planet-card").classList.remove("hidden");
     });
@@ -385,16 +365,37 @@
       .font-comic { font-family: 'Comic Neue', cursive; }
     `;
     document.head.appendChild(style);
-  </script>
-  <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
-  <script>
+
+    // Audio autoplay logic
     document.addEventListener('DOMContentLoaded', function () {
-      document.body.addEventListener('click', function () {
-        var audio = document.getElementById('bg-audio');
-        audio.play().catch(err => {
-          console.log('Autoplay diblokir:', err);
+      const audio = document.getElementById('bg-audio');
+
+      // Fungsi untuk mencoba memutar audio
+      function tryPlayAudio() {
+        audio.play().then(() => {
+          console.log('Audio berhasil diputar');
+        }).catch(err => {
+          console.error('Gagal memutar audio:', err);
         });
-      }, { once: true });
+      }
+
+      // Coba putar audio langsung saat halaman dimuat
+      tryPlayAudio();
+
+      // Tambahkan event listener untuk interaksi pengguna
+      ['click', 'touchstart'].forEach(eventType => {
+        document.body.addEventListener(eventType, function () {
+          if (audio.paused) {
+            tryPlayAudio();
+          }
+        }, { once: true });
+      });
+
+      // Tangani jika audio gagal dimuat
+      audio.addEventListener('error', (err) => {
+        console.error('Error memuat audio:', err);
+        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
+      });
     });
   </script>
 </body>
