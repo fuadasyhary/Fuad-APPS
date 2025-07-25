@@ -97,11 +97,23 @@
         pointer-events: none;
         z-index: 1000;
         }
+        @media (max-width: 640px) {
+        .card {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .card h2 {
+            font-size: 1.1rem;
+        }
+        .card p {
+            font-size: 0.8rem;
+        }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-6">
     <h1 class="text-4xl font-bold text-blue-600 mb-8">Cerita Rakyat Indonesia untuk Anak</h1>
-    <div id="story-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+    <div id="story-list" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <!-- Cerita akan diisi oleh JavaScript -->
     </div>
     <div class="watermark">By Mochamad Fuad Asyhary</div>
