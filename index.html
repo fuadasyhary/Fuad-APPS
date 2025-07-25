@@ -150,7 +150,7 @@
       0% { transform: translate(0, 0) rotate(0deg); }
       25% { transform: translate(15vw, -35vh) rotate(90deg); }
       50% { transform: translate(-30vw, 25vh) rotate(180deg); }
-      75% { transform: translate(20vw, -20vh) rotate(270 sayuran); }
+      75% { transform: translate(20vw, -20vh) rotate(270deg); }
       100% { transform: translate(0, 0) rotate(360deg); }
     }
     @keyframes float8 {
@@ -175,23 +175,29 @@
       text-align: center;
       position: relative;
       z-index: 1;
+      max-width: 90%;
+      box-sizing: border-box;
     }
     .menu h1 {
       font-size: 36px;
       color: #ff4081;
       margin-bottom: 20px;
     }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
     .menu button {
-      display: block;
-      width: 100%;
-      font-size: 24px;
-      margin: 10px 0;
-      padding: 15px;
+      font-size: 18px;
+      padding: 12px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s;
       color: white;
+      width: 100%;
+      box-sizing: border-box;
     }
     .watermark {
       position: fixed;
@@ -215,6 +221,36 @@
     .menu button:hover {
       filter: brightness(1.1);
     }
+    /* Responsif untuk mobile */
+    @media (max-width: 768px) {
+      .menu {
+        padding: 20px;
+      }
+      .menu h1 {
+        font-size: 28px;
+      }
+      .menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .menu button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      .menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .menu button {
+        font-size: 12px;
+        padding: 8px;
+      }
+      .menu h1 {
+        font-size: 24px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -231,51 +267,30 @@
   </div>
   <div class="menu">
     <h1>Zona Edukasi Anak</h1>
-    <button class="btn-iq" onclick="window.location.href='Test IQ.html'">Tes IQ Online</button>
-    <button class="btn-find" onclick="window.location.href='Finding Items.html'">Game Mencari Barang</button>
-    <button class="btn-indo" onclick="window.location.href='Jelajahi Indonesia.html'">Jelajahi Indonesia</button>
-    <button class="btn-hero" onclick="window.location.href='Cerita Pahlawan.html'">Cerita Pahlawan</button>
-    <button class="btn-story" onclick="window.location.href='Cerita Rakyat.html'">Cerita Rakyat</button>
-    <button class="btn-rasul" onclick="window.location.href='Cerita Nabi & Rasul.html'">Cerita Nabi & Rasul</button>
-    <button class="btn-penemu" onclick="window.location.href='Tokoh Penemu.html'">Cerita Tokoh Penemu</button>
-    <button class="btn-planet" onclick="window.location.href='Tata Surya.html'">Tata Surya</button>
-    <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
+    <div class="menu-grid">
+      <button class="btn-iq" onclick="window.location.href='Test IQ.html'">Tes IQ Online</button>
+      <button class="btn-find" onclick="window.location.href='Finding Items.html'">Game Mencari Barang</button>
+      <button class="btn-indo" onclick="window.location.href='Jelajahi Indonesia.html'">Jelajahi Indonesia</button>
+      <button class="btn-hero" onclick="window.location.href='Cerita Pahlawan.html'">Cerita Pahlawan</button>
+      <button class="btn-story" onclick="window.location.href='Cerita Rakyat.html'">Cerita Rakyat</button>
+      <button class="btn-rasul" onclick="window.location.href='Cerita Nabi & Rasul.html'">Cerita Nabi & Rasul</button>
+      <button class="btn-penemu" onclick="window.location.href='Tokoh Penemu.html'">Cerita Tokoh Penemu</button>
+      <button class="btn-planet" onclick="window.location.href='Tata Surya.html'">Tata Surya</button>
+      <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
+    </div>
   </div>
   <div class="watermark">By Mochamad Fuad Asyhary</div>
   <!-- AUDIO -->
   <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
   <!-- SCRIPT UNTUK AUTOPLAY SETELAH KLIK -->
   <script>
-    // Audio autoplay logic
     document.addEventListener('DOMContentLoaded', function () {
-      const audio = document.getElementById('bg-audio');
-
-      // Fungsi untuk mencoba memutar audio
-      function tryPlayAudio() {
-        audio.play().then(() => {
-          console.log('Audio berhasil diputar');
-        }).catch(err => {
-          console.error('Gagal memutar audio:', err);
+      document.body.addEventListener('click', function () {
+        var audio = document.getElementById('bg-audio');
+        audio.play().catch(err => {
+          console.log('Autoplay diblokir:', err);
         });
-      }
-
-      // Coba putar audio langsung saat halaman dimuat
-      tryPlayAudio();
-
-      // Tambahkan event listener untuk interaksi pengguna
-      ['click', 'touchstart'].forEach(eventType => {
-        document.body.addEventListener(eventType, function () {
-          if (audio.paused) {
-            tryPlayAudio();
-          }
-        }, { once: true });
-      });
-
-      // Tangani jika audio gagal dimuat
-      audio.addEventListener('error', (err) => {
-        console.error('Error memuat audio:', err);
-        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
-      });
+      }, { once: true });
     });
   </script>
 </body>
