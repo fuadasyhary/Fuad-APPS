@@ -257,6 +257,11 @@
     function touchStarted() {
       if (touches.length === 2) {
         lastTouchDistance = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
+      } else if (touches.length === 1) {
+        // Handle single touch for planet/satellite selection
+        let adjustedTouchX = (touches[0].x - width / 2) / zoomScale + width / 2;
+        let adjustedTouchY = (touches[0].y - height / 2) / zoomScale + height / 2;
+        selectCelestialBody(adjustedTouchX, adjustedTouchY);
       }
       return false;
     }
@@ -270,6 +275,43 @@
         lastTouchDistance = currentTouchDistance;
       }
       return false;
+    }
+
+    function mousePressed() {
+      let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
+      let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
+      selectCelestialBody(adjustedMouseX, adjustedMouseY);
+      return false;
+    }
+
+    function selectCelestialBody(x, y) {
+      celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
+        let bodyX = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
+        let bodyY = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
+        if (dist(x, y, bodyX, bodyY) < body.size / 2) {
+          currentBody = body;
+          document.getElementById("solar-system").classList.add("hidden");
+          document.getElementById("planet-card").classList.remove("hidden");
+          document.getElementById("planet-title").textContent = body.name;
+          document.getElementById("planet-desc").textContent = body.desc;
+          document.getElementById("popup-title").textContent = `Ringkasan ${body.name}`;
+          document.getElementById("popup-caption").textContent = body.summary;
+        }
+        body.satellites.forEach((sat, i) => {
+          let sx = bodyX + body.size * 1.5 * cos(frameCount / 20 + i * 2);
+          let sy = bodyY + body.size * 1.5 * sin(frameCount / 20 + i * 2);
+          if (dist(x, y, sx, sy) < body.size / 4) {
+            const satellite = celestialBodies.find(p => p.name === sat);
+            currentBody = satellite;
+            document.getElementById("solar-system").classList.add("hidden");
+            document.getElementById("planet-card").classList.remove("hidden");
+            document.getElementById("planet-title").textContent = sat;
+            document.getElementById("planet-desc").textContent = satellite.desc;
+            document.getElementById("popup-title").textContent = `Ringkasan ${sat}`;
+            document.getElementById("popup-caption").textContent = satellite.summary;
+          }
+        });
+      });
     }
 
     function draw() {
@@ -307,38 +349,6 @@
           textFont('Comic Neue');
           text(sat, sx, sy + body.size / 4 + 12 / zoomScale);
           noStroke();
-        });
-      });
-    }
-
-    function mousePressed() {
-      let adjustedMouseX = (mouseX - width / 2) / zoomScale + width / 2;
-      let adjustedMouseY = (mouseY - height / 2) / zoomScale + height / 2;
-      celestialBodies.filter(p => !p.desc.startsWith("Satelit")).forEach((body, index) => {
-        let x = width / 2 + (body.orbit * cos(frameCount / (60 + index * 10)));
-        let y = height / 2 + (body.orbit * sin(frameCount / (60 + index * 10)));
-        if (dist(adjustedMouseX, adjustedMouseY, x, y) < body.size / 2) {
-          currentBody = body;
-          document.getElementById("solar-system").classList.add("hidden");
-          document.getElementById("planet-card").classList.remove("hidden");
-          document.getElementById("planet-title").textContent = body.name;
-          document.getElementById("planet-desc").textContent = body.desc;
-          document.getElementById("popup-title").textContent = `Ringkasan ${body.name}`;
-          document.getElementById("popup-caption").textContent = body.summary;
-        }
-        body.satellites.forEach((sat, i) => {
-          let sx = x + body.size * 1.5 * cos(frameCount / 20 + i * 2);
-          let sy = y + body.size * 1.5 * sin(frameCount / 20 + i * 2);
-          if (dist(adjustedMouseX, adjustedMouseY, sx, sy) < body.size / 4) {
-            const satellite = celestialBodies.find(p => p.name === sat);
-            currentBody = satellite;
-            document.getElementById("solar-system").classList.add("hidden");
-            document.getElementById("planet-card").classList.remove("hidden");
-            document.getElementById("planet-title").textContent = sat;
-            document.getElementById("planet-desc").textContent = satellite.desc;
-            document.getElementById("popup-title").textContent = `Ringkasan ${sat}`;
-            document.getElementById("popup-caption").textContent = satellite.summary;
-          }
         });
       });
     }
@@ -381,6 +391,21 @@
 
       // Coba putar audio langsung saat halaman dimuat
       tryPlayAudio();
+
+      // Tambahkan event listener untuk interaksi pengguna
+      ['click', 'touchstart'].forEach(eventType => {
+        document.body.addEventListener(eventType, function () {
+          if (audio.paused) {
+            tryPlayAudio();
+          }
+        }, { once: true });
+      });
+
+      // Tangani jika audio gagal dimuat
+      audio.addEventListener('error', (err) => {
+        console.error('Error memuat audio:', err);
+        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
+      });
     });
   </script>
 </body>
