@@ -268,7 +268,7 @@
       position: absolute;
       width: 30px;
       height: 30px;
-      background: url('https://w7.pngwing.com/pngs/601/824/png-transparent-star-system-film-star.png') no-repeat center;
+      background: url('https://cdn-icons-png.freepik.com/512/1828/1828613.png') no-repeat center;
       background-size: contain;
       cursor: pointer;
     }
@@ -278,7 +278,7 @@
       font-size: 16px;
     }
     .captcha-reset {
-      margin-top: 10px;
+      margin: 10px auto; /* Pindahkan ke tengah */
       padding: 10px 20px;
       background: #ff4081;
       color: white;
@@ -286,6 +286,9 @@
       border-radius: 5px;
       cursor: pointer;
       display: none;
+      text-align: center;
+      width: auto;
+      min-width: 100px; /* Pastikan tombol tidak terlalu kecil */
     }
     .captcha-reset:hover {
       background: #e91e63;
@@ -341,6 +344,9 @@
         width: 20px;
         height: 20px;
       }
+      .captcha-reset {
+        min-width: 80px; /* Sesuaikan untuk layar kecil */
+      }
     }
   </style>
 </head>
@@ -360,9 +366,9 @@
   <div class="captcha-overlay" id="captchaOverlay">
     <div class="captcha-container">
       <h2>Verifikasi CAPTCHA</h2>
-      <p>Human Atau Robot</p>
+      <p>Klik 3 bintang untuk verifikasi manusia</p>
       <div class="captcha-area" id="captchaArea"></div>
-      <div class="captcha-status" id="captchaStatus">Klik 3 bintang</div>
+      <div class="captcha-status" id="captchaStatus">Klik 3 bintang untuk verifikasi manusia</div>
       <button class="captcha-reset" id="captchaReset">Coba Lagi</button>
     </div>
   </div>
