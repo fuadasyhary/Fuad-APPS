@@ -434,7 +434,7 @@
         e.stopPropagation();
         clickCount++;
         e.target.style.display = 'none';
-        captchaStatus.textContent = `Klik ${requiredClicks - clickCount} bintang lagi untuk verifikasi manusia`;
+        captchaStatus.textContent = `Klik ${requiredClicks - clickCount} bintang lagi untuk verifikasi human`;
 
         if (clickCount >= requiredClicks) {
           captchaOverlay.style.display = 'none';
@@ -444,7 +444,7 @@
       }
 
       function handleWrongClick() {
-        captchaStatus.textContent = 'Klik gagal! Coba lagi.';
+        captchaStatus.textContent = 'Verifikasi gagal! Coba lagi.';
         captchaReset.style.display = 'block';
       }
 
