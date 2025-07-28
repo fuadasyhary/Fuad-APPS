@@ -56,10 +56,17 @@
       bottom: 10px;
       right: 10px;
       color: rgba(0, 0, 0, 0.3);
-      font-size: 10px;
+      font-size: 12px;
       font-family: Arial, sans-serif;
-      pointer-events: none;
       z-index: 1000;
+    }
+    .watermark a {
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+    }
+    .watermark a:hover {
+      color: rgba(0, 0, 0, 0.8);
+      text-decoration: underline;
     }
     .card {
       transition: transform 0.3s, box-shadow 0.3s;
@@ -116,7 +123,7 @@
   <div id="card-container" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <!-- Kartu akan di-generate oleh JavaScript -->
   </div>
-  <div class="watermark">By Mochamad Fuad Asyhary</div>
+  <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
 
   <div id="modal" class="modal">
     <div class="modal-content">
