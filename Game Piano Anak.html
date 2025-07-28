@@ -271,6 +271,14 @@
     </div>
 
     <script>
+            // Lock orientation to landscape on mobile devices
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                  console.log('Orientation lock failed: ', error);
+                });
+              }
+            }
         const songs = {
             bintang_kecil: [
                 { note: "G4", number: "1'", lyric: "Bin-", duration: 500 },
