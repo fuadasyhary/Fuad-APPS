@@ -45,6 +45,7 @@
     <title>Tes IQ Online - 100 Soal</title>
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4236/4236484.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,6 +65,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             box-sizing: border-box;
+            max-width: 800px;
+            margin: 0 auto;
         }
         h1 {
             color: #2c3e50;
@@ -128,13 +131,8 @@
             border-radius: 5px;
         }
         #resultText {
-            overflow: auto;
-            height: auto;
-            max-height: none;
-            min-height: 300px;
             padding: 15px;
             margin-top: 15px;
-            box-sizing: border-box;
             text-align: left;
         }
         .example {
@@ -153,10 +151,16 @@
             bottom: 10px;
             right: 10px;
             color: rgba(0, 0, 0, 0.3);
-            font-size: 10px;
-            font-family: Arial, sans-serif;
-            pointer-events: none;
+            font-size: 12px;
             z-index: 1000;
+        }
+        .watermark a {
+            color: rgba(0, 0, 0, 0.5);
+            text-decoration: none;
+        }
+        .watermark a:hover {
+            color: rgba(0, 0, 0, 0.8);
+            text-decoration: underline;
         }
         #startButton {
             background-color: #2ecc71;
@@ -164,10 +168,10 @@
         #startButton:hover {
             background-color: #27ae60;
         }
-        #backButton {
+        #homeButton {
             background-color: #e74c3c;
         }
-        #backButton:hover {
+        #homeButton:hover {
             background-color: #c0392b;
         }
         #showDetailsButton {
@@ -176,14 +180,43 @@
         #showDetailsButton:hover {
             background-color: #2980b9;
         }
+        #timer {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        #warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="watermark">By Mochamad Fuad Asyhary</div>
+    <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
+    <div id="timer"></div>
+    <div id="warning">
+        <h3>Peringatan!</h3>
+        <p>Tes gagal karena Anda meminimalkan aplikasi atau membuka program lain.</p>
+        <button onclick="goHome()">Kembali ke Beranda</button>
+    </div>
     <div class="container">
         <h1>Tes IQ Online - 100 Soal</h1>
-
-        <!-- Contoh Soal -->
         <div class="section example" id="exampleSection">
             <h3>Contoh Soal</h3>
             <p>1. (Numerik) Lanjutkan deret berikut: 2, 4, 6, 8, ?</p>
@@ -192,26 +225,53 @@
             <p>Jawaban: Woof (Penjelasan: Kata mewakili suara hewan.)</p>
             <button id="startButton" onclick="startQuiz()">Mulai Tes</button>
         </div>
-
-        <!-- Navigasi Soal -->
         <div class="section nav-buttons" id="navButtons" style="display: none;"></div>
-
-        <!-- Form Tes -->
         <div class="section" id="quiz" style="display: none;">
             <form id="quizForm">
                 <div id="questionContainer"></div>
             </form>
         </div>
-
-        <!-- Hasil -->
         <div id="result" style="display: none;">
             <h3>Hasil Tes IQ</h3>
             <canvas id="resultChart"></canvas>
-            <div id="resultText" style="display: none;"></div>
+            <div id="resultText"></div>
             <button id="showDetailsButton" onclick="showDetails()">Tampilkan Penjelasan</button>
-            <button id="backButton" onclick="resetQuiz()">Kembali</button>
+            <button id="homeButton" onclick="goHome()">Kembali ke Beranda</button>
         </div>
     </div>
+
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+            return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                    var filteredData = jsonData.filter(row => row.some(filledCell));
+                    var headerRowIndex = filteredData.findIndex((row, index) =>
+                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                    );
+                    if (headerRowIndex === -1 || headerRowIndex > 25) {
+                        headerRowIndex = 0;
+                    }
+                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                    return csv;
+                } catch (e) {
+                    console.error(e);
+                    return "";
+                }
+            }
+            return gk_fileData[filename] || "";
+        }
+    </script>
 
     <script>
         const questions = [
@@ -924,8 +984,10 @@
         let currentQuestion = 0;
         let userAnswers = [];
         let detailsVisible = false;
+        let timerInterval;
+        let timeLeft = 50 * 60; // 50 menit dalam detik
+        let isQuizActive = false;
 
-        // Fisher-Yates shuffle for array
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -935,16 +997,35 @@
         }
 
         function initializeQuiz() {
-            // Shuffle questions and their options, then assign display numbers
             shuffledQuestions = shuffle([...questions]).map((q, index) => ({
                 ...q,
                 displayNumber: index + 1,
-                options: shuffle([...q.options]) // Shuffle options for each question
+                options: shuffle([...q.options])
             }));
             userAnswers = new Array(shuffledQuestions.length).fill(null);
             currentQuestion = 0;
             detailsVisible = false;
-            console.log(`Initialized quiz with ${shuffledQuestions.length} questions.`);
+            timeLeft = 50 * 60;
+            isQuizActive = true;
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (userAnswers.some(answer => answer === null)) {
+                        alert('Waktu habis! Tes belum selesai, silakan selesaikan.');
+                        return;
+                    }
+                    showResult();
+                } else {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    timeLeft--;
+                }
+            }, 1000);
         }
 
         function startQuiz() {
@@ -953,30 +1034,45 @@
             document.getElementById('quiz').style.display = 'block';
             document.getElementById('navButtons').style.display = 'flex';
             document.getElementById('result').style.display = 'none';
+            document.getElementById('timer').style.display = 'block';
+            startTimer();
             renderQuestion(0);
+            setupVisibilityCheck();
         }
 
-        function resetQuiz() {
+        function setupVisibilityCheck() {
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden' && isQuizActive) {
+                    clearInterval(timerInterval);
+                    isQuizActive = false;
+                    document.getElementById('warning').style.display = 'block';
+                    document.getElementById('quiz').style.display = 'none';
+                    document.getElementById('navButtons').style.display = 'none';
+                    document.getElementById('timer').style.display = 'none';
+                }
+            });
+        }
+
+        function goHome() {
+            clearInterval(timerInterval);
+            isQuizActive = false;
             document.getElementById('result').style.display = 'none';
             document.getElementById('quiz').style.display = 'none';
             document.getElementById('navButtons').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('warning').style.display = 'none';
             document.getElementById('resultText').style.display = 'none';
-            document.getElementById('showDetailsButton').innerText = 'Tampilkan Penjelasan';
             document.getElementById('exampleSection').style.display = 'block';
             document.getElementById('exampleSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         function showDetails() {
             const resultText = document.getElementById('resultText');
-            const showDetailsButton = document.getElementById('showDetailsButton');
             detailsVisible = !detailsVisible;
             resultText.style.display = detailsVisible ? 'block' : 'none';
-            showDetailsButton.innerText = detailsVisible ? 'Sembunyikan Penjelasan' : 'Tampilkan Penjelasan';
+            document.getElementById('showDetailsButton').innerText = detailsVisible ? 'Sembunyikan Penjelasan' : 'Tampilkan Penjelasan';
             if (detailsVisible) {
-                console.log('Showing resultText with content:', resultText.innerHTML);
                 resultText.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                console.log('Hiding resultText.');
             }
         }
 
@@ -995,15 +1091,15 @@
                     </div>
                 </div>
             `;
-
-            // Update navigation buttons
             const navButtons = document.getElementById('navButtons');
             navButtons.innerHTML = shuffledQuestions.map((q, i) => `
                 <button class="${userAnswers[i] ? 'answered' : ''} ${i === currentQuestion ? 'current' : ''}" onclick="renderQuestion(${i})">${q.displayNumber}</button>
-            `).join(' ');
+            `).join('');
         }
 
         function showResult() {
+            clearInterval(timerInterval);
+            isQuizActive = false;
             let score = 0;
             let typeScores = { Numerik: { correct: 0, total: 0 }, Verbal: { correct: 0, total: 0 }, Logika: { correct: 0, total: 0 } };
             let explanations = [];
@@ -1037,11 +1133,10 @@
             document.getElementById('exampleSection').style.display = 'none';
             document.getElementById('quiz').style.display = 'none';
             document.getElementById('navButtons').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
             document.getElementById('result').style.display = 'block';
-            document.getElementById('resultText').style.display = 'none';
-            document.getElementById('showDetailsButton').innerText = 'Tampilkan Penjelasan';
+            document.getElementById('resultText').style.display = 'block';
 
-            // Render chart
             const ctx = document.getElementById('resultChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
@@ -1079,23 +1174,17 @@
                 }
             });
 
-            // Scroll to result section
             document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-            console.log('Showing result with chart. Total questions:', shuffledQuestions.length);
         }
 
         function saveAnswer() {
             const selected = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
             userAnswers[currentQuestion] = selected ? selected.value : null;
-
-            // Check if all questions are answered
             const allAnswered = userAnswers.every(answer => answer !== null);
 
-            if (allAnswered && currentQuestion === shuffledQuestions.length - 1) {
-                // If last question is answered and all questions are answered, show result
+            if (allAnswered) {
                 showResult();
             } else if (selected && currentQuestion < shuffledQuestions.length - 1) {
-                // Move to next unanswered question
                 let nextIndex = currentQuestion + 1;
                 while (nextIndex < shuffledQuestions.length && userAnswers[nextIndex]) {
                     nextIndex++;
@@ -1104,30 +1193,21 @@
                     renderQuestion(nextIndex);
                 }
             } else {
-                // Re-render current question to update navigation buttons
                 renderQuestion(currentQuestion);
             }
         }
 
-        document.getElementById('quizForm').addEventListener('change', function() {
-            saveAnswer();
-        });
-
-        // Initialize quiz but keep example section visible
+        document.getElementById('quizForm').addEventListener('change', saveAnswer);
         initializeQuiz();
-    </script>
-  <!-- AUDIO -->
-  <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
-  <!-- SCRIPT UNTUK AUTOPLAY SETELAH KLIK -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      document.body.addEventListener('click', function () {
-        var audio = document.getElementById('bg-audio');
-        audio.play().catch(err => {
-          console.log('Autoplay diblokir:', err);
+
+        // Audio autoplay
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.addEventListener('click', () => {
+                const audio = document.getElementById('bg-audio');
+                audio.play().catch(err => console.log('Autoplay diblokir:', err));
+            }, { once: true });
         });
-      }, { once: true });
-    });
-  </script>
+    </script>
+    <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
 </body>
 </html>
