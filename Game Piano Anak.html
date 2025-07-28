@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -188,31 +149,43 @@
             color: rgba(0, 0, 0, 0.8);
             text-decoration: underline;
         }
-        #mobile-popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: white;
-        z-index: 2000;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        flex-direction: column;
+        #mobilePopup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
         }
-        #mobile-popup p {
-        font-size: 20px;
-        margin: 20px;
+        #mobilePopup p {
+            font-size: 20px;
+            margin: 20px;
+        }
+        #mobilePopup button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            background-color: #f06292;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #mobilePopup button:hover {
+            background-color: #d81b60;
         }
     </style>
 </head>
 <body>
-    <div id="mobile-popup">
-      <p>Harap putar perangkat ke mode landscape untuk bermain game ini!</p>
-      <button id="play-button">Main Sekarang</button>
+    <div id="mobilePopup">
+        <p>Harap putar perangkat ke mode landscape untuk bermain game ini!</p>
+        <button id="playButton">Main Sekarang</button>
     </div>
     <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>  
     <h1>Game Piano Anak</h1>
@@ -271,14 +244,6 @@
     </div>
 
     <script>
-            // Lock orientation to landscape on mobile devices
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-              if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(function(error) {
-                  console.log('Orientation lock failed: ', error);
-                });
-              }
-            }
         const songs = {
             bintang_kecil: [
                 { note: "G4", number: "1'", lyric: "Bin-", duration: 500 },
@@ -680,8 +645,11 @@
         const noteDisplay = document.getElementById('noteDisplay');
         const fullNotes = document.getElementById('fullNotes');
         const keys = document.querySelectorAll('.key');
+        const mobilePopup = document.getElementById('mobilePopup');
+        const playButton = document.getElementById('playButton');
         let currentSong = songs.bintang_kecil;
         let currentNoteIndex = 0;
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         function playNote(frequency, duration = 500) {
             try {
@@ -750,6 +718,14 @@
             }
         }
 
+        function startGame() {
+            mobilePopup.style.display = 'none';
+            selectSong();
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().catch(error => console.error('Error resuming audio context:', error));
+            }
+        }
+
         songSelect.addEventListener('change', selectSong);
 
         keys.forEach(key => {
@@ -779,24 +755,38 @@
             }
         }, { once: true });
 
-        selectSong();
-
-        // Handle mobile popup
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        playButton.addEventListener('click', () => {
-            if (screen.orientation.type.includes('landscape')) {
-            mobilePopup.style.display = 'none';
-            startGame();
+        function checkOrientation() {
+            if (isMobile) {
+                if (window.innerWidth > window.innerHeight) {
+                    mobilePopup.style.display = 'none';
+                    startGame();
+                } else {
+                    mobilePopup.style.display = 'flex';
+                }
             } else {
-            alert('Harap putar perangkat ke mode landscape untuk bermain!');
+                mobilePopup.style.display = 'none';
+                startGame();
             }
-        });
-        } else {
-        mobilePopup.style.display = 'none';
         }
 
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', startGame);
+        if (isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(error => {
+                console.log('Orientation lock failed: ', error);
+            });
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+        playButton.addEventListener('click', () => {
+            if (window.innerWidth > window.innerHeight) {
+                mobilePopup.style.display = 'none';
+                startGame();
+            } else {
+                alert('Harap putar perangkat ke mode landscape untuk bermain!');
+            }
+        });
+
+        checkOrientation();
     </script>
 </body>
 </html>
