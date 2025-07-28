@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Zona Edukasi Anak</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/7133/7133252.png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/2490/2490426.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -177,7 +177,7 @@
       z-index: 50;
       max-width: 90%;
       box-sizing: border-box;
-      display: none; /* Sembunyikan menu sampai CAPTCHA selesai */
+      display: none;
     }
     .menu.show {
       display: block;
@@ -210,8 +210,40 @@
       color: rgba(0, 0, 0, 0.3);
       font-size: 12px;
       font-family: Arial, sans-serif;
-      pointer-events: none;
       z-index: 1000;
+    }
+    .watermark a {
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+    }
+    .watermark a:hover {
+      color: rgba(0, 0, 0, 0.8);
+      text-decoration: underline;
+    }
+    .download-apk {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .download-apk img {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .download-apk img:hover {
+      transform: scale(1.1);
+    }
+    .download-apk span {
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      margin-top: 5px;
     }
     .btn-iq { background: #f44336; }
     .btn-find { background: #55a6e7; }
@@ -227,7 +259,6 @@
     .menu button:hover {
       filter: brightness(1.1);
     }
-    /* CAPTCHA Styles */
     .captcha-overlay {
       position: fixed;
       top: 0;
@@ -280,7 +311,7 @@
       font-size: 16px;
     }
     .captcha-reset {
-      margin: 10px auto; /* Pindahkan ke tengah */
+      margin: 10px auto;
       padding: 10px 20px;
       background: #ff4081;
       color: white;
@@ -290,12 +321,11 @@
       display: none;
       text-align: center;
       width: auto;
-      min-width: 100px; /* Pastikan tombol tidak terlalu kecil */
+      min-width: 100px;
     }
     .captcha-reset:hover {
       background: #e91e63;
     }
-    /* Responsif untuk mobile */
     @media (max-width: 768px) {
       .menu {
         padding: 20px;
@@ -322,6 +352,13 @@
         width: 25px;
         height: 25px;
       }
+      .download-apk img {
+        width: 35px;
+        height: 35px;
+      }
+      .download-apk span {
+        font-size: 11px;
+      }
     }
     @media (max-width: 480px) {
       .menu-grid {
@@ -347,7 +384,14 @@
         height: 20px;
       }
       .captcha-reset {
-        min-width: 80px; /* Sesuaikan untuk layar kecil */
+        min-width: 80px;
+      }
+      .download-apk img {
+        width: 30px;
+        height: 30px;
+      }
+      .download-apk span {
+        font-size: 10px;
       }
     }
   </style>
@@ -364,17 +408,21 @@
     <span></span>
     <span></span>
   </div>
-  <!-- CAPTCHA Overlay -->
+  <div class="download-apk">
+    <a href="edukasi anak.apk" download>
+      <img src="https://cdn-icons-png.flaticon.com/512/4039/4039697.png" alt="Download APK" title="Download Aplikasi Zona Edukasi Anak">
+      <span>Download APK</span>
+    </a>
+  </div>
   <div class="captcha-overlay" id="captchaOverlay">
     <div class="captcha-container">
       <h2>Verifikasi CAPTCHA</h2>
       <p>Human Atau Robot</p>
       <div class="captcha-area" id="captchaArea"></div>
-      <div class="captcha-status" id="captchaStatus">Klik 3 bintang untuk verifikasi human</div>
+      <div class="captcha-status" id="captchaStatus">Klik 1 bintang untuk verifikasi human</div>
       <button class="captcha-reset" id="captchaReset">Coba Lagi</button>
     </div>
   </div>
-  <!-- Menu -->
   <div class="menu" id="mainMenu">
     <h1>Zona Edukasi Anak</h1>
     <div class="menu-grid">
@@ -391,37 +439,46 @@
       <button class="btn-edu" onclick="window.location.href='Edukasi TK & PAUD.html'">Belajar & Bermain PAUD/TK</button>
     </div>
   </div>
-  <div class="watermark">By Mochamad Fuad Asyhary</div>
-  <!-- AUDIO -->
-  <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
-  <!-- SCRIPT UNTUK CAPTCHA DAN AUTOPLAY AUDIO -->
+  <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
+  
+  <audio id="bg-audio" src="skyhigh.mp3" loop preload="auto" hidden>
+    <source src="skyhigh.mp3" type="audio/mpeg">
+    Maaf, browser Anda tidak mendukung elemen audio.
+  </audio>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Audio Autoplay
-      document.body.addEventListener('click', function () {
-        var audio = document.getElementById('bg-audio');
-        audio.play().catch(err => {
-          console.log('Autoplay diblokir:', err);
-        });
-      }, { once: true });
-
-      // CAPTCHA Logic
+      const audio = document.getElementById('bg-audio');
       const captchaOverlay = document.getElementById('captchaOverlay');
       const captchaArea = document.getElementById('captchaArea');
       const captchaStatus = document.getElementById('captchaStatus');
       const captchaReset = document.getElementById('captchaReset');
       const mainMenu = document.getElementById('mainMenu');
       let clickCount = 0;
-      const requiredClicks = 3;
+      const requiredClicks = 1;
+
+      // Fungsi untuk memutar audio
+      function playAudio() {
+        audio.play().then(() => {
+          console.log('Audio berhasil diputar');
+        }).catch(err => {
+          console.error('Gagal memutar audio:', err);
+          alert('Gagal memutar file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
+        });
+      }
+
+      // Tangani jika audio gagal dimuat
+      audio.addEventListener('error', (err) => {
+        console.error('Error memuat audio:', err);
+        alert('Gagal memuat file audio. Pastikan file skyhigh.mp3 ada di direktori yang benar.');
+      });
 
       function generateCaptcha() {
         captchaArea.innerHTML = '';
         clickCount = 0;
-        captchaStatus.textContent = `Klik ${requiredClicks} bintang untuk verifikasi manusia`;
+        captchaStatus.textContent = `Klik 1 bintang untuk verifikasi human`;
         captchaReset.style.display = 'none';
 
-        // Generate 5 random stars
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 2; i++) {
           const icon = document.createElement('div');
           icon.className = 'captcha-icon';
           icon.style.left = `${Math.random() * (captchaArea.offsetWidth - 30)}px`;
@@ -430,7 +487,6 @@
           captchaArea.appendChild(icon);
         }
 
-        // Add click handler for wrong clicks
         captchaArea.addEventListener('click', handleWrongClick);
       }
 
@@ -442,19 +498,21 @@
 
         if (clickCount >= requiredClicks) {
           captchaOverlay.style.display = 'none';
-          mainMenu.style.display = 'block';
+          mainMenu.classList.add('show');
           captchaArea.removeEventListener('click', handleWrongClick);
+          playAudio(); // Putar audio setelah verifikasi berhasil
         }
       }
 
       function handleWrongClick() {
         captchaStatus.textContent = 'Verifikasi gagal! Coba lagi.';
+        captchaArea.innerHTML = ''; // Hapus semua bintang saat klik salah
         captchaReset.style.display = 'block';
+        captchaArea.removeEventListener('click', handleWrongClick);
       }
 
       captchaReset.addEventListener('click', generateCaptcha);
 
-      // Initialize CAPTCHA
       generateCaptcha();
     });
   </script>
