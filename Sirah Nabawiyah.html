@@ -117,8 +117,15 @@
       color: rgba(0, 0, 0, 0.3);
       font-size: 12px;
       font-family: Arial, sans-serif;
-      pointer-events: none;
       z-index: 1000;
+    }
+    .watermark a {
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+    }
+    .watermark a:hover {
+      color: rgba(0, 0, 0, 0.8);
+      text-decoration: underline;
     }
     .modal {
       position: fixed;
@@ -153,8 +160,8 @@
   </style>
 </head>
 <body class="bg-gradient-to-b from-blue-100 to-green-100 min-h-screen font-sans">
-  <div id="root"></div>
-  <div class="watermark">By Mochamad Fuad Asyhary</div>
+  <div id="root"></div>  
+  <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
   <script type="text/babel">
     const sirahData = [
       {
