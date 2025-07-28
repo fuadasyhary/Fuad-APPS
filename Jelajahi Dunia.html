@@ -1,120 +1,115 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jelajahi Dunia</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.freepik.com/512/5352/5352016.png">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e0f7fa;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #1e88e5;
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
-    h2 {
-      color: #d81b60;
-      font-size: 2em;
-      margin: 20px 0;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f7fa;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 {
+    color: #1e88e5;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: #d81b60;
+    font-size: 2em;
+    margin: 20px 0;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    padding: 15px;
+    width: 300px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .card:hover {
+    transform: scale(1.05);
+    background-color: #fff176;
+  }
+  .card h2, .card h3, .card h4 {
+    margin: 10px 0;
+    color: #d81b60;
+  }
+  .card p {
+    color: #424242;
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+  .card .summary {
+    font-style: italic;
+    color: #0288d1;
+    margin-top: 5px;
+  }
+  .attraction-details p {
+    margin: 5px 0;
+  }
+  .back-btn {
+    background-color: #1e88e5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+  }
+  .watermark {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+  }
+  .watermark a {
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+  }
+  .watermark a:hover {
+    color: rgba(0, 0, 0, 0.8);
+    text-decoration: underline;
+  }
+  .back-btn:hover {
+    background-color: #1565c0;
+  }
+  .country-name {
+    display: flex;
+    align-items: center;
+  }
+  .flag-emoji {
+    font-size: 1.5em; /* Ukuran lebih besar untuk kejelasan */
+    margin-right: 10px;
+    line-height: 1; /* Mencegah misalignment */
+    vertical-align: middle;
+  }
+  /* Mobile view: two cards per row */
+  @media (max-width: 640px) {
     .card {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      margin: 10px;
-      padding: 15px;
-      width: 300px;
-      cursor: pointer;
-      transition: transform 0.3s;
+      width: calc(50% - 20px);
+      padding: 10px;
     }
-    .card:hover {
-      transform: scale(1.05);
-      background-color: #fff176;
-    }
-    .card h2, .card h3, .card h4 {
-      margin: 10px 0;
-      color: #d81b60;
+    .card h2, .card h3 {
+      font-size: 1.2em;
     }
     .card p {
-      color: #424242;
-      font-size: 0.9em;
-      line-height: 1.5;
+      font-size: 0.85em;
     }
-    .card .summary {
-      font-style: italic;
-      color: #0288d1;
-      margin-top: 5px;
+    .flag-emoji {
+      font-size: 1.2em; /* Ukuran sedikit lebih kecil di mobile */
     }
-    .attraction-details p {
-      margin: 5px 0;
-    }
-    .back-btn {
-      background-color: #1e88e5;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    .watermark {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      color: rgba(0, 0, 0, 0.3);
-      font-size: 12px;
-      font-family: Arial, sans-serif;
-      z-index: 1000;
-    }
-    .watermark a {
-      color: rgba(0, 0, 0, 0.5);
-      text-decoration: none;
-    }
-    .watermark a:hover {
-      color: rgba(0, 0, 0, 0.8);
-      text-decoration: underline;
-    }
-    .back-btn:hover {
-      background-color: #1565c0;
-    }
-    .country-name {
-      display: flex;
-      align-items: center;
-    }
-    .flag-icon {
-      width: 20px;
-      height: 20px;
-      background-size: cover;
-      background-position: center;
-      margin-right: 10px;
-    }
-    /* Mobile view: two cards per row */
-    @media (max-width: 640px) {
-      .card {
-        width: calc(50% - 20px); /* Two cards per row with 10px margin on each side */
-        padding: 10px;
-      }
-      .card h2, .card h3 {
-        font-size: 1.2em; /* Slightly smaller headings for mobile */
-      }
-      .card p {
-        font-size: 0.85em; /* Slightly smaller text for mobile */
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
   <h1 id="main-title">Jelajahi Dunia!</h1>
@@ -129,209 +124,28 @@
           name: "Asia",
           summary: "Benua terbesar dengan lebih dari 50 negara, penuh budaya dan gunung tertinggi!",
           countries: [
-            {
-              name: "Afghanistan",
-              flag: "https://flagcdn.com/w20/af.png",
-              summary: "Ibu kota: Kabul. Negara pegunungan dengan sejarah kuno.",
-              attractions: [
-                {
-                  name: "Masjid Biru Mazar-i-Sharif",
-                  details: "Masjid indah di Mazar-i-Sharif, terkenal dengan ubin birunya yang memukau. Tempat suci yang penuh sejarah Islam."
-                }
-              ]
-            },
-            {
-              name: "Arab Saudi",
-              flag: "https://flagcdn.com/w20/sa.png",
-              summary: "Ibu kota: Riyadh. Negara dengan kota suci Mekah dan Madinah.",
-              attractions: [
-                {
-                  name: "Masjidil Haram",
-                  details: "Masjid terbesar di dunia di Mekah, pusat ibadah umat Islam dengan Ka'bah di tengahnya. Tempat ziarah yang sangat penting."
-                }
-              ]
-            },
-            {
-              name: "Armenia",
-              flag: "https://flagcdn.com/w20/am.png",
-              summary: "Ibu kota: Yerevan. Negara dengan gereja kuno dan pegunungan.",
-              attractions: [
-                {
-                  name: "Katedral Etchmiadzin",
-                  details: "Katedral tertua di dunia di Yerevan, dibangun pada tahun 301. Pusat agama Armenia yang penuh sejarah."
-                }
-              ]
-            },
-            {
-              name: "Azerbaijan",
-              flag: "https://flagcdn.com/w20/az.png",
-              summary: "Ibu kota: Baku. Negara di persimpangan Eropa dan Asia.",
-              attractions: [
-                {
-                  name: "Kota Tua Baku",
-                  details: "Kawasan bersejarah di Baku dengan Istana Shirvanshah dan Menara Maiden. Situs Warisan Dunia UNESCO."
-                }
-              ]
-            },
-            {
-              name: "Bahrain",
-              flag: "https://flagcdn.com/w20/bh.png",
-              summary: "Ibu kota: Manama. Negara pulau kecil dengan budaya maritim.",
-              attractions: [
-                {
-                  name: "Benteng Bahrain",
-                  details: "Situs arkeologi di Manama, menunjukkan sejarah 4.000 tahun. Dekat dengan pohon kehidupan yang misterius."
-                }
-              ]
-            },
-            {
-              name: "Bangladesh",
-              flag: "https://flagcdn.com/w20/bd.png",
-              summary: "Ibu kota: Dhaka. Negara dengan sungai dan delta besar.",
-              attractions: [
-                {
-                  name: "Sundarbans",
-                  details: "Hutan mangrove terbesar di dunia, rumah bagi harimau Bengal. Kamu bisa naik perahu untuk melihat satwa liar."
-                }
-              ]
-            },
-            {
-              name: "Bhutan",
-              flag: "https://flagcdn.com/w20/bt.png",
-              summary: "Ibu kota: Thimphu. Negara Himalaya dengan budaya damai.",
-              attractions: [
-                {
-                  name: "Paro Taktsang",
-                  details: "Biara suci di Lembah Paro, terletak di tebing pada ketinggian 3.120 meter. Disebut Sarang Harimau."
-                }
-              ]
-            },
-            {
-              name: "Brunei",
-              flag: "https://flagcdn.com/w20/bn.png",
-              summary: "Ibu kota: Bandar Seri Begawan. Negara kecil kaya dengan masjid megah.",
-              attractions: [
-                {
-                  name: "Masjid Omar Ali Saifuddien",
-                  details: "Masjid megah di Bandar Seri Begawan dengan kubah emas. Terletak di tepi laguna yang indah."
-                }
-              ]
-            },
-            {
-              name: "India",
-              flag: "https://flagcdn.com/w20/in.png",
-              summary: "Ibu kota: New Delhi. Negara penuh warna dengan festival dan sejarah.",
-              attractions: [
-                {
-                  name: "Taj Mahal",
-                  details: "Makam megah di Agra, dibangun oleh Kaisar Shah Jahan untuk istrinya Mumtaz. Terbuat dari marmer putih, terlihat indah saat matahari terbit."
-                },
-                {
-                  name: "Kota Jaipur",
-                  details: "Kota merah muda di Rajasthan, terkenal dengan benteng Amber dan istana Hawa Mahal. Pasar yang penuh warna."
-                }
-              ]
-            },
-            {
-              name: "Indonesia",
-              flag: "https://flagcdn.com/w20/id.png",
-              summary: "Ibu kota: Jakarta. Negara kepulauan dengan ribuan pulau indah.",
-              attractions: [
-                {
-                  name: "Candi Borobudur",
-                  details: "Candi Buddha terbesar di dunia, terletak di Magelang, Jawa Tengah. Dibangun abad ke-9 dengan ribuan relief."
-                },
-                {
-                  name: "Pantai Kuta",
-                  details: "Pantai populer di Bali, terkenal dengan ombaknya yang cocok untuk berselancar. Dekat dengan kafe dan pasar."
-                }
-              ]
-            },
-            {
-              name: "Irak",
-              flag: "https://flagcdn.com/w20/iq.png",
-              summary: "Ibu kota: Baghdad. Negara dengan sejarah Mesopotamia kuno.",
-              attractions: [
-                {
-                  name: "Ziggurat Ur",
-                  details: "Struktur kuno di selatan Irak, dibangun 4.000 tahun lalu. Menunjukkan kehebatan peradaban Sumeria."
-                }
-              ]
-            },
-            {
-              name: "Iran",
-              flag: "https://flagcdn.com/w20/ir.png",
-              summary: "Ibu kota: Teheran. Negara dengan istana dan kebun Persia.",
-              attractions: [
-                {
-                  name: "Persepolis",
-                  details: "Kota kuno di Fars, ibu kota Kekaisaran Persia. Penuh dengan pilar dan relief bersejarah."
-                }
-              ]
-            },
-            {
-              name: "Israel",
-              flag: "https://flagcdn.com/w20/il.png",
-              summary: "Ibu kota: Yerusalem. Negara dengan situs suci tiga agama.",
-              attractions: [
-                {
-                  name: "Kota Tua Yerusalem",
-                  details: "Kawasan bersejarah dengan Tembok Ratapan, Masjid Al-Aqsa, dan Gereja Makam Suci. Pusat spiritual dunia."
-                }
-              ]
-            },
-            {
-              name: "Jepang",
-              flag: "https://flagcdn.com/w20/jp.png",
-              summary: "Ibu kota: Tokyo. Negara dengan teknologi dan bunga sakura.",
-              attractions: [
-                {
-                  name: "Gunung Fuji",
-                  details: "Gunung tertinggi di Jepang (3.776 m), terletak di Shizuoka dan Yamanashi. Indah untuk pendakian di musim panas."
-                },
-                {
-                  name: "Tokyo Disneyland",
-                  details: "Taman hiburan di Chiba, dekat Tokyo, dengan wahana seru dan parade karakter Disney."
-                }
-              ]
-            },
-            {
-              name: "Kazakhstan",
-              flag: "https://flagcdn.com/w20/kz.png",
-              summary: "Ibu kota: Astana. Negara stepa dengan arsitektur modern.",
-              attractions: [
-                {
-                  name: "Baiterek Tower",
-                  details: "Menara ikonik di Astana, simbol kemajuan Kazakhstan. Kamu bisa naik ke puncak untuk melihat kota."
-                }
-              ]
-            },
-            {
-              name: "Kirgistan",
-              flag: "https://flagcdn.com/w20/kg.png",
-              summary: "Ibu kota: Bishkek. Negara pegunungan dengan budaya nomaden.",
-              attractions: [
-                {
-                  name: "Danau Issyk-Kul",
-                  details: "Danau alpine terbesar kedua di dunia, dikelilingi pegunungan. Cocok untuk berenang dan berkemah."
-                }
-              ]
-            },
-            {
-              name: "Korea Selatan",
-              flag: "https://flagcdn.com/w20/kr.png",
-              summary: "Ibu kota: Seoul. Negara dengan K-pop dan teknologi canggih.",
-              attractions: [
-                {
-                  name: "Istana Gyeongbokgung",
-                  details: "Istana bersejarah di Seoul, dibangun pada abad ke-14. Kamu bisa melihat upacara pergantian penjaga."
-                }
-              ]
-            },
+            { name: "Afghanistan", flag: "🇦🇫", summary: "Ibu kota: Kabul. Mata uang: Afghani (AFN). Negara pegunungan dengan sejarah kuno.", attractions: [{ name: "Masjid Biru Mazar-i-Sharif", details: "Masjid indah di Mazar-i-Sharif, terkenal dengan ubin birunya yang memukau. Tempat suci yang penuh sejarah Islam." }] },
+            { name: "Arab Saudi", flag: "🇸🇦", summary: "Ibu kota: Riyadh. Mata uang: Riyal Saudi (SAR). Negara dengan kota suci Mekah dan Madinah.", attractions: [{ name: "Masjidil Haram", details: "Masjid terbesar di dunia di Mekah, pusat ibadah umat Islam dengan Ka'bah di tengahnya. Tempat ziarah yang sangat penting." }] },
+            { name: "Armenia", flag: "🇦🇲", summary: "Ibu kota: Yerevan. Mata uang: Dram (AMD). Negara dengan gereja kuno dan pegunungan.", attractions: [{ name: "Katedral Etchmiadzin", details: "Katedral tertua di dunia di Yerevan, dibangun pada tahun 301. Pusat agama Armenia yang penuh sejarah." }] },
+            { name: "Azerbaijan", flag: "🇦🇿", summary: "Ibu kota: Baku. Mata uang: Manat (AZN). Negara di persimpangan Eropa dan Asia.", attractions: [{ name: "Kota Tua Baku", details: "Kawasan bersejarah di Baku dengan Istana Shirvanshah dan Menara Maiden. Situs Warisan Dunia UNESCO." }] },
+            { name: "Bahrain", flag: "🇧🇭", summary: "Ibu kota: Manama. Mata uang: Dinar Bahrain (BHD). Negara pulau kecil dengan budaya maritim.", attractions: [{ name: "Benteng Bahrain", details: "Situs arkeologi di Manama, menunjukkan sejarah 4.000 tahun. Dekat dengan pohon kehidupan yang misterius." }] },
+            { name: "Bangladesh", flag: "🇧🇩", summary: "Ibu kota: Dhaka. Mata uang: Taka (BDT). Negara dengan sungai dan delta besar.", attractions: [{ name: "Sundarbans", details: "Hutan mangrove terbesar di dunia, rumah bagi harimau Bengal. Kamu bisa naik perahu untuk melihat satwa liar." }] },
+            { name: "Bhutan", flag: "🇧🇹", summary: "Ibu kota: Thimphu. Mata uang: Ngultrum (BTN). Negara Himalaya dengan budaya damai.", attractions: [{ name: "Paro Taktsang", details: "Biara suci di Lembah Paro, terletak di tebing pada ketinggian 3.120 meter. Disebut Sarang Harimau." }] },
+            { name: "Brunei", flag: "🇧🇳", summary: "Ibu kota: Bandar Seri Begawan. Mata uang: Dolar Brunei (BND). Negara kecil kaya dengan masjid megah.", attractions: [{ name: "Masjid Omar Ali Saifuddien", details: "Masjid megah di Bandar Seri Begawan dengan kubah emas. Terletak di tepi laguna yang indah." }] },
+            { name: "India", flag: "🇮🇳", summary: "Ibu kota: New Delhi. Mata uang: Rupee India (INR). Negara penuh warna dengan festival dan sejarah.", attractions: [{ name: "Taj Mahal", details: "Makam megah di Agra, dibangun oleh Kaisar Shah Jahan untuk istrinya Mumtaz. Terapakan dari marmer putih, terlihat indah saat matahari terbit." }, { name: "Kota Jaipur", details: "Kota merah muda di Rajasthan, terkenal dengan benteng Amber dan istana Hawa Mahal. Pasar pasar dan warna." }] },
+            { name: "Indonesia", flag: "🇮🇩", summary: "Ibu kota: Jakarta. Mata uang: Rupiah (IDR). Negara kepulauan dengan ribuan pulau indah.", attractions: [{ name: "Candi Borobudur", details: "Candi Buddha terbesar di dunia, terletak di Magelang, Jawa Tengah. Dibangun abad ke-9 dengan ribuan relief." }, { name: "Pantai Kuta", detailstoon: "Pulau di Bali dengan ombak pantai cocok untuk berselancar. Dekat dengan kafe dan pasar." }] },
+            { name: "Irak", flag: "🇮🇶", summary: "Ibu kota: Baghdad. Mata uang: Dinar Irak (IQD). Negara dengan sejarah Mesopotamia kuno.", attractions: [{ name: "Ziggurat Ur", details: "Struktur kuno di selatan Irak, dibangun 4.000 tahun lalu. Menunjukkan kehebatan peradaban Sumeria." }] },
+            { name: "Iran", flag: "🇮🇷", summary: "Ibu kota: Teheran. Mata uang: Rial Iran (IRR). Negara dengan istana dan kebun Persia.", attractions: [{ name: "Persepolis", details: "Kota kuno di Fars, ibu kota Kekaisaran Persia. Penuh dengan pilar dan relief bersejarah." }] },
+            { name: "Israel", flag: "🇮🇱", summary: "Ibu kota: Yerusalem. Mata uang: Shekel Baru (ILS). Negara dengan situs suci tiga agama.", attractions: [{ name: "Kota Tua Yerusalem", title: "Detail Kota Tua", details: "Kawasan bersejarah dengan Tembok Ratapan, Masjid Al-Aqsa, dan Gereja Makam Suci. Pusat spiritual dunia." }],
+ },
+            { name: "Jepang", summary: "Ibu kota: Tokyo. Mata uang: Yen (JPY). Negara dengan teknologi dan bunga sakura.", attractions: [{ name: "Gunung Fuji", details: "Gunung tertinggi di Jepang (3.776 m), terletak di Shizuoka dan Yamanashi. Indah untuk pendakian di musim panas." }, { name: "Tokyo Disneyland", details: "Taman hiburan di Chiba, dekat Tokyo, dengan wahana seru dan parade karakter Disney." }] },
+            { name: "Kazakhstan", flag: "🇰🇿", summary: "Ibu kota: Astana. Mata uang: Tenge (KZT). Negara stepa dengan arsitektur modern.", attractions: [{ name: "Baiterek Tower", details: "Menara ikonik di Astana, simbol kemajuan Kazakhstan. Kamu bisa naik ke puncak untuk melihat kota." }] },
+            { name: "Kirgistan", flag: "🇰🇬", summary: "Ibu kota: Bishkek. Mata uang: Som (KGS). Negara pegunungan dengan budaya nomaden.", attractions: [{ name: "Danau Issyk-Kul", details: "Danau alpine terbesar kedua di dunia, dikelilingi pegunungan. Cocok untuk berenang dan berkemah." }] },
+            { name: "Korea Selatan", flag: "🇰🇷", summary: "Ibu kota: Seoul. Mata uang: Won (KRW). Negaara dengan K-pop dan teknologi canggih.", attractions: [{ name: "Istana Gyeongbokgung", detaiil: "Istana bersejarah di Seoul, dibangun pada abad ke-14. Kamu bisa melihat upacara pergantian penjaga." },
             {
               name: "Korea Utara",
-              flag: "https://flagcdn.com/w20/kp.png",
-              summary: "Ibu kota: Pyongyang. Negara dengan monumen besar dan sejarah unik.",
+              flag: "🇰🇵",
+              summary: "Ibu kota: Pyongyang. Mata uang: Won (KPW). Negara dengan monumen besar dan sejarah unik.",
               attractions: [
                 {
                   name: "Menara Juche",
@@ -341,8 +155,8 @@
             },
             {
               name: "Kuwait",
-              flag: "https://flagcdn.com/w20/kw.png",
-              summary: "Ibu kota: Kota Kuwait. Negara kaya dengan menara modern.",
+              flag: "🇰🇼",
+              summary: "Ibu kota: Kota Kuwait. Mata uang: Dinar Kuwait (KWD). Negara kaya dengan menara modern.",
               attractions: [
                 {
                   name: "Kuwait Towers",
@@ -352,8 +166,8 @@
             },
             {
               name: "Laos",
-              flag: "https://flagcdn.com/w20/la.png",
-              summary: "Ibu kota: Vientiane. Negara dengan kuil Buddha dan sungai.",
+              flag: "🇱🇦",
+              summary: "Ibu kota: Vientiane. Mata uang: Kip (LAK). Negara dengan kuil Buddha dan sungai.",
               attractions: [
                 {
                   name: "Pha That Luang",
@@ -363,8 +177,8 @@
             },
             {
               name: "Libanon",
-              flag: "https://flagcdn.com/w20/lb.png",
-              summary: "Ibu kota: Beirut. Negara dengan pantai dan situs kuno.",
+              flag: "🇱🇧",
+              summary: "Ibu kota: Beirut. Mata uang: Pound Lebanon (LBP). Negara dengan pantai dan situs kuno.",
               attractions: [
                 {
                   name: "Baalbek",
@@ -374,8 +188,8 @@
             },
             {
               name: "Maladewa",
-              flag: "https://flagcdn.com/w20/mv.png",
-              summary: "Ibu kota: Male. Negara kepulauan dengan pantai tropis.",
+              flag: "🇲🇻",
+              summary: "Ibu kota: Male. Mata uang: Rufiyaa (MVR). Negara kepulauan dengan pantai.",
               attractions: [
                 {
                   name: "Atol Maladewa",
@@ -385,8 +199,8 @@
             },
             {
               name: "Malaysia",
-              flag: "https://flagcdn.com/w20/my.png",
-              summary: "Ibu kota: Kuala Lumpur. Negara dengan menara kembar dan hutan.",
+              flag: "🇲🇾",
+              summary: "Ibu kota: Kuala Lumpur. Mata uang: Ringgit (MYR). Negara dengan menara kembar dan hutan.",
               attractions: [
                 {
                   name: "Menara Kembar Petronas",
@@ -396,8 +210,8 @@
             },
             {
               name: "Mongolia",
-              flag: "https://flagcdn.com/w20/mn.png",
-              summary: "Ibu kota: Ulan Bator. Negara stepa dengan budaya nomaden.",
+              flag: "🇲🇳",
+              summary: "Ibu kota: Ulan Bator. Mata uang: Tögrög (MNT). Negara stepa dengan budaya nomaden.",
               attractions: [
                 {
                   name: "Taman Nasional Gorkhi-Terelj",
@@ -407,8 +221,8 @@
             },
             {
               name: "Myanmar",
-              flag: "https://flagcdn.com/w20/mm.png",
-              summary: "Ibu kota: Nay Pyi Taw. Negara dengan pagoda emas.",
+              flag: "🇲🇲",
+              summary: "Ibu kota: Naypyidaw. Mata uang: Kyat (MMK). Negara dengan pagoda emas.",
               attractions: [
                 {
                   name: "Pagoda Shwedagon",
@@ -418,8 +232,8 @@
             },
             {
               name: "Nepal",
-              flag: "https://flagcdn.com/w20/np.png",
-              summary: "Ibu kota: Kathmandu. Negara Himalaya dengan kuil kuno.",
+              flag: "🇳🇱",
+              summary: "Ibu kota: Kathmandu. Mata uang: Rupee Nepal (NPR). Negara Himalaya dengan kuil kuno.",
               attractions: [
                 {
                   name: "Puncak Everest",
@@ -429,19 +243,19 @@
             },
             {
               name: "Oman",
-              flag: "https://flagcdn.com/w20/om.png",
-              summary: "Ibu kota: Muskat. Negara dengan benteng dan gurun.",
+              flag: "🇴🇲",
+              summary: "Ibu kota: Muscat. Mata uang: Rial Oman (OMR). Negara dengan benteng dan gurun.",
               attractions: [
                 {
                   name: "Masjid Sultan Qaboos",
-                  details: "Masjid megah di Muskat dengan karpet raksasa dan lampu kristal besar."
+                  details: "Masjid megah di Muscat dengan karpet raksasa dan lampu kristal besar."
                 }
               ]
             },
             {
               name: "Pakistan",
-              flag: "https://flagcdn.com/w20/pk.png",
-              summary: "Ibu kota: Islamabad. Negara dengan pegunungan dan sejarah.",
+              flag: "🇵🇰",
+              summary: "Ibu kota: Islamabad. Mata uang: Rupee Pakistan (PKR). Negara dengan pegunungan dan sejarah.",
               attractions: [
                 {
                   name: "Lahore Fort",
@@ -451,8 +265,8 @@
             },
             {
               name: "Qatar",
-              flag: "https://flagcdn.com/w20/qa.png",
-              summary: "Ibu kota: Doha. Negara dengan kota modern dan budaya Arab.",
+              flag: "🇶🇦",
+              summary: "Ibu kota: Doha. Mata uang: Riyal Qatar (QAR). Negara dengan kota modern dan budaya Arab.",
               attractions: [
                 {
                   name: "Museum of Islamic Art",
@@ -462,8 +276,8 @@
             },
             {
               name: "Singapura",
-              flag: "https://flagcdn.com/w20/sg.png",
-              summary: "Ibu kota: Singapura. Kota-negara dengan taman dan teknologi.",
+              flag: "🇸🇬",
+              summary: "Ibu kota: Singapura. Mata uang: Dolar Singapura (SGD). Kota-negara dengan taman dan teknologi.",
               attractions: [
                 {
                   name: "Gardens by the Bay",
@@ -473,8 +287,8 @@
             },
             {
               name: "Sri Lanka",
-              flag: "https://flagcdn.com/w20/lk.png",
-              summary: "Ibu kota: Kolombo. Negara dengan pantai dan kuil Buddha.",
+              flag: "🇱🇰",
+              summary: "Ibu kota: Kolombo. Mata uang: Rupee Sri Lanka (LKR). Negara dengan pantai dan kuil Buddha.",
               attractions: [
                 {
                   name: "Sigiriya",
@@ -484,8 +298,8 @@
             },
             {
               name: "Suriah",
-              flag: "https://flagcdn.com/w20/sy.png",
-              summary: "Ibu kota: Damaskus. Negara dengan kota kuno tertua di dunia.",
+              flag: "🇸🇾",
+              summary: "Ibu kota: Damaskus. Mata uang: Pound Suriah (SYP). Negara dengan kota kuno tertua di dunia.",
               attractions: [
                 {
                   name: "Kota Tua Damaskus",
@@ -495,8 +309,8 @@
             },
             {
               name: "Taiwan",
-              flag: "https://flagcdn.com/w20/tw.png",
-              summary: "Ibu kota: Taipei. Negara dengan pasar malam dan teknologi.",
+              flag: "🇹🇼",
+              summary: "Ibu kota: Taipei. Mata uang: Dolar Taiwan (TWD). Negara dengan pasar malam dan teknologi.",
               attractions: [
                 {
                   name: "Taipei 101",
@@ -506,20 +320,19 @@
             },
             {
               name: "Tajikistan",
-              flag: "https://flagcdn.com/w20/tj.png",
-              summary: "Ibu kota: Dushanbe. Negara pegunungan dengan pasar tradisional.",
+              flag: "🇹🇯",
+              summary: "Ibu kota: Dushanbe. Mata uang: Somoni (TJS). Negara pegunungan dengan pasar tradisional.",
               attractions: [
                 {
                   name: "Danau Iskanderkul",
                   details: "Danau indah di Pegunungan Fann, cocok untuk hiking dan menikmati alam."
                 }
               ]
-
             },
             {
               name: "Thailand",
-              flag: "https://flagcdn.com/w20/th.png",
-              summary: "Ibu kota: Bangkok. Negara dengan kuil emas dan makanan pedas.",
+              flag: "🇹🇭",
+              summary: "Ibu kota: Bangkok. Mata uang: Baht (THB). Negara dengan kuil emas dan makanan pedas.",
               attractions: [
                 {
                   name: "Grand Palace",
@@ -533,8 +346,8 @@
             },
             {
               name: "Timor-Leste",
-              flag: "https://flagcdn.com/w20/tl.png",
-              summary: "Ibu kota: Dili. Negara muda dengan pantai dan sejarah.",
+              flag: "🇹🇱",
+              summary: "Ibu kota: Dili. Mata uang: Dolar AS (USD). Negara muda dengan pantai dan sejarah.",
               attractions: [
                 {
                   name: "Pantai Cristo Rei",
@@ -544,8 +357,8 @@
             },
             {
               name: "Turki",
-              flag: "https://flagcdn.com/w20/tr.png",
-              summary: "Ibu kota: Ankara. Negara dengan dua benua dan masjid indah.",
+              flag: "🇹🇷",
+              summary: "Ibu kota: Ankara. Mata uang: Lira Turki (TRY). Negara dengan dua benua dan masjid indah.",
               attractions: [
                 {
                   name: "Hagia Sophia",
@@ -555,8 +368,8 @@
             },
             {
               name: "Turkmenistan",
-              flag: "https://flagcdn.com/w20/tm.png",
-              summary: "Ibu kota: Ashgabat. Negara dengan monumen marmer putih.",
+              flag: "🇹🇲",
+              summary: "Ibu kota: Ashgabat. Mata uang: Manat (TMT). Negara dengan monumen marmer putih.",
               attractions: [
                 {
                   name: "Gerbang Neraka",
@@ -566,8 +379,8 @@
             },
             {
               name: "Uni Emirat Arab",
-              flag: "https://flagcdn.com/w20/ae.png",
-              summary: "Ibu kota: Abu Dhabi. Negara dengan gedung pencakar langit.",
+              flag: "🇦🇪",
+              summary: "Ibu kota: Abu Dhabi. Mata uang: Dirham (AED). Negara dengan gedung pencakar langit.",
               attractions: [
                 {
                   name: "Burj Khalifa",
@@ -577,8 +390,8 @@
             },
             {
               name: "Uzbekistan",
-              flag: "https://flagcdn.com/w20/uz.png",
-              summary: "Ibu kota: Tashkent. Negara dengan kota-kota Jalur Sutra.",
+              flag: "🇺🇿",
+              summary: "Ibu kota: Tashkent. Mata uang: Som (UZS). Negara dengan kota-kota Jalur Sutra.",
               attractions: [
                 {
                   name: "Registan Samarkand",
@@ -588,19 +401,19 @@
             },
             {
               name: "Vietnam",
-              flag: "https://flagcdn.com/w20/vn.png",
-              summary: "Ibu kota: Hanoi. Negara dengan teluk dan makanan pho.",
+              flag: "🇻🇳",
+              summary: "Ibu kota: Hanoi. Mata uang: Bandung (VND). Negara dengan teluk dan makanan pho.",
               attractions: [
                 {
                   name: "Teluk Ha Long",
-                  details: "Teluk di utara Vietnam dengan ribuan pulau karst dan air zamrud. Cocok untuk kapal pesiar."
+                  details: "Teluk di utara Vietnam dengan ribuan pulau karst dan anda zamrud anda."
                 }
               ]
             },
             {
               name: "Yaman",
-              flag: "https://flagcdn.com/w20/ye.png",
-              summary: "Ibu kota: Sanaa. Negara dengan arsitektur kuno unik.",
+              flag: "🇾🇪",
+              summary: "Ibu kota: Sanaa. Mata uang: Rial Yaman (YER). Negara dengan arsitektur kuno unik.",
               attractions: [
                 {
                   name: "Kota Tua Sanaa",
@@ -610,8 +423,8 @@
             },
             {
               name: "Yordania",
-              flag: "https://flagcdn.com/w20/jo.png",
-              summary: "Ibu kota: Amman. Negara dengan kota batu Petra.",
+              flag: "🇯🇴",
+              summary: "Ibu kota: Amman. Mata uang: Dinar Yordania (JOD). Negara dengan kota batu Petra.",
               attractions: [
                 {
                   name: "Petra",
@@ -620,15 +433,15 @@
               ]
             }
           ]
-        },
+        }]},
         {
           name: "Eropa",
           summary: "Benua dengan 44 negara, penuh kastil dan sejarah kuno.",
           countries: [
             {
               name: "Akrotiri dan Dhekelia",
-              flag: "https://flagcdn.com/w20/gb.png",
-              summary: "Ibu kota: Episkopi. Wilayah Inggris di Pulau Siprus.",
+              flag: "🇬🇧",
+              summary: "Ibu kota: Episkopi. Mata uang: Euro (EUR). Wilayah Inggris di Pulau Siprus.",
               attractions: [
                 {
                   name: "Pantai Akrotiri",
@@ -638,8 +451,8 @@
             },
             {
               name: "Albania",
-              flag: "https://flagcdn.com/w20/al.png",
-              summary: "Ibu kota: Tirana. Negara dengan pantai dan pegunungan.",
+              flag: "🇦🇱",
+              summary: "Ibu kota: Tirana. Mata uang: Lek (ALL). Negara dengan pantai dan pegunungan.",
               attractions: [
                 {
                   name: "Kota Berat",
@@ -649,8 +462,8 @@
             },
             {
               name: "Andorra",
-              flag: "https://flagcdn.com/w20/ad.png",
-              summary: "Ibu kota: Andorra la Vella. Negara kecil di Pegunungan Pyrenees.",
+              flag: "🇦🇩",
+              summary: "Ibu kota: Andorra la Vella. Mata uang: Euro (EUR). Negara kecil di Pegunungan Pyrenees.",
               attractions: [
                 {
                   name: "Casa de la Vall",
@@ -660,8 +473,8 @@
             },
             {
               name: "Austria",
-              flag: "https://flagcdn.com/w20/at.png",
-              summary: "Ibu kota: Wina. Negara dengan musik klasik dan istana.",
+              flag: "🇦🇹",
+              summary: "Ibu kota: Wina. Mata uang: Euro (EUR). Negara dengan musik klasik dan istana.",
               attractions: [
                 {
                   name: "Istana Schönbrunn",
@@ -671,8 +484,8 @@
             },
             {
               name: "Belanda",
-              flag: "https://flagcdn.com/w20/nl.png",
-              summary: "Ibu kota: Amsterdam. Negara dengan kanal dan bunga tulip.",
+              flag: "🇳🇱",
+              summary: "Ibu kota: Amsterdam. Mata uang: Euro (EUR). Negara dengan kanal dan bunga tulip.",
               attractions: [
                 {
                   name: "Kanal Amsterdam",
@@ -682,8 +495,8 @@
             },
             {
               name: "Belarus",
-              flag: "https://flagcdn.com/w20/by.png",
-              summary: "Ibu kota: Minsk. Negara dengan hutan luas dan kastil.",
+              flag: "🇧🇾",
+              summary: "Ibu kota: Minsk. Mata uang: Rubel Belarus (BYN). Negara dengan hutan luas dan kastil.",
               attractions: [
                 {
                   name: "Kastil Mir",
@@ -693,8 +506,8 @@
             },
             {
               name: "Belgia",
-              flag: "https://flagcdn.com/w20/be.png",
-              summary: "Ibu kota: Brussel. Negara dengan cokelat dan wafel lezat.",
+              flag: "🇧🇪",
+              summary: "Ibu kota: Brussel. Mata uang: Euro (EUR). Negara dengan cokelat dan wafel lezat.",
               attractions: [
                 {
                   name: "Atomium",
@@ -704,8 +517,8 @@
             },
             {
               name: "Bosnia dan Herzegovina",
-              flag: "https://flagcdn.com/w20/ba.png",
-              summary: "Ibu kota: Sarajevo. Negara dengan jembatan kuno dan budaya.",
+              flag: "🇧🇦",
+              summary: "Ibu kota: Sarajevo. Mata uang: Mark Konvertibel (BAM). Negara dengan jembatan kuno dan budaya.",
               attractions: [
                 {
                   name: "Jembatan Tua Mostar",
@@ -715,8 +528,8 @@
             },
             {
               name: "Bulgaria",
-              flag: "https://flagcdn.com/w20/bg.png",
-              summary: "Ibu kota: Sofia. Negara dengan gereja dan pantai Laut Hitam.",
+              flag: "🇧🇬",
+              summary: "Ibu kota: Sofia. Mata uang: Lev (BGN). Negara dengan gereja dan pantai Laut Hitam.",
               attractions: [
                 {
                   name: "Katedral Alexander Nevsky",
@@ -726,8 +539,8 @@
             },
             {
               name: "Ceko",
-              flag: "https://flagcdn.com/w20/cz.png",
-              summary: "Ibu kota: Praha. Negara dengan kastil dan jembatan indah.",
+              flag: "🇨🇿",
+              summary: "Ibu kota: Praha. Mata uang: Koruna Ceko (CZK). Negara dengan kastil dan jembatan indah.",
               attractions: [
                 {
                   name: "Kastil Praha",
@@ -737,8 +550,8 @@
             },
             {
               name: "Denmark",
-              flag: "https://flagcdn.com/w20/dk.png",
-              summary: "Ibu kota: Kopenhagen. Negara dengan kastil dan Lego!",
+              flag: "🇩🇰",
+              summary: "Ibu kota: Kopenhagen. Mata uang: Krone Denmark (DKK). Negara dengan kastil dan Lego!",
               attractions: [
                 {
                   name: "Taman Tivoli",
@@ -748,8 +561,8 @@
             },
             {
               name: "Estonia",
-              flag: "https://flagcdn.com/w20/ee.png",
-              summary: "Ibu kota: Tallinn. Negara dengan kota abad pertengahan.",
+              flag: "🇪🇪",
+              summary: "Ibu kota: Tallinn. Mata uang: Euro (EUR). Negara dengan kota abad pertengahan.",
               attractions: [
                 {
                   name: "Kota Tua Tallinn",
@@ -759,8 +572,8 @@
             },
             {
               name: "Finlandia",
-              flag: "https://flagcdn.com/w20/fi.png",
-              summary: "Ibu kota: Helsinki. Negara dengan danau dan aurora borealis.",
+              flag: "🇫🇮",
+              summary: "Ibu kota: Helsinki. Mata uang: Euro (EUR). Negara dengan danau dan aurora borealis.",
               attractions: [
                 {
                   name: "Katedral Helsinki",
@@ -770,8 +583,8 @@
             },
             {
               name: "Gibraltar",
-              flag: "https://flagcdn.com/w20/gi.png",
-              summary: "Ibu kota: Gibraltar. Wilayah Inggris dengan batu karang besar.",
+              flag: "🇬🇮",
+              summary: "Ibu kota: Gibraltar. Mata uang: Pound Gibraltar (GIP). Wilayah Inggris dengan batu karang besar.",
               attractions: [
                 {
                   name: "Batu Gibraltar",
@@ -781,8 +594,8 @@
             },
             {
               name: "Irlandia",
-              flag: "https://flagcdn.com/w20/ie.png",
-              summary: "Ibu kota: Dublin. Negara dengan kastil dan ladang hijau.",
+              flag: "🇮🇪",
+              summary: "Ibu kota: Dublin. Mata uang: Euro (EUR). Negara dengan kastil dan ladang hijau.",
               attractions: [
                 {
                   name: "Tebing Moher",
@@ -792,8 +605,8 @@
             },
             {
               name: "Islandia",
-              flag: "https://flagcdn.com/w20/is.png",
-              summary: "Ibu kota: Reykjavik. Negara dengan geyser dan air terjun.",
+              flag: "🇮🇸",
+              summary: "Ibu kota: Reykjavik. Mata uang: Krona Islandia (ISK). Negara dengan geyser dan air terjun.",
               attractions: [
                 {
                   name: "Air Terjun Gullfoss",
@@ -803,8 +616,8 @@
             },
             {
               name: "Isle of Man",
-              flag: "https://flagcdn.com/w20/im.png",
-              summary: "Ibu kota: Douglas. Pulau dengan sejarah Viking dan kastil.",
+              flag: "🇮🇴",
+              summary: "Ibu kota: Douglas. Mata uang: Pound Manx (IMP). Pulau dengan sejarah Viking dan kastil.",
               attractions: [
                 {
                   name: "Kastil Peel",
@@ -814,8 +627,8 @@
             },
             {
               name: "Italia",
-              flag: "https://flagcdn.com/w20/it.png",
-              summary: "Ibu kota: Roma. Negara dengan pizza dan bangunan kuno.",
+              flag: "🇮🇹",
+              summary: "Ibu kota: Roma. Mata uang: Euro (EUR). Negara dengan pizza dan bangunan kuno.",
               attractions: [
                 {
                   name: "Colosseum",
@@ -829,8 +642,8 @@
             },
             {
               name: "Jersey",
-              flag: "https://flagcdn.com/w20/je.png",
-              summary: "Ibu kota: Saint Helier. Pulau dengan pantai dan kastil.",
+              flag: "🇯🇪",
+              summary: "Ibu kota: Saint Helier. Mata uang: Pound Jersey (JEP). Pulau dengan pantai dan kastil.",
               attractions: [
                 {
                   name: "Kastil Elizabeth",
@@ -840,8 +653,8 @@
             },
             {
               name: "Kosovo",
-              flag: "https://flagcdn.com/w20/xk.png",
-              summary: "Ibu kota: Pristina. Negara muda dengan budaya beragam.",
+              flag: "🇽🇰",
+              summary: "Ibu kota: Pristina. Mata uang: Euro (EUR). Negara muda dengan budaya beragam.",
               attractions: [
                 {
                   name: "Biara Gračanica",
@@ -851,8 +664,8 @@
             },
             {
               name: "Latvia",
-              flag: "https://flagcdn.com/w20/lv.png",
-              summary: "Ibu kota: Riga. Negara dengan arsitektur Art Nouveau.",
+              flag: "🇱🇻",
+              summary: "Ibu kota: Riga. Mata uang: Euro (EUR). Negara dengan arsitektur Art Nouveau.",
               attractions: [
                 {
                   name: "Kota Tua Riga",
@@ -862,8 +675,8 @@
             },
             {
               name: "Liechtenstein",
-              flag: "https://flagcdn.com/w20/li.png",
-              summary: "Ibu kota: Vaduz. Negara kecil dengan kastil di pegunungan.",
+              flag: "🇱🇮",
+              summary: "Ibu kota: Vaduz. Mata uang: Franc Swiss (CHF). Negara kecil dengan kastil di pegunungan.",
               attractions: [
                 {
                   name: "Kastil Vaduz",
@@ -873,8 +686,8 @@
             },
             {
               name: "Lithuania",
-              flag: "https://flagcdn.com/w20/lt.png",
-              summary: "Ibu kota: Vilnius. Negara dengan kastil dan hutan luas.",
+              flag: "🇱🇹",
+              summary: "Ibu kota: Vilnius. Mata uang: Euro (EUR). Negara dengan kastil dan hutan luas.",
               attractions: [
                 {
                   name: "Kastil Trakai",
@@ -884,8 +697,8 @@
             },
             {
               name: "Luksemburg",
-              flag: "https://flagcdn.com/w20/lu.png",
-              summary: "Ibu kota: Luksemburg. Negara kecil dengan benteng kuno.",
+              flag: "🇱🇺",
+              summary: "Ibu kota: Luksemburg. Mata uang: Euro (EUR). Negara kecil dengan benteng kuno.",
               attractions: [
                 {
                   name: "Bock Casemates",
@@ -895,8 +708,8 @@
             },
             {
               name: "Makedonia Utara",
-              flag: "https://flagcdn.com/w20/mk.png",
-              summary: "Ibu kota: Skopje. Negara dengan jembatan batu dan danau.",
+              flag: "🇲🇰",
+              summary: "Ibu kota: Skopje. Mata uang: Denar (MKD). Negara dengan jembatan batu dan danau.",
               attractions: [
                 {
                   name: "Danau Ohrid",
@@ -906,8 +719,8 @@
             },
             {
               name: "Malta",
-              flag: "https://flagcdn.com/w20/mt.png",
-              summary: "Ibu kota: Valletta. Negara pulau dengan kota bersejarah.",
+              flag: "🇲🇹",
+              summary: "Ibu kota: Valletta. Mata uang: Euro (EUR). Negara pulau dengan kota bersejarah.",
               attractions: [
                 {
                   name: "Kota Tua Valletta",
@@ -917,8 +730,8 @@
             },
             {
               name: "Moldova",
-              flag: "https://flagcdn.com/w20/md.png",
-              summary: "Ibu kota: Chisinau. Negara dengan anggur dan monumen.",
+              flag: "🇲🇩",
+              summary: "Ibu kota: Chisinau. Mata uang: Leu Moldova (MDL). Negara dengan anggur dan monumen.",
               attractions: [
                 {
                   name: "Orheiul Vechi",
@@ -928,8 +741,8 @@
             },
             {
               name: "Monako",
-              flag: "https://flagcdn.com/w20/mc.png",
-              summary: "Ibu kota: Monako. Negara kecil dengan kasino dan pelabuhan.",
+              flag: "🇲🇨",
+              summary: "Ibu kota: Monako. Mata uang: Euro (EUR). Negara kecil dengan kasino dan pelabuhan.",
               attractions: [
                 {
                   name: "Kasino Monte Carlo",
@@ -939,8 +752,8 @@
             },
             {
               name: "Montenegro",
-              flag: "https://flagcdn.com/w20/me.png",
-              summary: "Ibu kota: Podgorica. Negara dengan pantai dan pegunungan.",
+              flag: "🇲🇪",
+              summary: "Ibu kota: Podgorica. Mata uang: Euro (EUR). Negara dengan pantai dan pegunungan.",
               attractions: [
                 {
                   name: "Teluk Kotor",
@@ -950,8 +763,8 @@
             },
             {
               name: "Norwegia",
-              flag: "https://flagcdn.com/w20/no.png",
-              summary: "Ibu kota: Oslo. Negara dengan fjord dan aurora borealis.",
+              flag: "🇳🇴",
+              summary: "Ibu kota: Oslo. Mata uang: Krone Norwegia (NOK). Negara dengan fjord dan aurora borealis.",
               attractions: [
                 {
                   name: "Fjord Geiranger",
@@ -961,8 +774,8 @@
             },
             {
               name: "Polandia",
-              flag: "https://flagcdn.com/w20/pl.png",
-              summary: "Ibu kota: Warsawa. Negara dengan kastil dan sejarah kaya.",
+              flag: "🇵🇱",
+              summary: "Ibu kota: Warsawa. Mata uang: Zloty (PLN). Negara dengan kastil dan sejarah kaya.",
               attractions: [
                 {
                   name: "Kastil Wawel",
@@ -972,8 +785,8 @@
             },
             {
               name: "Portugal",
-              flag: "https://flagcdn.com/w20/pt.png",
-              summary: "Ibu kota: Lisboa. Negara dengan pantai dan menara kuno.",
+              flag: "🇵🇹",
+              summary: "Ibu kota: Lisboa. Mata uang: Euro (EUR). Negara dengan pantai dan menara kuno.",
               attractions: [
                 {
                   name: "Menara Belém",
@@ -983,8 +796,8 @@
             },
             {
               name: "Rumania",
-              flag: "https://flagcdn.com/w20/ro.png",
-              summary: "Ibu kota: Bukares. Negara dengan kastil dan hutan Karpatia.",
+              flag: "🇷🇴",
+              summary: "Ibu kota: Bukares. Mata uang: Leu Rumania (RON). Negara dengan kastil dan hutan Karpatia.",
               attractions: [
                 {
                   name: "Kastil Bran",
@@ -994,8 +807,8 @@
             },
             {
               name: "Rusia",
-              flag: "https://flagcdn.com/w20/ru.png",
-              summary: "Ibu kota: Moskow. Negara terbesar di dunia dengan istana megah.",
+              flag: "🇷🇺",
+              summary: "Ibu kota: Moskow. Mata uang: Rubel Rusia (RUB). Negara terbesar di dunia dengan istana megah.",
               attractions: [
                 {
                   name: "Lapangan Merah",
@@ -1005,8 +818,8 @@
             },
             {
               name: "San Marino",
-              flag: "https://flagcdn.com/w20/sm.png",
-              summary: "Ibu kota: San Marino. Negara kecil dengan menara abad pertengahan.",
+              flag: "🇸🇲",
+              summary: "Ibu kota: San Marino. Mata uang: Euro (EUR). Negara kecil dengan menara abad pertengahan.",
               attractions: [
                 {
                   name: "Tiga Menara San Marino",
@@ -1016,8 +829,8 @@
             },
             {
               name: "Serbia",
-              flag: "https://flagcdn.com/w20/rs.png",
-              summary: "Ibu kota: Beograd. Negara dengan benteng dan sungai.",
+              flag: "🇷🇸",
+              summary: "Ibu kota: Beograd. Mata uang: Dinar Serbia (RSD). Negara dengan benteng dan sungai.",
               attractions: [
                 {
                   name: "Benteng Beograd",
@@ -1027,8 +840,8 @@
             },
             {
               name: "Siprus",
-              flag: "https://flagcdn.com/w20/cy.png",
-              summary: "Ibu kota: Nikosia. Pulau dengan pantai dan situs kuno.",
+              flag: "🇨🇾",
+              summary: "Ibu kota: Nikosia. Mata uang: Euro (EUR). Pulau dengan pantai dan situs kuno.",
               attractions: [
                 {
                   name: "Petra tou Romiou",
@@ -1038,8 +851,8 @@
             },
             {
               name: "Slovenia",
-              flag: "https://flagcdn.com/w20/si.png",
-              summary: "Ibu kota: Ljubljana. Negara dengan danau dan kastil.",
+              flag: "🇸🇮",
+              summary: "Ibu kota: Ljubljana. Mata uang: Euro (EUR). Negara dengan danau dan kastil.",
               attractions: [
                 {
                   name: "Danau Bled",
@@ -1049,8 +862,8 @@
             },
             {
               name: "Slovakia",
-              flag: "https://flagcdn.com/w20/sk.png",
-              summary: "Ibu kota: Bratislava. Negara dengan kastil dan sungai Danube.",
+              flag: "🇸🇰",
+              summary: "Ibu kota: Bratislava. Mata uang: Euro (EUR). Negara dengan kastil dan sungai Danube.",
               attractions: [
                 {
                   name: "Kastil Bratislava",
@@ -1060,8 +873,8 @@
             },
             {
               name: "Spanyol",
-              flag: "https://flagcdn.com/w20/es.png",
-              summary: "Ibu kota: Madrid. Negara dengan tarian flamenco dan festival.",
+              flag: "🇪🇸",
+              summary: "Ibu kota: Madrid. Mata uang: Euro (EUR). Negara dengan tarian flamenco dan festival.",
               attractions: [
                 {
                   name: "Sagrada Familia",
@@ -1071,8 +884,8 @@
             },
             {
               name: "Swedia",
-              flag: "https://flagcdn.com/w20/se.png",
-              summary: "Ibu kota: Stockholm. Negara dengan pulau dan aurora.",
+              flag: "🇸🇪",
+              summary: "Ibu kota: Stockholm. Mata uang: Krona Swedia (SEK). Negara dengan pulau dan aurora.",
               attractions: [
                 {
                   name: "Kota Tua Stockholm",
@@ -1082,8 +895,8 @@
             },
             {
               name: "Swiss",
-              flag: "https://flagcdn.com/w20/ch.png",
-              summary: "Ibu kota: Bern. Negara dengan Alpen dan cokelat.",
+              flag: "🇨🇭",
+              summary: "Ibu kota: Bern. Mata uang: Franc Swiss (CHF). Negara dengan Alpen dan cokelat.",
               attractions: [
                 {
                   name: "Matterhorn",
@@ -1093,8 +906,8 @@
             },
             {
               name: "Ukraina",
-              flag: "https://flagcdn.com/w20/ua.png",
-              summary: "Ibu kota: Kyiv. Negara dengan katedral dan sejarah Slavia.",
+              flag: "🇺🇦",
+              summary: "Ibu kota: Kyiv. Mata uang: Hryvnia (UAH). Negara dengan katedral dan sejarah Slavia.",
               attractions: [
                 {
                   name: "Katedral Saint Sophia",
@@ -1104,8 +917,8 @@
             },
             {
               name: "Vatikan",
-              flag: "https://flagcdn.com/w20/va.png",
-              summary: "Ibu kota: Kota Vatikan. Negara terkecil dengan gereja besar.",
+              flag: "🇻🇦",
+              summary: "Ibu kota: Kota Vatikan. Mata uang: Euro (EUR). Negara terkecil dengan gereja besar.",
               attractions: [
                 {
                   name: "Basilika Santo Petrus",
@@ -1115,8 +928,8 @@
             },
             {
               name: "Yunani",
-              flag: "https://flagcdn.com/w20/gr.png",
-              summary: "Ibu kota: Athena. Negara dengan kuil kuno dan pulau.",
+              flag: "🇬🇷",
+              summary: "Ibu kota: Athena. Mata uang: Euro (EUR). Negara dengan kuil kuno dan pulau.",
               attractions: [
                 {
                   name: "Acropolis Athena",
@@ -1132,8 +945,8 @@
           countries: [
             {
               name: "Afrika Selatan",
-              flag: "https://flagcdn.com/w20/za.png",
-              summary: "Ibu kota: Pretoria, Cape Town, Bloemfontein. Negara dengan safari.",
+              flag: "🇿🇦",
+              summary: "Ibu kota: Pretoria, Cape Town, Bloemfontein. Mata uang: Rand (ZAR). Negara dengan safari.",
               attractions: [
                 {
                   name: "Taman Nasional Kruger",
@@ -1147,8 +960,8 @@
             },
             {
               name: "Aljazair",
-              flag: "https://flagcdn.com/w20/dz.png",
-              summary: "Ibu kota: Aljazair. Negara dengan gurun Sahara dan pantai.",
+              flag: "🇩🇿",
+              summary: "Ibu kota: Aljazair. Mata uang: Dinar Aljazair (DZD). Negara dengan gurun Sahara dan pantai.",
               attractions: [
                 {
                   name: "Taman Nasional Tassili n'Ajjer",
@@ -1158,8 +971,8 @@
             },
             {
               name: "Angola",
-              flag: "https://flagcdn.com/w20/ao.png",
-              summary: "Ibu kota: Luanda. Negara dengan pantai dan hutan tropis.",
+              flag: "🇦🇴",
+              summary: "Ibu kota: Luanda. Mata uang: Kwanza (AOA). Negara dengan pantai dan hutan tropis.",
               attractions: [
                 {
                   name: "Air Terjun Kalandula",
@@ -1169,8 +982,8 @@
             },
             {
               name: "Benin",
-              flag: "https://flagcdn.com/w20/bj.png",
-              summary: "Ibu kota: Porto-Novo, Cotonou. Negara dengan budaya voodoo.",
+              flag: "🇧🇯",
+              summary: "Ibu kota: Porto-Novo, Cotonou. Mata uang: Franc CFA Afrika Barat (XOF). Negara dengan budaya voodoo.",
               attractions: [
                 {
                   name: "Kota Ouidah",
@@ -1180,8 +993,8 @@
             },
             {
               name: "Botswana",
-              flag: "https://flagcdn.com/w20/bw.png",
-              summary: "Ibu kota: Gaborone. Negara dengan delta dan safari.",
+              flag: "🇧🇼",
+              summary: "Ibu kota: Gaborone. Mata uang: Pula (BWP). Negara dengan delta dan safari.",
               attractions: [
                 {
                   name: "Delta Okavango",
@@ -1191,8 +1004,8 @@
             },
             {
               name: "Burkina Faso",
-              flag: "https://flagcdn.com/w20/bf.png",
-              summary: "Ibu kota: Ouagadougou. Negara dengan budaya dan pasar tradisional.",
+              flag: "🇧🇫",
+              summary: "Ibu kota: Ouagadougou. Mata uang: Franc CFA Afrika Barat (XOF). Negara dengan budaya dan pasar tradisional.",
               attractions: [
                 {
                   name: "Sindou Peaks",
@@ -1202,8 +1015,8 @@
             },
             {
               name: "Burundi",
-              flag: "https://flagcdn.com/w20/bi.png",
-              summary: "Ibu kota: Gitega, Bujumbura. Negara dengan danau besar.",
+              flag: "🇧🇮",
+              summary: "Ibu kota: Gitega, Bujumbura. Mata uang: Franc Burundi (BIF). Negara dengan danau besar.",
               attractions: [
                 {
                   name: "Danau Tanganyika",
@@ -1213,8 +1026,8 @@
             },
             {
               name: "Djibouti",
-              flag: "https://flagcdn.com/w20/dj.png",
-              summary: "Ibu kota: Djibouti. Negara kecil dengan danau garam.",
+              flag: "🇩🇯",
+              summary: "Ibu kota: Djibouti. Mata uang: Franc Djibouti (DJF). Negara kecil dengan danau garam.",
               attractions: [
                 {
                   name: "Danau Assal",
@@ -1224,8 +1037,8 @@
             },
             {
               name: "Eswatini",
-              flag: "https://flagcdn.com/w20/sz.png",
-              summary: "Ibu kota: Mbabane, Lobamba. Negara kecil dengan budaya kerajaan.",
+              flag: "🇸🇿",
+              summary: "Ibu kota: Mbabane, Lobamba. Mata uang: Lilangeni (SZL). Negara kecil dengan budaya kerajaan.",
               attractions: [
                 {
                   name: "Cagar Alam Mlilwane",
@@ -1235,8 +1048,8 @@
             },
             {
               name: "Etiopia",
-              flag: "https://flagcdn.com/w20/et.png",
-              summary: "Ibu kota: Addis Ababa. Negara dengan gereja batu kuno.",
+              flag: "🇪🇹",
+              summary: "Ibu kota: Addis Ababa. Mata uang: Birr (ETB). Negara dengan gereja batu kuno.",
               attractions: [
                 {
                   name: "Lalibela",
@@ -1246,8 +1059,8 @@
             },
             {
               name: "Gabon",
-              flag: "https://flagcdn.com/w20/ga.png",
-              summary: "Ibu kota: Libreville. Negara dengan hutan hujan dan pantai.",
+              flag: "🇬🇦",
+              summary: "Ibu kota: Libreville. Mata uang: Franc CFA Afrika Tengah (XAF). Negara dengan hutan hujan dan pantai.",
               attractions: [
                 {
                   name: "Taman Nasional Loango",
@@ -1257,8 +1070,8 @@
             },
             {
               name: "Gambia",
-              flag: "https://flagcdn.com/w20/gm.png",
-              summary: "Ibu kota: Banjul. Negara kecil di sepanjang Sungai Gambia.",
+              flag: "🇬🇲",
+              summary: "Ibu kota: Banjul. Mata uang: Dalasi (GMD). Negara kecil di sepanjang Sungai Gambia.",
               attractions: [
                 {
                   name: "Taman Nasional Kiang West",
@@ -1268,8 +1081,8 @@
             },
             {
               name: "Ghana",
-              flag: "https://flagcdn.com/w20/gh.png",
-              summary: "Ibu kota: Accra. Negara dengan kastil dan pasar ramai.",
+              flag: "🇬🇭",
+              summary: "Ibu kota: Accra. Mata uang: Cedi (GHS). Negara dengan kastil dan pasar ramai.",
               attractions: [
                 {
                   name: "Kastil Cape Coast",
@@ -1279,8 +1092,8 @@
             },
             {
               name: "Guinea",
-              flag: "https://flagcdn.com/w20/gn.png",
-              summary: "Ibu kota: Conakry. Negara dengan air terjun dan hutan.",
+              flag: "🇬🇳",
+              summary: "Ibu kota: Conakry. Mata uang: Franc Guinea (GNF). Negara dengan air terjun dan hutan.",
               attractions: [
                 {
                   name: "Air Terjun Soumba",
@@ -1290,8 +1103,8 @@
             },
             {
               name: "Guinea Ekuatorial",
-              flag: "https://flagcdn.com/w20/gq.png",
-              summary: "Ibu kota: Malabo. Negara pulau dengan budaya Spanyol.",
+              flag: "🇬🇶",
+              summary: "Ibu kota: Malabo. Mata uang: Franc CFA Afrika Tengah (XAF). Negara pulau dengan budaya Spanyol.",
               attractions: [
                 {
                   name: "Katedral Malabo",
@@ -1301,8 +1114,8 @@
             },
             {
               name: "Guinea-Bissau",
-              flag: "https://flagcdn.com/w20/gw.png",
-              summary: "Ibu kota: Bissau. Negara dengan kepulauan dan mangrove.",
+              flag: "🇬🇼",
+              summary: "Ibu kota: Bissau. Mata uang: Franc CFA Afrika Barat (XOF). Negara dengan kepulauan dan mangrove.",
               attractions: [
                 {
                   name: "Kepulauan Bijagós",
@@ -1312,8 +1125,8 @@
             },
             {
               name: "Kenya",
-              flag: "https://flagcdn.com/w20/ke.png",
-              summary: "Ibu kota: Nairobi. Negara dengan safari dan migrasi hewan.",
+              flag: "🇰🇪",
+              summary: "Ibu kota: Nairobi. Mata uang: Shilling Kenya (KES). Negara dengan safari dan migrasi hewan.",
               attractions: [
                 {
                   name: "Maasai Mara",
@@ -1323,8 +1136,8 @@
             },
             {
               name: "Lesoto",
-              flag: "https://flagcdn.com/w20/ls.png",
-              summary: "Ibu kota: Maseru. Negara pegunungan di dalam Afrika Selatan.",
+              flag: "🇱🇸",
+              summary: "Ibu kota: Maseru. Mata uang: Loti (LSL). Negara pegunungan di dalam Afrika Selatan.",
               attractions: [
                 {
                   name: "Air Terjun Maletsunyane",
@@ -1334,8 +1147,8 @@
             },
             {
               name: "Liberia",
-              flag: "https://flagcdn.com/w20/lr.png",
-              summary: "Ibu kota: Monrovia. Negara dengan pantai dan sejarah Amerika.",
+              flag: "🇱🇷",
+              summary: "Ibu kota: Monrovia. Mata uang: Dolar Liberia (LRD). Negara dengan pantai dan sejarah Amerika.",
               attractions: [
                 {
                   name: "Pantai Robertsport",
@@ -1345,8 +1158,8 @@
             },
             {
               name: "Libya",
-              flag: "https://flagcdn.com/w20/ly.png",
-              summary: "Ibu kota: Tripoli. Negara dengan reruntuhan Romawi dan gurun.",
+              flag: "🇱🇾",
+              summary: "Ibu kota: Tripoli. Mata uang: Dinar Libya (LYD). Negara dengan reruntuhan Romawi dan gurun.",
               attractions: [
                 {
                   name: "Leptis Magna",
@@ -1356,8 +1169,8 @@
             },
             {
               name: "Madagaskar",
-              flag: "https://flagcdn.com/w20/mg.png",
-              summary: "Ibu kota: Antananarivo. Pulau dengan lemur dan baobab.",
+              flag: "🇲🇬",
+              summary: "Ibu kota: Antananarivo. Mata uang: Ariary (MGA). Pulau dengan lemur dan baobab.",
               attractions: [
                 {
                   name: "Avenue of the Baobabs",
@@ -1367,8 +1180,8 @@
             },
             {
               name: "Malawi",
-              flag: "https://flagcdn.com/w20/mw.png",
-              summary: "Ibu kota: Lilongwe. Negara dengan danau besar dan satwa liar.",
+              flag: "🇲🇼",
+              summary: "Ibu kota: Lilongwe. Mata uang: Kwacha Malawi (MWK). Negara dengan danau besar dan satwa liar.",
               attractions: [
                 {
                   name: "Danau Malawi",
@@ -1378,8 +1191,8 @@
             },
             {
               name: "Mali",
-              flag: "https://flagcdn.com/w20/ml.png",
-              summary: "Ibu kota: Bamako. Negara dengan masjid lumpur dan sejarah.",
+              flag: "🇲🇱",
+              summary: "Ibu kota: Bamako. Mata uang: Franc CFA Afrika Barat (XOF). Negara dengan masjid lumpur dan sejarah.",
               attractions: [
                 {
                   name: "Masjid Djenné",
@@ -1389,8 +1202,8 @@
             },
             {
               name: "Maroko",
-              flag: "https://flagcdn.com/w20/ma.png",
-              summary: "Ibu kota: Rabat. Negara dengan pasar ramai dan gurun.",
+              flag: "🇲🇦",
+              summary: "Ibu kota: Rabat. Mata uang: Dirham Maroko (MAD). Negara dengan pasar ramai dan gurun.",
               attractions: [
                 {
                   name: "Kota Marrakech",
@@ -1404,8 +1217,8 @@
             },
             {
               name: "Mauritania",
-              flag: "https://flagcdn.com/w20/mr.png",
-              summary: "Ibu kota: Nouakchott. Negara dengan gurun dan kapal karam.",
+              flag: "🇲🇷",
+              summary: "Ibu kota: Nouakchott. Mata uang: Ouguiya (MRU). Negara dengan gurun dan kapal karam.",
               attractions: [
                 {
                   name: "Teluk Nouadhibou",
@@ -1415,8 +1228,8 @@
             },
             {
               name: "Mauritius",
-              flag: "https://flagcdn.com/w20/mu.png",
-              summary: "Ibu kota: Port Louis. Pulau dengan pantai dan laguna.",
+              flag: "🇲🇺",
+              summary: "Ibu kota: Port Louis. Mata uang: Rupee Mauritius (MUR). Pulau dengan pantai dan laguna.",
               attractions: [
                 {
                   name: "Taman Black River Gorges",
@@ -1426,8 +1239,8 @@
             },
             {
               name: "Mesir",
-              flag: "https://flagcdn.com/w20/eg.png",
-              summary: "Ibu kota: Kairo. Negara dengan piramida dan sejarah Firaun.",
+              flag: "🇪🇬",
+              summary: "Ibu kota: Kairo. Mata uang: Pound Mesir (EGP). Negara dengan piramida dan sejarah Firaun.",
               attractions: [
                 {
                   name: "Piramida Giza",
@@ -1441,19 +1254,19 @@
             },
             {
               name: "Mozambik",
-              flag: "https://flagcdn.com/w20/mz.png",
-              summary: "Ibu kota: Maputo. Negara dengan pantai dan pulau.",
+              flag: "🇲🇿",
+              summary: "Ibu kota: Maputo. Mata uang: Metical (MZN). Negara dengan pantai dan pulau.",
               attractions: [
                 {
                   name: "Kepulauan Bazaruto",
-                  details: "Kepulauan dengan pantenominal: Pantai pasir putih dan terumbu karang untuk snorkeling."
+                  details: "Kepulauan dengan pantai pasir putih dan terumbu karang untuk snorkeling."
                 }
               ]
             },
             {
               name: "Namibia",
-              flag: "https://flagcdn.com/w20/na.png",
-              summary: "Ibu kota: Windhoek. Negara dengan gurun dan satwa liar.",
+              flag: "🇳🇦",
+              summary: "Ibu kota: Windhoek. Mata uang: Dolar Namibia (NAD). Negara dengan gurun dan satwa liar.",
               attractions: [
                 {
                   name: "Dune 45",
@@ -1463,8 +1276,8 @@
             },
             {
               name: "Nigeria",
-              flag: "https://flagcdn.com/w20/ng.png",
-              summary: "Ibu kota: Abuja. Negara dengan budaya kaya dan pasar besar.",
+              flag: "🇳🇬",
+              summary: "Ibu kota: Abuja. Mata uang: Naira (NGN). Negara dengan budaya kaya dan pasar besar.",
               attractions: [
                 {
                   name: "Taman Nasional Yankari",
@@ -1474,8 +1287,8 @@
             },
             {
               name: "Rwanda",
-              flag: "https://flagcdn.com/w20/rw.png",
-              summary: "Ibu kota: Kigali. Negara dengan bukit dan gorila.",
+              flag: "🇷🇼",
+              summary: "Ibu kota: Kigali. Mata uang: Franc Rwanda (RWF). Negara dengan bukit dan gorila.",
               attractions: [
                 {
                   name: "Taman Nasional Volcanoes",
@@ -1485,8 +1298,8 @@
             },
             {
               name: "Senegal",
-              flag: "https://flagcdn.com/w20/sn.png",
-              summary: "Ibu kota: Dakar. Negara dengan pantai dan budaya musik.",
+              flag: "🇸🇳",
+              summary: "Ibu kota: Dakar. Mata uang: Franc CFA Afrika Barat (XOF). Negara dengan pantai dan budaya musik.",
               attractions: [
                 {
                   name: "Pulau Gorée",
@@ -1496,8 +1309,8 @@
             },
             {
               name: "Seychelles",
-              flag: "https://flagcdn.com/w20/sc.png",
-              summary: "Ibu kota: Victoria. Kepulauan dengan pantai tropis.",
+              flag: "🇸🇨",
+              summary: "Ibu kota: Victoria. Mata uang: Rupee Seychelles (SCR). Kepulauan dengan pantai tropis.",
               attractions: [
                 {
                   name: "Pantai Anse Lazio",
@@ -1507,8 +1320,8 @@
             },
             {
               name: "Sierra Leone",
-              flag: "https://flagcdn.com/w20/sl.png",
-              summary: "Ibu kota: Freetown. Negara dengan pantai dan hutan.",
+              flag: "🇸🇱",
+              summary: "Ibu kota: Freetown. Mata uang: Leone (SLL). Negara dengan pantai dan hutan.",
               attractions: [
                 {
                   name: "Pantai Lumley",
@@ -1518,8 +1331,8 @@
             },
             {
               name: "Somalia",
-              flag: "https://flagcdn.com/w20/so.png",
-              summary: "Ibu kota: Mogadishu. Negara dengan pantai panjang.",
+              flag: "🇸🇴",
+              summary: "Ibu kota: Mogadishu. Mata uang: Shilling Somalia (SOS). Negara dengan pantai panjang.",
               attractions: [
                 {
                   name: "Pantai Lido",
@@ -1529,8 +1342,8 @@
             },
             {
               name: "Sudan",
-              flag: "https://flagcdn.com/w20/sd.png",
-              summary: "Ibu kota: Khartoum. Negara dengan piramida Nubia.",
+              flag: "🇸🇩",
+              summary: "Ibu kota: Khartoum. Mata uang: Pound Sudan (SDG). Negara dengan piramida Nubia.",
               attractions: [
                 {
                   name: "Piramida Meroë",
@@ -1540,8 +1353,8 @@
             },
             {
               name: "Sudan Selatan",
-              flag: "https://flagcdn.com/w20/ss.png",
-              summary: "Ibu kota: Juba. Negara muda dengan savana luas.",
+              flag: "🇸🇸",
+              summary: "Ibu kota: Juba. Mata uang: Pound Sudan Selatan (SSP). Negara muda dengan savana luas.",
               attractions: [
                 {
                   name: "Taman Nasional Boma",
@@ -1551,8 +1364,8 @@
             },
             {
               name: "Tanzania",
-              flag: "https://flagcdn.com/w20/tz.png",
-              summary: "Ibu kota: Dodoma. Negara dengan gunung Kilimanjaro.",
+              flag: "🇹🇿",
+              summary: "Ibu kota: Dodoma. Mata uang: Shilling Tanzania (TZS). Negara dengan gunung Kilimanjaro.",
               attractions: [
                 {
                   name: "Gunung Kilimanjaro",
@@ -1562,8 +1375,8 @@
             },
             {
               name: "Togo",
-              flag: "https://flagcdn.com/w20/tg.png",
-              summary: "Ibu kota: Lomé. Negara kecil dengan pantai dan pasar.",
+              flag: "🇹🇬",
+              summary: "Ibu kota: Lomé. Mata uang: Franc CFA Afrika Barat (XOF). Negara kecil dengan pantai dan pasar.",
               attractions: [
                 {
                   name: "Pasar Fetish Lomé",
@@ -1573,8 +1386,8 @@
             },
             {
               name: "Tunisia",
-              flag: "https://flagcdn.com/w20/tn.png",
-              summary: "Ibu kota: Tunis. Negara dengan reruntuhan Karthago.",
+              flag: "🇹🇳",
+              summary: "Ibu kota: Tunis. Mata uang: Dinar Tunisia (TND). Negara dengan reruntuhan Karthago.",
               attractions: [
                 {
                   name: "Karthago",
@@ -1584,8 +1397,8 @@
             },
             {
               name: "Uganda",
-              flag: "https://flagcdn.com/w20/ug.png",
-              summary: "Ibu kota: Kampala. Negara dengan danau dan gorila.",
+              flag: "🇺🇬",
+              summary: "Ibu kota: Kampala. Mata uang: Shilling Uganda (UGX). Negara dengan danau dan gorila.",
               attractions: [
                 {
                   name: "Taman Nasional Bwindi",
@@ -1595,8 +1408,8 @@
             },
             {
               name: "Zambia",
-              flag: "https://flagcdn.com/w20/zm.png",
-              summary: "Ibu kota: Lusaka. Negara dengan air terjun dan safari.",
+              flag: "🇿🇲",
+              summary: "Ibu kota: Lusaka. Mata uang: Kwacha Zambia (ZMW). Negara dengan air terjun dan safari.",
               attractions: [
                 {
                   name: "Air Terjun Victoria",
@@ -1606,8 +1419,8 @@
             },
             {
               name: "Zimbabwe",
-              flag: "https://flagcdn.com/w20/zw.png",
-              summary: "Ibu kota: Harare. Negara dengan reruntuhan kuno dan safari.",
+              flag: "🇿🇼",
+              summary: "Ibu kota: Harare. Mata uang: Dolar Zimbabwe (ZWL). Negara dengan reruntuhan kuno dan safari.",
               attractions: [
                 {
                   name: "Great Zimbabwe",
@@ -1623,8 +1436,8 @@
           countries: [
             {
               name: "Amerika Serikat",
-              flag: "https://flagcdn.com/w20/us.png",
-              summary: "Ibu kota: Washington, D.C. Negara dengan kota besar dan alam luas.",
+              flag: "🇺🇸",
+              summary: "Ibu kota: Washington, D.C. Mata uang: Dolar AS (USD). Negara dengan kota besar dan alam luas.",
               attractions: [
                 {
                   name: "Patung Liberty",
@@ -1638,8 +1451,8 @@
             },
             {
               name: "Anguilla",
-              flag: "https://flagcdn.com/w20/ai.png",
-              summary: "Ibu kota: The Valley. Pulau kecil dengan pantai indah.",
+              flag: "🇦🇮",
+              summary: "Ibu kota: The Valley. Mata uang: Dolar Karibia Timur (XCD). Pulau kecil dengan pantai indah.",
               attractions: [
                 {
                   name: "Pantai Shoal Bay",
@@ -1649,8 +1462,8 @@
             },
             {
               name: "Antigua dan Barbuda",
-              flag: "https://flagcdn.com/w20/ag.png",
-              summary: "Ibu kota: Saint John's. Negara pulau dengan teluk indah.",
+              flag: "🇦🇬",
+              summary: "Ibu kota: Saint John's. Mata uang: Dolar Karibia Timur (XCD). Negara pulau dengan teluk indah.",
               attractions: [
                 {
                   name: "Nelson's Dockyard",
@@ -1660,8 +1473,8 @@
             },
             {
               name: "Argentina",
-              flag: "https://flagcdn.com/w20/ar.png",
-              summary: "Ibu kota: Buenos Aires. Negara dengan tango dan pegunungan.",
+              flag: "🇦🇷",
+              summary: "Ibu kota: Buenos Aires. Mata uang: Peso Argentina (ARS). Negara dengan tango dan pegunungan.",
               attractions: [
                 {
                   name: "Air Terjun Iguazu",
@@ -1671,8 +1484,8 @@
             },
             {
               name: "Aruba",
-              flag: "https://flagcdn.com/w20/aw.png",
-              summary: "Ibu kota: Oranjestad. Pulau dengan pantai dan kaktus.",
+              flag: "🇦🇼",
+              summary: "Ibu kota: Oranjestad. Mata uang: Florin Aruba (AWG). Pulau dengan pantai dan kaktus.",
               attractions: [
                 {
                   name: "Pantai Eagle",
@@ -1682,8 +1495,8 @@
             },
             {
               name: "Bahamas",
-              flag: "https://flagcdn.com/w20/bs.png",
-              summary: "Ibu kota: Nassau. Negara kepulauan dengan air jernih.",
+              flag: "🇧🇸",
+              summary: "Ibu kota: Nassau. Mata uang: Dolar Bahama (BSD). Negara kepulauan dengan air jernih.",
               attractions: [
                 {
                   name: "Pantai Cable",
@@ -1693,8 +1506,8 @@
             },
             {
               name: "Barbados",
-              flag: "https://flagcdn.com/w20/bb.png",
-              summary: "Ibu kota: Bridgetown. Pulau dengan pantai dan sejarah.",
+              flag: "🇧🇧",
+              summary: "Ibu kota: Bridgetown. Mata uang: Dolar Barbados (BBD). Pulau dengan pantai dan sejarah.",
               attractions: [
                 {
                   name: "Gua Harrison",
@@ -1704,8 +1517,8 @@
             },
             {
               name: "Belize",
-              flag: "https://flagcdn.com/w20/bz.png",
-              summary: "Ibu kota: Belmopan. Negara dengan terumbu karang dan hutan.",
+              flag: "🇧🇿",
+              summary: "Ibu kota: Belmopan. Mata uang: Dolar Belize (BZD). Negara dengan terumbu karang dan hutan.",
               attractions: [
                 {
                   name: "Great Blue Hole",
@@ -1715,8 +1528,8 @@
             },
             {
               name: "Bermuda",
-              flag: "https://flagcdn.com/w20/bm.png",
-              summary: "Ibu kota: Hamilton. Pulau dengan pantai merah muda.",
+              flag: "🇧🇲",
+              summary: "Ibu kota: Hamilton. Mata uang: Dolar Bermuda (BMD). Pulau dengan pantai merah muda.",
               attractions: [
                 {
                   name: "Pantai Horseshoe Bay",
@@ -1726,8 +1539,8 @@
             },
             {
               name: "Bolivia",
-              flag: "https://flagcdn.com/w20/bo.png",
-              summary: "Ibu kota: La Paz, Sucre. Negara dengan dataran tinggi Andes.",
+              flag: "🇧🇴",
+              summary: "Ibu kota: La Paz, Sucre. Mata uang: Boliviano (BOB). Negara dengan dataran tinggi Andes.",
               attractions: [
                 {
                   name: "Salar de Uyuni",
@@ -1737,8 +1550,8 @@
             },
             {
               name: "Brasil",
-              flag: "https://flagcdn.com/w20/br.png",
-              summary: "Ibu kota: Brasília. Negara dengan hutan Amazon dan karnaval.",
+              flag: "🇧🇷",
+              summary: "Ibu kota: Brasília. Mata uang: Real Brasil (BRL). Negara dengan hutan Amazon dan karnaval.",
               attractions: [
                 {
                   name: "Patung Christ the Redeemer",
@@ -1752,8 +1565,8 @@
             },
             {
               name: "Kepulauan Virgin Inggris",
-              flag: "https://flagcdn.com/w20/vg.png",
-              summary: "Ibu kota: Road Town. Pulau dengan pantai dan gua.",
+              flag: "🇻🇬",
+              summary: "Ibu kota: Road Town. Mata uang: Dolar AS (USD). Pulau dengan pantai dan gua.",
               attractions: [
                 {
                   name: "The Baths",
@@ -1763,8 +1576,8 @@
             },
             {
               name: "Kanada",
-              flag: "https://flagcdn.com/w20/ca.png",
-              summary: "Ibu kota: Ottawa. Negara dengan danau dan musim dingin.",
+              flag: "🇨🇦",
+              summary: "Ibu kota: Ottawa. Mata uang: Dolar Kanada (CAD). Negara dengan danau dan musim dingin.",
               attractions: [
                 {
                   name: "Air Terjun Niagara",
@@ -1774,8 +1587,8 @@
             },
             {
               name: "Kuba",
-              flag: "https://flagcdn.com/w20/cu.png",
-              summary: "Ibu kota: Havana. Negara dengan mobil klasik dan salsa.",
+              flag: "🇨🇺",
+              summary: "Ibu kota: Havana. Mata uang: Peso Kuba (CUP). Negara dengan mobil klasik dan salsa.",
               attractions: [
                 {
                   name: "Kota Tua Havana",
@@ -1785,8 +1598,8 @@
             },
             {
               name: "Curacao",
-              flag: "https://flagcdn.com/w20/cw.png",
-              summary: "Ibu kota: Willemstad. Pulau dengan bangunan warna-warni.",
+              flag: "🇨🇼",
+              summary: "Ibu kota: Willemstad. Mata uang: Guilder Antillen Belanda (ANG). Pulau dengan bangunan warna-warni.",
               attractions: [
                 {
                   name: "Kota Willemstad",
@@ -1796,8 +1609,8 @@
             },
             {
               name: "Dominika",
-              flag: "https://flagcdn.com/w20/dm.png",
-              summary: "Ibu kota: Roseau. Pulau dengan hutan hujan dan air terjun.",
+              flag: "🇩🇲",
+              summary: "Ibu kota: Roseau. Mata uang: Dolar Karibia Timur (XCD). Pulau dengan hutan hujan dan air terjun.",
               attractions: [
                 {
                   name: "Boiling Lake",
@@ -1807,8 +1620,8 @@
             },
             {
               name: "Republik Dominika",
-              flag: "https://flagcdn.com/w20/do.png",
-              summary: "Ibu kota: Santo Domingo. Negara dengan pantai Karibia.",
+              flag: "🇩🇴",
+              summary: "Ibu kota: Santo Domingo. Mata uang: Peso Dominika (DOP). Negara dengan pantai Karibia.",
               attractions: [
                 {
                   name: "Zona Colonial",
@@ -1818,8 +1631,8 @@
             },
             {
               name: "Ekuador",
-              flag: "https://flagcdn.com/w20/ec.png",
-              summary: "Ibu kota: Quito. Negara dengan Galapagos dan Andes.",
+              flag: "🇪🇨",
+              summary: "Ibu kota: Quito. Mata uang: Dolar AS (USD). Negara dengan Galapagos dan Andes.",
               attractions: [
                 {
                   name: "Kepulauan Galapagos",
@@ -1829,8 +1642,8 @@
             },
             {
               name: "El Salvador",
-              flag: "https://flagcdn.com/w20/sv.png",
-              summary: "Ibu kota: San Salvador. Negara dengan gunung berapi.",
+              flag: "🇸🇻",
+              summary: "Ibu kota: San Salvador. Mata uang: Dolar AS (USD). Negara dengan gunung berapi.",
               attractions: [
                 {
                   name: "Taman Nasional El Boquerón",
@@ -1840,162 +1653,188 @@
             },
             {
               name: "Guatemala",
-              flag: "https://flagcdn.com/w20/gt.png",
-              summary: "Ibu kota: Kota Guatemala. Negara dengan reruntuhan Maya.",
+              flag: "🇬🇹",
+              summary: "Ibu kota: Kota Guatemala. Mata uang: Quetzal (GTQ). Negara dengan reruntuhan Maya.",
               attractions: [
                 {
                   name: "Tikal",
-                  details: "Reruntuhan kota Maya di Petén, dengan piramida dan hutan hujan."
+                                    details: "Reruntuhan kota Maya kuno di Petén, dengan piramida dan kuil megah."
                 }
               ]
             },
             {
               name: "Guyana",
-              flag: "https://flagcdn.com/w20/gy.png",
-              summary: "Ibu kota: Georgetown. Negara dengan hutan dan air terjun.",
+              flag: "🇬🇾",
+              summary: "Ibu kota: Georgetown. Mata uang: Dolar Guyana (GYD). Negara dengan hutan hujan dan air terjun.",
               attractions: [
                 {
                   name: "Air Terjun Kaieteur",
-                  details: "Air terjun besar di Guyana, salah satu yang tertinggi di dunia."
+                  details: "Air terjun setinggi 226 meter di tengah hutan, salah satu yang tertinggi di dunia."
                 }
               ]
             },
             {
               name: "Haiti",
-              flag: "https://flagcdn.com/w20/ht.png",
-              summary: "Ibu kota: Port-au-Prince. Negara dengan sejarah dan pantai.",
+              flag: "🇭🇹",
+              summary: "Ibu kota: Port-au-Prince. Mata uang: Gourde (HTG). Negara dengan sejarah revolusi dan pantai.",
               attractions: [
                 {
                   name: "Citadelle Laferrière",
-                  details: "Benteng besar di Haiti utara, dibangun untuk pertahanan abad ke-19."
+                  details: "Benteng besar di utara Haiti, dibangun pada abad ke-19, situs Warisan Dunia."
                 }
               ]
             },
             {
               name: "Honduras",
-              flag: "https://flagcdn.com/w20/hn.png",
-              summary: "Ibu kota: Tegucigalpa. Negara dengan reruntuhan dan pulau.",
+              flag: "🇭🇳",
+              summary: "Ibu kota: Tegucigalpa. Mata uang: Lempira (HNL). Negara dengan reruntuhan Maya dan pulau.",
               attractions: [
                 {
                   name: "Copán",
-                  details: "Reruntuhan Maya di Honduras barat, terkenal dengan ukiran batu."
+                  details: "Situs arkeologi Maya di barat Honduras, terkenal dengan ukiran batu dan hieroglif."
                 }
               ]
             },
             {
               name: "Jamaika",
-              flag: "https://flagcdn.com/w20/jm.png",
-              summary: "Ibu kota: Kingston. Negara dengan reggae dan pantai.",
+              flag: "🇯🇲",
+              summary: "Ibu kota: Kingston. Mata uang: Dolar Jamaika (JMD). Negara dengan reggae dan pantai.",
               attractions: [
                 {
-                  name: "Air Terjun Dunn's River",
-                  details: "Air terjun di Ocho Rios, cocok untuk mendaki dan berenang."
+                  name: "Air Terjun Dunn’s River",
+                  details: "Air terjun di Ocho Rios, cocok untuk pendakian dan berenang."
+                }
+              ]
+            },
+            {
+              name: "Kepulauan Cayman",
+              flag: "🇰🇾",
+              summary: "Ibu kota: George Town. Mata uang: Dolar Kepulauan Cayman (KYD). Pulau dengan pantai dan menyelam.",
+              attractions: [
+                {
+                  name: "Stingray City",
+                  details: "Kawasan laut di Grand Cayman, tempat berenang bersama ikan pari."
+                }
+              ]
+            },
+            {
+              name: "Kosta Rika",
+              flag: "🇨🇷",
+              summary: "Ibu kota: San José. Mata uang: Colón (CRC). Negara dengan hutan hujan dan gunung berapi.",
+              attractions: [
+                {
+                  name: "Taman Nasional Arenal",
+                  details: "Taman dengan gunung berapi aktif, mata air panas, dan hutan tropis."
                 }
               ]
             },
             {
               name: "Meksiko",
-              flag: "https://flagcdn.com/w20/mx.png",
-              summary: "Ibu kota: Kota Meksiko. Negara dengan piramida dan taco.",
+              flag: "🇲🇽",
+              summary: "Ibu kota: Kota Meksiko. Mata uang: Peso Meksiko (MXN). Negara dengan piramida dan makanan taco.",
               attractions: [
                 {
-                  name: "Chichen Itza",
-                  details: "Piramida Maya di Yucatan, terkenal dengan El Castillo dan astronomi."
+                  name: "Chichén Itzá",
+                  details: "Reruntuhan Maya di Yucatán, dengan piramida El Castillo yang ikonik."
+                },
+                {
+                  name: "Tulum",
+                  details: "Reruntuhan Maya di tepi pantai Karibia, dengan pemandangan laut yang indah."
                 }
               ]
             },
             {
               name: "Nikaragua",
-              flag: "https://flagcdn.com/w20/ni.png",
-              summary: "Ibu kota: Managua. Negara dengan danau dan gunung berapi.",
+              flag: "🇳🇮",
+              summary: "Ibu kota: Managua. Mata uang: Córdoba (NIO). Negara dengan danau dan gunung berapi.",
               attractions: [
                 {
-                  name: "Gunung Berapi Masaya",
-                  details: "Gunung berapi aktif dekat Managua, kamu bisa melihat lava di kawah."
+                  name: "Danau Nikaragua",
+                  details: "Danau besar dengan pulau Ometepe, rumah dua gunung berapi."
                 }
               ]
             },
             {
               name: "Panama",
-              flag: "https://flagcdn.com/w20/pa.png",
-              summary: "Ibu kota: Kota Panama. Negara dengan kanal terkenal.",
+              flag: "🇵🇦",
+              summary: "Ibu kota: Kota Panama. Mata uang: Balboa, Dolar AS (PAB, USD). Negara dengan kanal dan hutan.",
               attractions: [
                 {
                   name: "Kanal Panama",
-                  details: "Kanal buatan sepanjang 82 km yang menghubungkan Atlantik dan Pasifik. Kamu bisa melihat kapal lewat di Miraflores Locks."
+                  details: "Kanal sepanjang 82 km yang menghubungkan Atlantik dan Pasifik."
                 }
               ]
             },
             {
               name: "Paraguay",
-              flag: "https://flagcdn.com/w20/py.png",
-              summary: "Ibu kota: Asunción. Negara dengan sungai dan bendungan besar.",
+              flag: "🇵🇾",
+              summary: "Ibu kota: Asunción. Mata uang: Guarani (PYG). Negara dengan sungai dan sejarah Jesuit.",
               attractions: [
                 {
-                  name: "Bendungan Itaipu",
-                  details: "Bendungan terbesar di dunia di perbatasan Paraguay dan Brasil, menghasilkan listrik raksasa."
+                  name: "Misión Jesuita Trinidad",
+                  details: "Reruntuhan misi Jesuit abad ke-17, situs Warisan Dunia."
                 }
               ]
             },
             {
               name: "Peru",
-              flag: "https://flagcdn.com/w20/pe.png",
-              summary: "Ibu kota: Lima. Negara dengan reruntuhan Inca dan pegunungan.",
+              flag: "🇵🇪",
+              summary: "Ibu kota: Lima. Mata uang: Sol (PEN). Negara dengan Machu Picchu dan Andes.",
               attractions: [
                 {
                   name: "Machu Picchu",
-                  details: "Kota kuno Inca di Cusco, terletak di pegunungan Andes. Situs Warisan Dunia UNESCO."
+                  details: "Kota Inca kuno di pegunungan Andes, situs Warisan Dunia."
                 }
               ]
             },
             {
               name: "Puerto Riko",
-              flag: "https://flagcdn.com/w20/pr.png",
-              summary: "Ibu kota: San Juan. Wilayah AS dengan pantai dan benteng.",
+              flag: "🇵🇷",
+              summary: "Ibu kota: San Juan. Mata uang: Dolar AS (USD). Wilayah AS dengan pantai dan benteng.",
               attractions: [
                 {
-                  name: "Kota Tua San Juan",
-                  details: "Kawasan bersejarah dengan benteng El Morro dan jalanan berbatu warna-warni."
+                  name: "El Morro",
+                  details: "Benteng Spanyol di San Juan, dibangun pada abad ke-16."
                 }
               ]
             },
             {
               name: "Saint Kitts dan Nevis",
-              flag: "https://flagcdn.com/w20/kn.png",
-              summary: "Ibu kota: Basseterre. Negara pulau dengan benteng dan pantai.",
+              flag: "🇰🇳",
+              summary: "Ibu kota: Basseterre. Mata uang: Dolar Karibia Timur (XCD). Negara pulau dengan benteng.",
               attractions: [
                 {
                   name: "Brimstone Hill Fortress",
-                  details: "Benteng bersejarah di Saint Kitts, situs UNESCO dengan pemandangan laut."
+                  details: "Benteng abad ke-17 di St. Kitts, situs Warisan Dunia."
                 }
               ]
             },
             {
               name: "Saint Lucia",
-              flag: "https://flagcdn.com/w20/lc.png",
-              summary: "Ibu kota: Castries. Pulau dengan gunung kembar dan pantai.",
+              flag: "🇱🇨",
+              summary: "Ibu kota: Castries. Mata uang: Dolar Karibia Timur (XCD). Pulau dengan gunung kembar.",
               attractions: [
                 {
                   name: "The Pitons",
-                  details: "Dua gunung vulkanik di Saint Lucia, Gros Piton dan Petit Piton, cocok untuk hiking."
+                  details: "Dua gunung vulkanik di Saint Lucia, situs Warisan Dunia."
                 }
               ]
             },
             {
-              name: "Saint Vincent dan Grenadines",
-              flag: "https://flagcdn.com/w20/vc.png",
-              summary: "Ibu kota: Kingstown. Kepulauan dengan pantai dan yacht.",
+              name: "Saint Vincent dan Grenadine",
+              flag: "🇻🇨",
+              summary: "Ibu kota: Kingstown. Mata uang: Dolar Karibia Timur (XCD). Kepulauan dengan pantai.",
               attractions: [
                 {
-                  name: "Kepulauan Grenadines",
-                  details: "Kepulauan dengan air jernih dan terumbu karang, cocok untuk berlayar."
+                  name: "Kepulauan Grenadine",
+                  details: "Kepulauan dengan pantai pasir putih dan air jernih."
                 }
               ]
             },
             {
               name: "Suriname",
-              flag: "https://flagcdn.com/w20/sr.png",
-              summary: "Ibu kota: Paramaribo. Negara dengan hutan hujan dan budaya beragam.",
+              flag: "🇸🇷",
+              summary: "Ibu kota: Paramaribo. Mata uang: Dolar Suriname (SRD). Negara dengan hutan dan budaya beragam.",
               attractions: [
                 {
                   name: "Kota Tua Paramaribo",
@@ -2005,30 +1844,30 @@
             },
             {
               name: "Trinidad dan Tobago",
-              flag: "https://flagcdn.com/w20/tt.png",
-              summary: "Ibu kota: Port of Spain. Negara dengan karnaval dan pantai.",
+              flag: "🇹🇹",
+              summary: "Ibu kota: Port of Spain. Mata uang: Dolar Trinidad dan Tobago (TTD). Negara dengan karnaval.",
               attractions: [
                 {
-                  name: "Pantai Maracas",
-                  details: "Pantai populer di Trinidad dengan makanan lokal seperti bake and shark."
+                  name: "Teluk Maracas",
+                  details: "Pantai populer di Trinidad dengan pasir putih dan makanan lokal."
                 }
               ]
             },
             {
               name: "Uruguay",
-              flag: "https://flagcdn.com/w20/uy.png",
-              summary: "Ibu kota: Montevideo. Negara dengan pantai dan budaya gaucho.",
+              flag: "🇺🇾",
+              summary: "Ibu kota: Montevideo. Mata uang: Peso Uruguay (UYU). Negara dengan pantai dan budaya gaucho.",
               attractions: [
                 {
                   name: "Kota Tua Montevideo",
-                  details: "Kawasan bersejarah dengan alun-alun dan bangunan kolonial."
+                  details: "Kawasan bersejarah dengan bangunan kolonial dan plaza indah."
                 }
               ]
             },
             {
               name: "Venezuela",
-              flag: "https://flagcdn.com/w20/ve.png",
-              summary: "Ibu kota: Caracas. Negara dengan air terjun tertinggi.",
+              flag: "🇻🇪",
+              summary: "Ibu kota: Caracas. Mata uang: Bolívar (VES). Negara dengan air terjun dan hutan.",
               attractions: [
                 {
                   name: "Air Terjun Angel",
@@ -2039,83 +1878,83 @@
           ]
         },
         {
-          name: "Oseania",
-          summary: "Benua dengan pulau-pulau tropis dan terumbu karang terbesar.",
+          name: "Australia",
+          summary: "Benua terkecil dengan keanekaragaman satwa liar dan terumbu karang.",
           countries: [
             {
               name: "Australia",
-              flag: "https://flagcdn.com/w20/au.png",
-              summary: "Ibu kota: Canberra. Negara dengan kanguru dan terumbu karang.",
+              flag: "🇦🇺",
+              summary: "Ibu kota: Canberra. Mata uang: Dolar Australia (AUD). Negara dengan kanguru dan terumbu karang.",
               attractions: [
                 {
                   name: "Great Barrier Reef",
-                  details: "Terumbu karang terbesar di dunia di Queensland, rumah ribuan spesies laut."
+                  details: "Terumbu karang terbesar di dunia di Queensland, cocok untuk snorkeling."
                 },
                 {
                   name: "Uluru",
-                  details: "Batu merah raksasa di Australia Tengah, suci bagi masyarakat Aborigin."
+                  details: "Batu merah besar di Australia Tengah, suci bagi suku Aborigin."
                 }
               ]
             },
             {
               name: "Fiji",
-              flag: "https://flagcdn.com/w20/fj.png",
-              summary: "Ibu kota: Suva. Kepulauan dengan pantai dan budaya Polinesia.",
+              flag: "🇫🇯",
+              summary: "Ibu kota: Suva. Mata uang: Dolar Fiji (FJD). Negara kepulauan dengan laguna biru.",
               attractions: [
                 {
                   name: "Kepulauan Mamanuca",
-                  details: "Kepulauan dengan pantai pasir putih dan air jernih, cocok untuk snorkeling."
+                  details: "Kepulauan dengan pantai pasir putih dan air jernih, cocok untuk menyelam."
                 }
               ]
             },
             {
               name: "Kiribati",
-              flag: "https://flagcdn.com/w20/ki.png",
-              summary: "Ibu kota: Tarawa. Negara pulau dengan laguna indah.",
+              flag: "🇰🇮",
+              summary: "Ibu kota: Tarawa. Mata uang: Dolar Australia (AUD). Negara pulau di Pasifik.",
               attractions: [
                 {
-                  name: "Atol Tarawa",
-                  details: "Atol dengan laguna dan sejarah Perang Dunia II."
+                  name: "Atol Kiritimati",
+                  details: "Atol terbesar di dunia, cocok untuk memancing dan melihat burung."
                 }
               ]
             },
             {
               name: "Kepulauan Marshall",
-              flag: "https://flagcdn.com/w20/mh.png",
-              summary: "Ibu kota: Majuro. Negara pulau dengan terumbu karang.",
+              flag: "🇲🇭",
+              summary: "Ibu kota: Majuro. Mata uang: Dolar AS (USD). Negara pulau dengan sejarah Perang Dunia II.",
               attractions: [
                 {
                   name: "Atol Bikini",
-                  details: "Atol dengan sejarah uji coba nuklir, kini situs menyelam kapal karam."
+                  details: "Atol dengan laguna dan sejarah uji coba nuklir, kini situs menyelam."
                 }
               ]
             },
             {
               name: "Mikronesia",
-              flag: "https://flagcdn.com/w20/fm.png",
-              summary: "Ibu kota: Palikir. Negara dengan kepulauan dan budaya laut.",
+              flag: "🇫🇲",
+              summary: "Ibu kota: Palikir. Mata uang: Dolar AS (USD). Negara kepulauan dengan terumbu karang.",
               attractions: [
                 {
                   name: "Nan Madol",
-                  details: "Kota kuno di Pohnpei, dibangun di atas terumbu karang, situs UNESCO."
+                  details: "Reruntuhan kota kuno di Pohnpei, dibangun di atas kanal buatan."
                 }
               ]
             },
             {
               name: "Nauru",
-              flag: "https://flagcdn.com/w20/nr.png",
-              summary: "Ibu kota: Yaren. Negara pulau kecil dengan pantai.",
+              flag: "🇳🇷",
+              summary: "Ibu kota: Yaren. Mata uang: Dolar Australia (AUD). Negara pulau terkecil di dunia.",
               attractions: [
                 {
-                  name: "Pantai Anibare",
-                  details: "Pantai indah di Nauru dengan teluk kecil dan air jernih."
+                  name: "Teluk Anibare",
+                  details: "Pantai indah di Nauru dengan pasir putih dan air jernih."
                 }
               ]
             },
             {
               name: "Palau",
-              flag: "https://flagcdn.com/w20/pw.png",
-              summary: "Ibu kota: Ngerulmud. Negara dengan danau ubur-ubur.",
+              flag: "🇵🇼",
+              summary: "Ibu kota: Ngerulmud. Mata uang: Dolar AS (USD). Negara dengan danau ubur-ubur.",
               attractions: [
                 {
                   name: "Jellyfish Lake",
@@ -2125,78 +1964,78 @@
             },
             {
               name: "Papua Nugini",
-              flag: "https://flagcdn.com/w20/pg.png",
-              summary: "Ibu kota: Port Moresby. Negara dengan hutan dan budaya suku.",
+              flag: "🇵🇬",
+              summary: "Ibu kota: Port Moresby. Mata uang: Kina (PGK). Negara dengan hutan dan budaya suku.",
               attractions: [
                 {
                   name: "Sungai Sepik",
-                  details: "Sungai panjang dengan desa tradisional dan seni ukir suku."
+                  details: "Sungai dengan desa suku dan ukiran kayu tradisional."
                 }
               ]
             },
             {
               name: "Samoa",
-              flag: "https://flagcdn.com/w20/ws.png",
-              summary: "Ibu kota: Apia. Negara pulau dengan budaya Polinesia.",
+              flag: "🇼🇸",
+              summary: "Ibu kota: Apia. Mata uang: Tala (WST). Negara pulau dengan budaya Polinesia.",
               attractions: [
                 {
-                  name: "To Sua Ocean Trench",
-                  details: "Kolam alami di Upolu, cocok untuk berenang dengan air jernih."
+                  name: "Air Terjun Sua Trench",
+                  details: "Kolam alami di Upolu, cocok untuk berenang dan melompat."
                 }
               ]
             },
             {
               name: "Kepulauan Solomon",
-              flag: "https://flagcdn.com/w20/sb.png",
-              summary: "Ibu kota: Honiara. Negara dengan pulau dan sejarah perang.",
+              flag: "🇸🇧",
+              summary: "Ibu kota: Honiara. Mata uang: Dolar Kepulauan Solomon (SBD). Negara dengan laguna.",
               attractions: [
                 {
-                  name: "Pulau Guadalcanal",
-                  details: "Pulau dengan situs Perang Dunia II dan pantai tropis."
+                  name: "Laguna Marovo",
+                  details: "Laguna terbesar di dunia dengan pulau-pulau kecil dan terumbu karang."
                 }
               ]
             },
             {
               name: "Tonga",
-              flag: "https://flagcdn.com/w20/to.png",
-              summary: "Ibu kota: Nuku'alofa. Negara pulau dengan budaya kerajaan.",
+              flag: "🇹🇴",
+              summary: "Ibu kota: Nukuʻalofa. Mata uang: Paʻanga (TOP). Negara pulau dengan budaya kerajaan.",
               attractions: [
                 {
-                  name: "Ha'amonga 'a Maui",
-                  details: "Struktur batu megalitik di Tongatapu, mirip Stonehenge."
+                  name: "Haʻamonga ʻa Maui",
+                  details: "Struktur batu megalitik di Tongatapu, seperti Stonehenge Polinesia."
                 }
               ]
             },
             {
               name: "Tuvalu",
-              flag: "https://flagcdn.com/w20/tv.png",
-              summary: "Ibu kota: Funafuti. Negara kecil dengan laguna indah.",
+              flag: "🇹🇻",
+              summary: "Ibu kota: Funafuti. Mata uang: Dolar Australia (AUD). Negara pulau kecil di Pasifik.",
               attractions: [
                 {
                   name: "Laguna Funafuti",
-                  details: "Laguna besar dengan air jernih, cocok untuk snorkeling."
+                  details: "Laguna dengan pulau-pulau kecil, cocok untuk berenang dan menyelam."
                 }
               ]
             },
             {
               name: "Vanuatu",
-              flag: "https://flagcdn.com/w20/vu.png",
-              summary: "Ibu kota: Port Vila. Negara pulau dengan gunung berapi aktif.",
+              flag: "🇻🇺",
+              summary: "Ibu kota: Port Vila. Mata uang: Vatu (VUV). Negara kepulauan dengan gunung berapi.",
               attractions: [
                 {
                   name: "Gunung Yasur",
-                  details: "Gunung berapi aktif di Tanna, kamu bisa melihat lava dari dekat."
+                  details: "Gunung berapi aktif di Tanna, dikenal sebagai mercusuar Pasifik."
                 }
               ]
             },
             {
               name: "Selandia Baru",
-              flag: "https://flagcdn.com/w20/nz.png",
-              summary: "Ibu kota: Wellington. Negara dengan pegunungan dan budaya Maori.",
+              flag: "🇳🇿",
+              summary: "Ibu kota: Wellington. Mata uang: Dolar Selandia Baru (NZD). Negara dengan fjord dan budaya Maori.",
               attractions: [
                 {
                   name: "Tongariro National Park",
-                  details: "Taman dengan gunung berapi aktif dan Danau Emerald, lokasi syuting Lord of the Rings."
+                  details: "Taman dengan gunung berapi aktif dan Danau Emerald yang indah."
                 }
               ]
             }
@@ -2204,12 +2043,12 @@
         },
         {
           name: "Antartika",
-          summary: "Benua es tanpa penduduk tetap, penuh gletser dan penguin.",
+          summary: "Benua es tanpa penduduk tetap, penuh dengan penguin dan gunung es.",
           countries: [
             {
               name: "Antartika",
-              flag: "https://flagcdn.com/w20/aq.png",
-              summary: "Tidak ada ibu kota. Benua es dengan stasiun penelitian.",
+              flag: "🇦🇶",
+              summary: "Tidak ada ibu kota. Mata uang: Tidak ada mata uang resmi. Benua es untuk penelitian.",
               attractions: [
                 {
                   name: "Lembah McMurdo",
@@ -2222,57 +2061,45 @@
       ]
     };
 
-    let currentView = 'continents';
-    let currentContinent = null;
-    let currentCountry = null;
-
-    function renderContent() {
+    function renderContent(type, data) {
       const contentDiv = document.getElementById('content');
-      const backBtn = document.querySelector('.back-btn');
       const mainTitle = document.getElementById('main-title');
+      const backBtn = document.querySelector('.back-btn');
       contentDiv.innerHTML = '';
 
-      if (currentView === 'continents') {
-        backBtn.style.display = 'none';
+      if (type === 'continents') {
         mainTitle.textContent = 'Jelajahi Dunia!';
+        backBtn.style.display = 'none';
         data.continents.forEach(continent => {
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
             <h2>${continent.name}</h2>
-            <p class="summary">${continent.summary}</p>
+            <p>${continent.summary}</p>
           `;
-          card.onclick = () => {
-            currentContinent = continent;
-            currentView = 'countries';
-            renderContent();
-          };
+          card.onclick = () => renderContent('countries', continent);
           contentDiv.appendChild(card);
         });
-      } else if (currentView === 'countries') {
+      } else if (type === 'countries') {
+        mainTitle.textContent = data.name;
         backBtn.style.display = 'block';
-        mainTitle.textContent = `Negara di ${currentContinent.name}`;
-        currentContinent.countries.forEach(country => {
+        data.countries.forEach(country => {
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
             <div class="country-name">
-              <div class="flag-icon" style="background-image: url('${country.flag}')"></div>
+              <span class="flag-emoji">${country.flag}</span>
               <h3>${country.name}</h3>
             </div>
             <p class="summary">${country.summary}</p>
           `;
-          card.onclick = () => {
-            currentCountry = country;
-            currentView = 'attractions';
-            renderContent();
-          };
+          card.onclick = () => renderContent('attractions', country);
           contentDiv.appendChild(card);
         });
-      } else if (currentView === 'attractions') {
+      } else if (type === 'attractions') {
+        mainTitle.textContent = data.name;
         backBtn.style.display = 'block';
-        mainTitle.textContent = `Destinasi di ${currentCountry.name}`;
-        currentCountry.attractions.forEach(attraction => {
+        data.attractions.forEach(attraction => {
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
@@ -2287,18 +2114,20 @@
     }
 
     function goBack() {
-      if (currentView === 'countries') {
-        currentView = 'continents';
-        currentContinent = null;
-      } else if (currentView === 'attractions') {
-        currentView = 'countries';
-        currentCountry = null;
+      const mainTitle = document.getElementById('main-title');
+      if (mainTitle.textContent !== 'Jelajahi Dunia!') {
+        const currentContent = document.querySelector('.card');
+        if (currentContent && currentContent.querySelector('.attraction-details')) {
+          const countryName = mainTitle.textContent;
+          const continent = data.continents.find(c => c.countries.some(country => country.name === countryName));
+          renderContent('countries', continent);
+        } else {
+          renderContent('continents', data);
+        }
       }
-      renderContent();
     }
 
-    // Inisialisasi tampilan awal
-    renderContent();
+    renderContent('continents', data);
   </script>
   <audio id="bg-audio" src="skyhigh.mp3" loop hidden></audio>
   <script>
@@ -2311,6 +2140,5 @@
       }, { once: true });
     });
   </script>
-</body>
 </body>
 </html>
