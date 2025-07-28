@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -60,11 +21,18 @@
       position: fixed;
       bottom: 10px;
       right: 10px;
-      color: rgb(194, 194, 194);
-      font-size: 10px;
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 12px;
       font-family: Arial, sans-serif;
-      pointer-events: none;
       z-index: 1000;
+    }
+    .watermark a {
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+    }
+    .watermark a:hover {
+      color: rgba(0, 0, 0, 0.8);
+      text-decoration: underline;
     }
     .card:hover {
       transform: scale(1.05);
@@ -86,7 +54,39 @@
 </head>
 <body>
   <div id="root">Memuat aplikasi...</div>
-  <div class="watermark">By Mochamad Fuad Asyhary</div>
+  <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
   <script type="text/babel">
     const dataIndonesia = {
       nama: "Indonesia",
@@ -946,11 +946,11 @@
       ]
     };
 
-    function Card({ title, description, children, onClick }) {
+    function Card({ title, description, children, onClick, clickable = true }) {
       return (
         <div
-          className="card bg-white p-4 m-2 rounded-lg shadow-lg cursor-pointer hover:bg-yellow-100"
-          onClick={onClick}
+          className={`card bg-white p-4 m-2 rounded-lg shadow-lg ${clickable ? 'cursor-pointer hover:bg-yellow-100' : 'cursor-default'}`}
+          onClick={clickable ? onClick : undefined}
         >
           <h3 className="text-xl font-bold text-blue-600">{title}</h3>
           <p className="text-gray-700">{description}</p>
@@ -961,17 +961,9 @@
 
     function App() {
       const [selectedProvinsi, setSelectedProvinsi] = React.useState(null);
-      const [selectedKota, setSelectedKota] = React.useState(null);
-      const [selectedKabupaten, setSelectedKabupaten] = React.useState(null);
 
       const handleBack = () => {
-        if (selectedKota) {
-          setSelectedKota(null);
-        } else if (selectedKabupaten) {
-          setSelectedKabupaten(null);
-        } else if (selectedProvinsi) {
-          setSelectedProvinsi(null);
-        }
+        setSelectedProvinsi(null);
       };
 
       return (
@@ -985,6 +977,7 @@
               <Card
                 title={dataIndonesia.nama}
                 description={dataIndonesia.deskripsi}
+                clickable={false}
               />
               <h2 className="text-2xl font-semibold text-center text-green-600 mt-6">
                 Pilih Provinsi
@@ -1000,7 +993,7 @@
                 ))}
               </div>
             </div>
-          ) : !selectedKota && !selectedKabupaten ? (
+          ) : (
             <div>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-red-600"
@@ -1011,6 +1004,7 @@
               <Card
                 title={selectedProvinsi.nama}
                 description={selectedProvinsi.deskripsi}
+                clickable={false}
               />
               <h2 className="text-2xl font-semibold text-center text-green-600 mt-6">
                 Kota di {selectedProvinsi.nama}
@@ -1022,7 +1016,7 @@
                       key={kota.nama}
                       title={kota.nama}
                       description={kota.deskripsi}
-                      onClick={() => setSelectedKota(kota)}
+                      clickable={false}
                     />
                   ))
                 ) : (
@@ -1039,38 +1033,13 @@
                       key={kab.nama}
                       title={kab.nama}
                       description={kab.deskripsi}
-                      onClick={() => setSelectedKabupaten(kab)}
+                      clickable={false}
                     />
                   ))
                 ) : (
                   <p className="text-center text-gray-600">Tidak ada kabupaten di provinsi ini.</p>
                 )}
               </div>
-            </div>
-          ) : selectedKota ? (
-            <div>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-red-600"
-                onClick={handleBack}
-              >
-                Kembali ke {selectedProvinsi.nama}
-              </button>
-              <Card
-                title={selectedKota.nama}
-                description={selectedKota.deskripsi}
-              />
-            </div>
-          ) : (
-            <div>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-red-600"
-                onClick={handleBack}
-              >Kembali ke {selectedProvinsi.nama}
-              </button>
-              <Card
-                title={selectedKota.nama}
-                description={selectedKota.deskripsi}
-              />
             </div>
           )}
         </div>
