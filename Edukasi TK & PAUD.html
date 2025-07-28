@@ -74,11 +74,19 @@
     .watermark {
       position: fixed;
       bottom: 10px;
-      left: 10px;
-      color: #000000; /* Warna hitam agar mudah dibaca */
-      font-size: 10px;
-      font-weight: 300;
-      pointer-events: none;
+      right: 10px;
+      color: rgba(0, 0, 0, 0.3);
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
+    }
+    .watermark a {
+      color: rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+    }
+    .watermark a:hover {
+      color: rgba(0, 0, 0, 0.8);
+      text-decoration: underline;
     }
     .modal {
       position: fixed;
@@ -186,7 +194,7 @@
       </div>
     </div>
   </div>
-  <div class="watermark">By Mochamad Fuad Asyhary</div>
+  <div class="watermark"><a href="https://id.linkedin.com/in/mochamad-fuad-asyhary">By Mochamad Fuad Asyhary</a></div>
 
   <script>
     window.onload = () => {
